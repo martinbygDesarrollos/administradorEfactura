@@ -1,0 +1,41 @@
+<div class="vertical-nav bg-light" id="sidebar">
+    <div class="py-4 px-3 mb-3 background-template-color">
+        <div class="media d-flex justify-content-center ">
+            <img src="{{path_for('Start')}}img/LogoHeader.png" alt="Logo empresarial" width="150">
+        </div>
+        {% if mailUserLogued %}
+        <span class="text-template-background text-center font-italic ml-1 m-0">{{ systemSession.business }}</span>
+        {% endif %}
+    </div>
+
+    <ul class="nav flex-column bg-white mb-0">
+        {% if mailUserLogued %}
+        <li class="nav-item">
+            <a href="{{ path_for('Start') }}" class="nav-link text-dark font-italic bg-light">
+                Mis empresas
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ path_for('Start') }}" class="nav-link text-dark font-italic bg-light">
+                Clientes
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ path_for('Start') }}" class="nav-link text-dark font-italic bg-light">
+                Socios
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{path_for('Start')}}" class="nav-link text-dark font-italic bg-light">
+                Configuracion
+            </a>
+        </li>
+        {%else%}
+        <li class="nav-item">
+            <a href="{{ path_for('Start') }}" class="nav-link text-dark font-italic bg-light">
+                Inicio
+            </a>
+        </li>
+        {%endif%}
+    </ul>
+</div>

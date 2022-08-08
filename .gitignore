@@ -1,0 +1,13 @@
+.htaccess
+index.php
+public/.htaccess
+src/config.php
+*.txt
+*tmp*
+*.log
+*.xlsx
+Notas.md
+public/pdfs
+public/excel
+public/pruebas.php
+vendor

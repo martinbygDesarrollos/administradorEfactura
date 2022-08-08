@@ -1,0 +1,19 @@
+{% extends "base.twig" %}
+{% block head %}
+<!--link rel="stylesheet" type="text/css" href="{{ path_for('Start')}}styles/globalStyles.css"-->
+{% endblock %}
+{% block content %}
+{% if mailUserLogued %}
+<input type="text" id="isUpdated" value="{{ updateVouchers }}" style="display: none;">
+{% if errorMessage %}
+<div id="alert-danger" class="alert alert-danger" role="alert">
+	<h4 class="alert-heading">Alerta</h4>
+	<p class="text-center">{{ errorSite }}</p>
+	<hr>
+	<p class="mb-0">{{ errorMessage }}</p>
+</div>
+{% endif %}
+{% else %}
+<h3 class="text-template-background font-italic text-center">ADMINISTRADOR de EFACTURA</h3>
+{% endif %}
+{% endblock %}
