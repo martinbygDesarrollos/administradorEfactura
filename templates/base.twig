@@ -20,7 +20,10 @@
 		<div class="d-flex justify-content-between">
 			<button id="sidebarCollapse" type="button" class="btn background-template-color text-template-color m-2"></button>
 			{% if mailUserLogued %}
-			<a href="{{path_for('SignOut')}}" class="btn btn-danger text-white shadow-sm m-2" data-toggle="tooltip" data-placement="top" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></a>
+			<div class="row mr-2">
+				<h6 class="text-template-background font-italic mt-3">{{mailUserLogued}}</h6>
+				<a href="{{path_for('SignOut')}}" class="btn btn-danger text-white shadow-sm m-2" data-toggle="tooltip" data-placement="top" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></a>
+			</div>
 			{%else%}
 			<a href="{{path_for('SignIn')}}" class="btn btn-success text-white shadow-sm m-2" data-toggle="tooltip" data-placement="top" title="Iniciar sesión"><i class="fas fa-sign-in-alt"></i></a>
 			{%endif%}
