@@ -9,8 +9,10 @@ return function (App $app) {
     $container = $app->getContainer();
 
     $routesUsers = require_once __DIR__ . "/../src/routes/routes_users.php";
+    $routesBusiness = require_once __DIR__ . "/../src/routes/routes_business.php";
 
     $routesUsers($app);
+    $routesBusiness($app);
 
     //ruta de inicio
     $app->get('/', function ($request, $response, $args) use ($container) {
@@ -18,6 +20,6 @@ return function (App $app) {
         $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
         $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
 
-        return $this->view->render($response, "index.twig", $args);
+        return $this->view->render($response, "business.twig", $args);
     })->setName("Start");
 };
