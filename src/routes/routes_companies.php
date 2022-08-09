@@ -13,9 +13,9 @@ return function (App $app){
         $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
 
 		if ( isset($_SESSION['rutUserLogued']) && isset($_SESSION['mailUserLogued']) ){
-			return $this->view->render($response, "business.twig", $args);
+			return $this->view->render($response, "companies.twig", $args);
 		}else return $response->withRedirect($request->getUri()->getBaseUrl());
-	})->setName("Business");
+	})->setName("Companies");
 
 }
 

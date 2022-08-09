@@ -4,14 +4,14 @@
             <img src="{{path_for('Start')}}img/LogoHeader.png" alt="Logo empresarial" width="150">
         </div>
         {% if mailUserLogued %}
-        <span class="text-template-background text-center font-italic ml-1 m-0">{{ systemSession.business }}</span>
+        <span class="text-template-background text-center font-italic ml-1 m-0">{{ mailUserLogued }}</span>
         {% endif %}
     </div>
 
     <ul class="nav flex-column bg-white mb-0">
         {% if mailUserLogued %}
         <li class="nav-item">
-            <a href="{{ path_for('Business') }}" class="nav-link text-dark font-italic bg-light">
+            <a href="{{ path_for('Companies') }}" class="nav-link text-dark font-italic bg-light">
                 Mis empresas
             </a>
         </li>
