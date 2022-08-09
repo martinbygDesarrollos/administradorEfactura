@@ -37,6 +37,17 @@ class ctr_users{
 
 		return $response;
 	}
+
+
+	public function getTokenUserLogued(){
+		$usersClass = new users();
+
+		$rut = $_SESSION['rutUserLogued'];
+		$mail = $_SESSION['mailUserLogued'];
+
+		$response = $usersClass->getToken( $rut, $mail );
+		return $response;
+	}
 }
 
 

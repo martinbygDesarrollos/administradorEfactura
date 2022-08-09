@@ -58,5 +58,44 @@
 	<script type="text/javascript" src="{{ path_for('Start') }}scripts/base.js{{ version }}"></script>
 	<script type="text/javascript" src="{{ path_for('Start') }}scripts/sendPost.js{{ version }}"></script>
 	<script type="text/javascript" src="{{ path_for('Start') }}scripts/utils.js{{ version }}"></script>
+	<script type="text/javascript">
+		console.log("calcular opcion del menu activada");
+		if ( window.location.href.includes("cliente") ){
+			$("#nav-link-companie").removeClass("active");
+			$("#nav-link-partner").removeClass("active");
+			$("#nav-link-settings").removeClass("active");
+			$("#nav-link-home").removeClass("active");
+			$("#nav-link-customer").addClass("active");
+		}
+		else if ( window.location.href.includes("socios") ){
+			$("#nav-link-companie").removeClass("active");
+			$("#nav-link-partner").addClass("active");
+			$("#nav-link-settings").removeClass("active");
+			$("#nav-link-home").removeClass("active");
+			$("#nav-link-customer").removeClass("active");
+		}
+		else if ( window.location.href.includes("configuracion") ){
+			$("#nav-link-companie").removeClass("active");
+			$("#nav-link-partner").removeClass("active");
+			$("#nav-link-settings").addClass("active");
+			$("#nav-link-home").removeClass("active");
+			$("#nav-link-customer").removeClass("active");
+		}
+		else if ( window.location.href.includes("iniciar-sesion") ){
+			$("#nav-link-companie").removeClass("active");
+			$("#nav-link-partner").removeClass("active");
+			$("#nav-link-settings").removeClass("active");
+			$("#nav-link-customer").removeClass("active");
+			$("#nav-link-home").addClass("active");
+		}
+		else{
+			$("#nav-link-companie").addClass("active");
+			$("#nav-link-partner").removeClass("active");
+			$("#nav-link-settings").removeClass("active");
+			$("#nav-link-customer").removeClass("active");
+			$("#nav-link-home").removeClass("active");
+		}
+
+	</script>
 </body>
 </html>

@@ -25,10 +25,10 @@ class sendPetition{
 		return $thisClass->prepareAndSendCurl("POST", "login", null, $data);
 	}
 
-	public function getEmpresa($rut, $token){
+	public function getCompanies($token){
 		$thisClass = new sendPetition();
 
-		return $thisClass->prepareAndSendCurl("GET", "company/" . $rut, $token, null);
+		return $thisClass->prepareAndSendCurl("GET", "companies", $token, null);
 	}
 
 	public function prepareAndSendCurl($typeMethod, $method, $token, $data){

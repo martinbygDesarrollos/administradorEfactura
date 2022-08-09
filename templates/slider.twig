@@ -1,38 +1,40 @@
 <div class="vertical-nav bg-light" id="sidebar">
     <div class="py-4 px-3 mb-3 background-template-color">
         <div class="media d-flex justify-content-center ">
-            <img src="{{path_for('Start')}}img/LogoHeader.png" alt="Logo empresarial" width="150">
+            <a href="{{ path_for('Start') }}">
+                <img src="{{path_for('Start')}}img/LogoHeader.png" alt="Logo empresarial" width="150">
+            </a>
         </div>
-        {% if mailUserLogued %}
-        <span class="text-template-background text-center font-italic ml-1 m-0">{{ mailUserLogued }}</span>
+        <br>
+        {% if companieUserLogued %}
+        <span class="text-template-background text-center font-italic ml-1 m-0">{{ companieUserLogued }}</span>
         {% endif %}
     </div>
-
-    <ul class="nav flex-column bg-white mb-0">
+    <ul class="nav nav-pills flex-column bg-light mb-0">
         {% if mailUserLogued %}
         <li class="nav-item">
-            <a href="{{ path_for('Companies') }}" class="nav-link text-dark font-italic bg-light">
+            <a href="{{ path_for('Companies') }}" id="nav-link-companie" class="nav-link text-dark font-italic active">
                 Mis empresas
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ path_for('Start') }}" class="nav-link text-dark font-italic bg-light">
+            <a href="{{ path_for('Start') }}" id="nav-link-customer" class="nav-link text-dark font-italic">
                 Clientes
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ path_for('Start') }}" class="nav-link text-dark font-italic bg-light">
+            <a href="{{ path_for('Start') }}" id="nav-link-partner" class="nav-link text-dark font-italic">
                 Socios
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{path_for('Start')}}" class="nav-link text-dark font-italic bg-light">
+            <a href="{{path_for('Start')}}" id="nav-link-settings" class="nav-link text-dark font-italic">
                 Configuracion
             </a>
         </li>
         {%else%}
         <li class="nav-item">
-            <a href="{{ path_for('Start') }}" class="nav-link text-dark font-italic bg-light">
+            <a href="{{ path_for('Start') }}" id="nav-link-home" class="nav-link text-dark font-italic">
                 Inicio
             </a>
         </li>

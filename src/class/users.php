@@ -25,4 +25,11 @@ class users{
 		$response = $dataBaseClass->sendQuery($sql, array('sss', $token, $mail, $rut), "BOOLE");
 		return $response;
 	}
+
+	public function getToken($rut, $mail){
+		$dataBaseClass = new DataBase();
+		$sql = "SELECT tokenRest FROM `usuarios` WHERE rutEmpresa = ? AND correo = ?";
+		$response = $dataBaseClass->sendQuery($sql, array('ss', $rut, $mail), "OBJECT");
+		return $response;
+	}
 }

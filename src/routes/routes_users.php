@@ -19,6 +19,7 @@ return function (App $app){
 	$app->get('/cerrar-session', function ($request, $response, $args){
 		$_SESSION['mailUserLogued'] = null;
 		$_SESSION['rutUserLogued'] = null;
+		$_SESSION['companieUserLogued'] = null;
 		return $response->withRedirect($request->getUri()->getBaseUrl());
 	})->setName("SignOut");
 

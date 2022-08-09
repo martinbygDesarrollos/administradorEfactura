@@ -40,6 +40,10 @@
     margin: 0;
 }
 
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link{
+    background-color: #37A39899;
+}
+
 @media (max-width: 1200px) {
 
     .wrapper {
