@@ -5,10 +5,10 @@ require_once 'ctr_users.php';
 
 class ctr_rest{
 
-	public function login($rut, $user, $password){
+	public function login($user, $password){
 		$petitionClass = new sendPetition();
 
-		$petitionResponse = $petitionClass->login($rut, $user, $password);
+		$petitionResponse = $petitionClass->login($user, $password);
 		$petitionResponse = json_decode($petitionResponse);
 
 		if ( $petitionResponse->resultado->codigo == 200 ){
@@ -31,7 +31,7 @@ class ctr_rest{
 		$response->result = 1;
 		$response->listResult = array();
 
-		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued'] , $_SESSION['rutUserLogued']);
+		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
 		if ( $token->result == 2 ){
 			$tokenRest = $token->objectResult->tokenRest;
 			$petitionResponse = $petitionClass->getCompanies($tokenRest);

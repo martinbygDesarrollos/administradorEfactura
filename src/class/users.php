@@ -5,31 +5,31 @@ require_once '../src/connection/open_connection.php';
 
 class users{
 
-	public function insertUser($rut, $mail, $token){
+	public function insertUser($mail, $token){
 		$dataBaseClass = new DataBase();
-		$sql = "INSERT INTO `usuarios` (`correo`, `tokenRest`, `rutEmpresa`) VALUES (?,?,?)";
-		$response = $dataBaseClass->sendQuery($sql, array('sss', $mail, $token, $rut), "BOOLE");
+		$sql = "INSERT INTO `usuarios` (`correo`, `tokenRest`) VALUES (?,?)";
+		$response = $dataBaseClass->sendQuery($sql, array('ss', $mail, $token), "BOOLE");
 		return $response;
 	}
 
-	public function getUserByMail($mail, $rut){
+	public function getUserByMail($mail){
 		$dataBaseClass = new DataBase();
-		$sql = "SELECT * FROM `usuarios` WHERE `correo`= ? AND `rutEmpresa`= ?";
-		$response = $dataBaseClass->sendQuery($sql, array('ss', $mail, $rut), "BOOLE");
+		$sql = "SELECT * FROM `usuarios` WHERE `correo`= ?";
+		$response = $dataBaseClass->sendQuery($sql, array('s', $mail), "OBJECT");
 		return $response;
 	}
 
-	public function updateToken($rut, $mail, $token){
+	public function updateToken($mail, $token){
 		$dataBaseClass = new DataBase();
-		$sql = "UPDATE `usuarios` SET `tokenRest`= ? WHERE `correo`= ? AND `rutEmpresa`= ?";
-		$response = $dataBaseClass->sendQuery($sql, array('sss', $token, $mail, $rut), "BOOLE");
+		$sql = "UPDATE `usuarios` SET `tokenRest`= ? WHERE `correo`= ?";
+		$response = $dataBaseClass->sendQuery($sql, array('ss', $token, $mail), "BOOLE");
 		return $response;
 	}
 
-	public function getToken($rut, $mail){
+	public function getToken($mail){
 		$dataBaseClass = new DataBase();
-		$sql = "SELECT tokenRest FROM `usuarios` WHERE rutEmpresa = ? AND correo = ?";
-		$response = $dataBaseClass->sendQuery($sql, array('ss', $rut, $mail), "OBJECT");
+		$sql = "SELECT tokenRest FROM `usuarios` WHERE correo = ?";
+		$response = $dataBaseClass->sendQuery($sql, array('s', $mail), "OBJECT");
 		return $response;
 	}
 }

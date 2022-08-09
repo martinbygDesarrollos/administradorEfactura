@@ -1,18 +1,13 @@
 <?php
 
 class sendPetition{
-
-	public function status($rut, $token){
-		$thisClass = new sendPetition();
-		return $thisClass->prepareAndSendCurl("GET", "status?rut=" . $rut, $token, null,);
-	}
 	
 	public function ping(){
 		$thisClass = new sendPetition();
 		return $thisClass->prepareAndSendCurl("GET", "ping", null, null);
 	}
 
-	public function login($rut, $user, $password){
+	public function login($user, $password){
 		$thisClass = new sendPetition();
 
 		$data = array(

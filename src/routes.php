@@ -18,25 +18,28 @@ return function (App $app) {
     //ruta de inicio
     $app->get('/', function ($request, $response, $args) use ($container, $companiesController) {
         $args['version'] = FECHA_ULTIMO_PUSH;
-        if ( isset($_SESSION['mailUserLogued']) && isset($_SESSION['rutUserLogued']) ){
-            $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
+        if ( isset($_SESSION['mailUserLogued']) ){
             $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
 
             //aca cargar companies
             $args['companiesList'] = $companiesController->getCompanies()->listResult;
-            $rut = $_SESSION['rutUserLogued'];
             //var_dump($args['companiesList']);exit;
-            foreach ($args['companiesList'] as $value) {
-                if ($value->rut == $rut) {
-                    $_SESSION['companieUserLogued'] = $value->razonSocial;
-                }
-            }
+            $_SESSION['companieUserLogued'] = $args['companiesList'][0]->razonSocial;
+            $_SESSION['rutUserLogued'] = $args['companiesList'][0]->rut;
 
             if ( isset($_SESSION['companieUserLogued']) ){
                 $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
             }else{
                 $_SESSION['companieUserLogued'] = null;
                 $args['companieUserLogued'] = null;
+            }
+
+
+            if ( isset($_SESSION['rutUserLogued']) ){
+                $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
+            }else{
+                $_SESSION['rutUserLogued'] = null;
+                $args['rutUserLogued'] = null;
             }
         }else {
             $args['rutUserLogued'] = null;

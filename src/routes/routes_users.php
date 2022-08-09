@@ -27,11 +27,10 @@ return function (App $app){
 
 	$app->post('/login', function ($request, $response, $args) use ($usersController){
 		$data = $request->getParams();
-		$rut = $data['rut'];
 		$correo = $data['correo'];
 		$contra = $data['contra'];
 
-		$result = $usersController->login($rut, $correo, $contra);
+		$result = $usersController->login($correo, $contra);
 		return json_encode($result);
 	});
 

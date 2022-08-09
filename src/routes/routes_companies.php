@@ -13,24 +13,30 @@ return function (App $app){
 
 	$app->get('/empresas', function ($request, $response, $args) use ($container, $companiesController){
 		$args['version'] = FECHA_ULTIMO_PUSH;
-        $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
         $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
-        $args['companieUserLogued'] = null;
 
-		if ( isset($_SESSION['rutUserLogued']) && isset($_SESSION['mailUserLogued']) ){
+		if ( isset($_SESSION['mailUserLogued']) ){
 
-			//aca pedir datos de companies
+            //aca cargar companies
             $args['companiesList'] = $companiesController->getCompanies()->listResult;
-           	foreach ($args['companiesList'] as $value) {
-                if ($value->rut == $rut) {
-                    $_SESSION['companieUserLogued'] = $value->razonSocial;
-                    $args['companieUserLogued'] = $value->razonSocial;
-                }else {
-                	$_SESSION['companieUserLogued'] = null;
-                    $args['companieUserLogued'] = null;
-                }
+            //var_dump($args['companiesList']);exit;
+            $_SESSION['companieUserLogued'] = $args['companiesList'][0]->razonSocial;
+            $_SESSION['rutUserLogued'] = $args['companiesList'][0]->rut;
+
+            if ( isset($_SESSION['companieUserLogued']) ){
+                $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
+            }else{
+                $_SESSION['companieUserLogued'] = null;
+                $args['companieUserLogued'] = null;
             }
 
+
+            if ( isset($_SESSION['rutUserLogued']) ){
+                $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
+            }else{
+                $_SESSION['rutUserLogued'] = null;
+                $args['rutUserLogued'] = null;
+            }
 
 			return $this->view->render($response, "companies.twig", $args);
 		}else return $response->withRedirect($request->getUri()->getBaseUrl());
