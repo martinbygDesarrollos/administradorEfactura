@@ -42,6 +42,44 @@ return function (App $app){
 		}else return $response->withRedirect($request->getUri()->getBaseUrl());
 	})->setName("Companies");
 
+    $app->get('/empresas/{rut}', function ($request, $response, $args) use ($container, $companiesController){
+        $args['version'] = FECHA_ULTIMO_PUSH;
+        var_dump($args['rut']);
+    });
+
+
+
+
+
+    $app->post('/companies', function ($request, $response, $args) use ($container, $companiesController){
+
+        if ( isset($_SESSION['mailUserLogued']) ){
+            $result = $companiesController->getCompanies();
+
+
+            $_SESSION['companieUserLogued'] = $result->listResult[0]->razonSocial;
+            $_SESSION['rutUserLogued'] = $result->listResult[0]->rut;
+
+            if ( isset($_SESSION['companieUserLogued']) ){
+                $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
+            }else{
+                $_SESSION['companieUserLogued'] = null;
+                $args['companieUserLogued'] = null;
+            }
+
+
+            if ( isset($_SESSION['rutUserLogued']) ){
+                $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
+            }else{
+                $_SESSION['rutUserLogued'] = null;
+                $args['rutUserLogued'] = null;
+            }
+
+
+            return json_encode($result);
+        }else return $response->withRedirect($request->getUri()->getBaseUrl());
+    });
+
 }
 
 ?>
