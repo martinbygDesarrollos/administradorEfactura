@@ -27,7 +27,7 @@
 				</thead>
 				<tbody id="tbodyCompaniesList">
 					{% for comp in companiesList %}
-					<tr>
+					<tr onclick="selectCompanie({{comp.rut}})">
 						<td><a href="{{ path_for('Companies')}}/{{comp.rut}}">{{comp.razonSocial}}</a><br>{{comp.rut}}</td>
 						<td>{{comp.estadoDescripcion}}</td>
 						<td>{{comp.vencimientos}}</td>
