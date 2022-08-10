@@ -23,9 +23,10 @@ return function (App $app) {
 
             //aca cargar companies
             $args['companiesList'] = $companiesController->getCompanies()->listResult;
-            //var_dump($args['companiesList']);exit;
-            $_SESSION['companieUserLogued'] = $args['companiesList'][0]->razonSocial;
-            $_SESSION['rutUserLogued'] = $args['companiesList'][0]->rut;
+            $objFirstCompanie = array_pop(array_reverse($args['companiesList']));
+
+            $_SESSION['companieUserLogued'] = $objFirstCompanie->razonSocial;
+            $_SESSION['rutUserLogued'] = $objFirstCompanie->rut;
 
             if ( isset($_SESSION['companieUserLogued']) ){
                 $args['companieUserLogued'] = $_SESSION['companieUserLogued'];

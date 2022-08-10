@@ -22,7 +22,8 @@
 					<tr>
 						<th>Razón social</th>
 						<th>Estado</th>
-						<th>Vencimiento certificados</th>
+						<th>Vencimientos</th>
+						<th>CAE</th>
 					</tr>
 				</thead>
 				<tbody id="tbodyCompaniesList">
@@ -30,7 +31,16 @@
 					<tr onclick="selectCompanie({{comp.rut}})">
 						<td><a href="{{ path_for('Companies')}}/{{comp.rut}}">{{comp.razonSocial}}</a><br>{{comp.rut}}</td>
 						<td>{{comp.estadoDescripcion}}</td>
-						<td>{{comp.comprobante}} {%if comp.tipoCae != "" %} {{comp.tipoCae}} {%endif%}{{comp.vencimientos}}</td>
+						<td>{{comp.comprobante}} {%if comp.tipoCae != "" %} {{comp.tipoCae}} {%endif%}{{comp.proxVencimiento}}</td>
+						<td>
+							{% if comp.caes %}
+							<select class="custom-select custom-select-sm shadow-sm">
+							{% for cae in comp.caes %}
+								<option title="Quedan {{cae.disponibles}} {{cae.tipoDescripcion}}">{{cae.disponibles}} {{cae.tipoDescAbrev}}</option>
+							{% endfor %}
+							</select>
+							{% endif %}
+						</td>
 					</tr>
 					{% endfor %}
 				</tbody>
