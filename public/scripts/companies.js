@@ -3,10 +3,13 @@ $(document).ready(()=>{
 })
 
 
-function selectCompanie( companieRut ){
-	console.log("cambiar empresa a ", companieRut);
-	sendAsyncPost("companies", {rut:companieRut})
+function selectCompanie( companieRut, companieName ){
+
+	sendAsyncPost("companies", {rut:companieRut, name:companieName})
 	.then((response)=>{
-		console.log(response);
+		if ( response.result == 2 ){
+			$("#indexCompanieWork a").text(companieName);
+			$("#indexCompanieName").text(companieName);
+		}
 	})
 }

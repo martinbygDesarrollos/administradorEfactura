@@ -10,13 +10,9 @@
 			<table class="table">
 				<thead>
 					<tr>
-						<p class="font-weight-bold pl-2">
+						<p id="indexCompanieWork" class="font-weight-bold pl-2">
 						Trabajando con
-						{% for comp in companiesList %}
-						{% if comp.rut == rutUserLogued %}
-						<a href="{{ path_for('Companies')}}/{{comp.rut}}">{{comp.razonSocial}}</a>
-						{%endif%}
-						{% endfor %}
+						<a href="{{ path_for('Companies')}}/{{rutUserLogued}}">{{companieUserLogued}}</a>
 						</p>
 					</tr>
 					<tr>
@@ -28,10 +24,10 @@
 				</thead>
 				<tbody id="tbodyCompaniesList">
 					{% for comp in companiesList %}
-					<tr onclick="selectCompanie({{comp.rut}})">
-						<td><a href="{{ path_for('Companies')}}/{{comp.rut}}">{{comp.razonSocial}}</a><br>{{comp.rut}}</td>
-						<td>{{comp.estadoDescripcion}}</td>
-						<td>{{comp.comprobante}} {%if comp.tipoCae != "" %} {{comp.tipoCae}} {%endif%}{{comp.proxVencimiento}}</td>
+					<tr>
+						<td onclick="selectCompanie('{{comp.rut}}', '{{comp.razonSocial}}')" ><a href="{{ path_for('Companies')}}/{{comp.rut}}">{{comp.razonSocial}}</a><br>{{comp.rut}}</td>
+						<td onclick="selectCompanie('{{comp.rut}}', '{{comp.razonSocial}}')" >{{comp.estadoDescripcion}}</td>
+						<td onclick="selectCompanie('{{comp.rut}}', '{{comp.razonSocial}}')" >{{comp.comprobante}} {%if comp.tipoCae != "" %} {{comp.tipoCae}} {%endif%}{{comp.proxVencimiento}}</td>
 						<td>
 							{% if comp.caes %}
 							<select class="custom-select custom-select-sm shadow-sm">

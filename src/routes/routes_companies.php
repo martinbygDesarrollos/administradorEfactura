@@ -43,22 +43,33 @@ return function (App $app){
 		}else return $response->withRedirect($request->getUri()->getBaseUrl());
 	})->setName("Companies");
 
+    //ver el perfil/info detallada de la empresa
     $app->get('/empresas/{rut}', function ($request, $response, $args) use ($container, $companiesController){
         $args['version'] = FECHA_ULTIMO_PUSH;
-        var_dump($args['rut']);
+        if ( isset($_SESSION['mailUserLogued']) ){
+
+
+            return $this->view->render($response, "settings.twig", $args);
+        }else return $response->withRedirect($request->getUri()->getBaseUrl());
     });
 
 
 
 
-
+    //cambiar los datos de sesion del usuario
     $app->post('/companies', function ($request, $response, $args) use ($container, $companiesController){
 
         if ( $_SESSION['mailUserLogued'] ){
+            $response = new \stdClass();
             $data = $request->getParams();
             $rut = $data['rut'];
-            //$result = $companiesController->getCompanieByRut($rut);
-            return json_encode("ok");
+            $razonSocial = $data['name'];
+
+            $_SESSION['companieUserLogued'] = $razonSocial;
+            $_SESSION['rutUserLogued'] = $rut;
+
+            $response->result = 2;
+            return json_encode($response);
         }else return $response->withRedirect($request->getUri()->getBaseUrl());
 
     });
