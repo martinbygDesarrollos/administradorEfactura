@@ -42,6 +42,30 @@ class ctr_rest{
 
 		return $response;
 	}
+
+
+
+	public function getCompanyData( $rut ){
+
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+		$response->objectResult = new \stdClass();
+
+		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
+		if ( $token->result == 2 ){
+			$tokenRest = $token->objectResult->tokenRest;
+			$petitionResponse = $petitionClass->getCompanyData($tokenRest, $rut);
+			$petitionResponse = json_decode($petitionResponse);
+			$response->result = 2;
+			$response->objectResult = $petitionResponse;
+		}else return $token;
+
+		return $response;
+
+	}
 }
 
 

@@ -93,6 +93,17 @@ class ctr_companies{
 
 		return $arrayCompanies;
 	}
+
+
+
+	public function getCompaniesData( $rut ){
+
+		$restController = new ctr_rest();
+
+		$responseCompany = $restController->getCompanyData( $rut );
+		return $responseCompany;
+
+	}
 }
 
 

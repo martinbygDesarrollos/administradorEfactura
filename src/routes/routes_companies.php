@@ -46,10 +46,14 @@ return function (App $app){
     //ver el perfil/info detallada de la empresa
     $app->get('/empresas/{rut}', function ($request, $response, $args) use ($container, $companiesController){
         $args['version'] = FECHA_ULTIMO_PUSH;
+        $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
+        $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
         if ( isset($_SESSION['mailUserLogued']) ){
 
+            $company = $companiesController->getCompaniesData($args['rut'])->objectResult;
+            $args["company"] = $company;
 
-            return $this->view->render($response, "settings.twig", $args);
+            return $this->view->render($response, "companyDetail.twig", $args);
         }else return $response->withRedirect($request->getUri()->getBaseUrl());
     });
 
