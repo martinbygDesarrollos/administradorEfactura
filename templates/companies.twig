@@ -30,7 +30,7 @@
 					<tr onclick="selectCompanie({{comp.rut}})">
 						<td><a href="{{ path_for('Companies')}}/{{comp.rut}}">{{comp.razonSocial}}</a><br>{{comp.rut}}</td>
 						<td>{{comp.estadoDescripcion}}</td>
-						<td>{{comp.vencimientos}}</td>
+						<td>{{comp.comprobante}} {%if comp.tipoCae != "" %} {{comp.tipoCae}} {%endif%}{{comp.vencimientos}}</td>
 					</tr>
 					{% endfor %}
 				</tbody>
