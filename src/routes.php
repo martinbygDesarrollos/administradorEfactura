@@ -22,7 +22,9 @@ return function (App $app) {
             $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
 
             //aca cargar companies
-            $args['companiesList'] = $companiesController->getCompanies()->listResult;
+            $_SESSION['companiesList'] = $companiesController->getCompanies()->listResult;
+            $_SESSION['lastID'] = 15;
+            $args['companiesList'] = $_SESSION['companiesList'];
 
             if ( !isset($_SESSION['companieUserLogued']) && !isset($_SESSION['rutUserLogued'])){
                 $objFirstCompanie = array_pop(array_reverse($args['companiesList']));

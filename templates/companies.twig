@@ -6,7 +6,7 @@
 {% if mailUserLogued %}
 <div class="card w-100">
 
-		<div class="">
+		<div class="containerTable">
 			<table class="table">
 				<thead>
 					<tr>
@@ -23,7 +23,7 @@
 					</tr>
 				</thead>
 				<tbody id="tbodyCompaniesList">
-					{% for comp in companiesList %}
+					{% for comp in companiesList|slice(0, 15) %}
 					<tr>
 						<td onclick="selectCompanie('{{comp.rut}}', '{{comp.razonSocial}}')" ><a href="{{ path_for('Companies')}}/{{comp.rut}}">{{comp.razonSocial}}</a><br>{{comp.rut}}</td>
 						<td onclick="selectCompanie('{{comp.rut}}', '{{comp.razonSocial}}')" >{{comp.estadoDescripcion}}</td>

@@ -67,12 +67,21 @@ class ctr_companies{
 			}
 			$responseCompanies->listResult[$key]->logo = "";
 			$responseCompanies->listResult[$key]->proxVencDescr = $expireDate;
-			$responseCompanies->listResult[$key]->proxVencimiento = substr($expireDate,6,2)."/".substr($expireDate,4,2)."/".substr($expireDate,0,4);
+
+			$auxExpireDate = "";
+			if ( strlen($expireDate) >0 )
+				$auxExpireDate = substr($expireDate,6,2)."/".substr($expireDate,4,2)."/".substr($expireDate,0,4);
+
+			$responseCompanies->listResult[$key]->proxVencimiento = $auxExpireDate;
 			$responseCompanies->listResult[$key]->comprobante = $expireDateVoucher;
 			$responseCompanies->listResult[$key]->tipoCae = $expireDateCaeType;
 
 		}
 
+		$responseCompanies->listResult[1]->proxVencDescr = "";
+		$responseCompanies->listResult[1]->proxVencimiento = "";
+		$responseCompanies->listResult[1]->comprobante = "";
+		$responseCompanies->listResult[1]->tipoCae = "";
 		$responseCompanies->listResult = $this->companiesOrders( $responseCompanies->listResult );
 		return $responseCompanies;
 	}

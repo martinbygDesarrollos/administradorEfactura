@@ -78,6 +78,28 @@ return function (App $app){
 
     });
 
+
+
+    $app->post('/loadCompanies', function ($request, $response, $args) use ($container, $companiesController){
+
+        if ( $_SESSION['mailUserLogued'] ){
+            $response = new \stdClass();
+
+            $response->result = 2;
+            $response->companiesList = array_slice($_SESSION['companiesList'],$_SESSION['lastID'],15);
+
+            if ($_SESSION['lastID'] + 15 > count($_SESSION['companiesList'])){
+                $_SESSION['lastID'] = count($_SESSION['companiesList']);
+            } else
+                $_SESSION['lastID'] = $_SESSION['lastID'] + 15;
+
+
+
+            $response->lastid = $_SESSION['lastID'];
+            return json_encode($response);
+        }else return $response->withRedirect($request->getUri()->getBaseUrl());
+
+    });
 }
 
 ?>
