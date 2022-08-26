@@ -79,8 +79,10 @@ return function (App $app){
 
             $response->result = 2;
             return json_encode($response);
-        }else return $response->withRedirect($request->getUri()->getBaseUrl());
-
+        }else {
+            $response->result = 1;
+            return json_encode($response);
+        }
     });
 
 
@@ -89,7 +91,6 @@ return function (App $app){
 
         if ( $_SESSION['mailUserLogued'] ){
             $response = new \stdClass();
-
             $response->result = 2;
             $response->companiesList = array_slice($_SESSION['companiesList'],$_SESSION['lastID'],15);
 
@@ -102,8 +103,10 @@ return function (App $app){
 
             $response->lastid = $_SESSION['lastID'];
             return json_encode($response);
-        }else return $response->withRedirect($request->getUri()->getBaseUrl());
-
+        }else {
+            $response->result = 1;
+            return json_encode($response);
+        }
     });
 }
 

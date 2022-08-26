@@ -20,6 +20,8 @@ return function (App $app){
 		$_SESSION['mailUserLogued'] = null;
 		$_SESSION['rutUserLogued'] = null;
 		$_SESSION['companieUserLogued'] = null;
+		$_SESSION['companiesList'] = null;
+		$_SESSION['lastID'] = null;
 		return $response->withRedirect($request->getUri()->getBaseUrl());
 	})->setName("SignOut");
 

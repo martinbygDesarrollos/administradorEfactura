@@ -39,11 +39,24 @@ function loadCompanies(){
 
 
 function createRowCompanie(obj){
-	//console.log(obj);
-	let row = '<tr><td onclick="selectCompanie('+obj.rut+', '+obj.razonSocial+')" ><a href="'+getSiteURL()+'empresas/'+obj.rut+'">'+obj.razonSocial+'</a><br>'+obj.rut+'</td>';
-	row += '<td onclick="selectCompanie('+obj.rut+', '+obj.razonSocial+')" >'+obj.estadoDescripcion+'</td>';
-	row += '<td onclick="selectCompanie('+obj.rut+', '+obj.razonSocial+')" >comprob vencimiento</td>';
-	row += '<td>select con caes</td></tr>';
+	tipocae = "";
+	if ( obj.tipoCae ){
+		tipocae = " "+obj.tipoCae
+	}
+
+	selectCaes = ""
+	if ( obj.caes.length>0 ){
+		selectCaes = '<select class="custom-select custom-select-sm shadow-sm">';
+		for (var i = 0; i < obj.caes.length; i++) {
+			selectCaes += '<option title="Quedan '+obj.caes[i].disponibles+' '+obj.caes[i].tipoDescripcion+'">'+obj.caes[i].disponibles+' '+obj.caes[i].tipoDescAbrev+'</option>';
+		}
+		selectCaes += '</select>'
+	}
+
+	let row = '<tr><td onclick="selectCompanie(`'+obj.rut+'`, `'+obj.razonSocial+'`)" ><a href="'+getSiteURL()+'empresas/'+obj.rut+'">'+obj.razonSocial+'</a><br>'+obj.rut+'</td>';
+	row += '<td onclick="selectCompanie(`'+obj.rut+'`, `'+obj.razonSocial+'`)" >'+obj.estadoDescripcion+'</td>';
+	row += '<td onclick="selectCompanie(`'+obj.rut+'`, `'+obj.razonSocial+'`)" >'+obj.comprobante+tipocae+' '+ obj.proxVencimiento+'</td>';
+	row += '<td>'+selectCaes+'</td></tr>';
 
 	return row;
 }

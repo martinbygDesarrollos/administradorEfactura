@@ -94,7 +94,12 @@ class ctr_companies{
 		    if ($a->proxVencDescr == $b->proxVencDescr) {
 		        return 0;
 		    }
-		    return ($a->proxVencDescr < $b->proxVencDescr) ? -1 : 1;
+		    if ($a->proxVencDescr != "" && $b->proxVencDescr == "") return -1;
+		    if ($a->proxVencDescr == "" && $b->proxVencDescr != "") return 1;
+		    if(isset($a->proxVencDescr) && $a->proxVencDescr != "" && isset($b->proxVencDescr) && $b->proxVencDescr != "" && $a->proxVencDescr < $b->proxVencDescr)
+		    	return -1;
+		    else return 1;
+
 		}
 
 		// Ordenar e imprimir el array resultante
