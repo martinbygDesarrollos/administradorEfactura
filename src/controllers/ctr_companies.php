@@ -91,9 +91,8 @@ class ctr_companies{
 
 		// Función de comparación
 		function cmp($a, $b) {
-		    if ($a->proxVencDescr == $b->proxVencDescr) {
-		        return 0;
-		    }
+		    if ($a->estado == 6 && $b->estado != 6) return -1;
+		    if ($a->estado != 6 && $b->estado == 6) return 1;
 		    if ($a->proxVencDescr != "" && $b->proxVencDescr == "") return -1;
 		    if ($a->proxVencDescr == "" && $b->proxVencDescr != "") return 1;
 		    if(isset($a->proxVencDescr) && $a->proxVencDescr != "" && isset($b->proxVencDescr) && $b->proxVencDescr != "" && $a->proxVencDescr < $b->proxVencDescr)
@@ -102,7 +101,6 @@ class ctr_companies{
 
 		}
 
-		// Ordenar e imprimir el array resultante
 		uasort($arrayCompanies, 'cmp');
 
 		return $arrayCompanies;
