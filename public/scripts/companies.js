@@ -39,10 +39,22 @@ function loadCompanies(){
 
 
 function createRowCompanie(obj){
+	console.log(obj);
 	tipocae = "";
 	if ( obj.tipoCae ){
 		tipocae = " "+obj.tipoCae
 	}
+
+	comprobante = "";
+	if ( obj.comprobante ) {
+		comprobante = obj.comprobante;
+	}
+
+	vencimiento = "";
+	if ( obj.proxVencimiento ) {
+		vencimiento = obj.proxVencimiento;
+	}
+
 
 	selectCaes = ""
 	if ( obj.caes.length>0 ){
@@ -53,9 +65,11 @@ function createRowCompanie(obj){
 		selectCaes += '</select>'
 	}
 
+
+
 	let row = '<tr><td onclick="selectCompanie(`'+obj.rut+'`, `'+obj.razonSocial+'`)" ><a href="'+getSiteURL()+'empresas/'+obj.rut+'">'+obj.razonSocial+'</a><br>'+obj.rut+'</td>';
 	row += '<td onclick="selectCompanie(`'+obj.rut+'`, `'+obj.razonSocial+'`)" >'+obj.estadoDescripcion+'</td>';
-	row += '<td onclick="selectCompanie(`'+obj.rut+'`, `'+obj.razonSocial+'`)" >'+obj.comprobante+tipocae+' '+ obj.proxVencimiento+'</td>';
+	row += '<td onclick="selectCompanie(`'+obj.rut+'`, `'+obj.razonSocial+'`)" >'+comprobante+tipocae+' '+ vencimiento+'</td>';
 	row += '<td>'+selectCaes+'</td></tr>';
 
 	return row;
