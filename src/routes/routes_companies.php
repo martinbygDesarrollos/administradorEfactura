@@ -13,16 +13,21 @@ return function (App $app){
 
 	$app->get('/empresas', function ($request, $response, $args) use ($container, $companiesController){
 		$args['version'] = FECHA_ULTIMO_PUSH;
-        $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
 
 		if ( isset($_SESSION['mailUserLogued']) ){
+            $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
 
             //aca cargar companies
-            $args['companiesList'] = $companiesController->getCompanies()->listResult;
-            $objFirstCompanie = array_pop(array_reverse($args['companiesList']));
+            $_SESSION['companiesList'] = $companiesController->getCompanies()->listResult;
+            $_SESSION['lastID'] = 0;
+            $args['companiesList'] = $_SESSION['companiesList'];
 
-            $_SESSION['companieUserLogued'] = $objFirstCompanie->razonSocial;
-            $_SESSION['rutUserLogued'] = $objFirstCompanie->rut;
+            if ( !isset($_SESSION['companieUserLogued']) && !isset($_SESSION['rutUserLogued'])){
+                $objFirstCompanie = array_pop(array_reverse($args['companiesList']));
+
+                $_SESSION['companieUserLogued'] = $objFirstCompanie->razonSocial;
+                $_SESSION['rutUserLogued'] = $objFirstCompanie->rut;
+            }
 
             if ( isset($_SESSION['companieUserLogued']) ){
                 $args['companieUserLogued'] = $_SESSION['companieUserLogued'];

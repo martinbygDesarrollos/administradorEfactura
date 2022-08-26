@@ -1,3 +1,7 @@
+:root {
+  --containertable-height: 75vh;
+}
+
 html,
 body {
     height: 100%;
@@ -46,6 +50,10 @@ body {
   animation-iteration-count: infinite;
   animation-timing-function: linear;
   animation-direction: alternate;
+}
+
+a[aria-selected="true"]{
+    background-color: #37A398;
 }
 
 @keyframes loadProgress{

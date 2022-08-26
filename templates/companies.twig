@@ -5,42 +5,24 @@
 {% block content %}
 {% if mailUserLogued %}
 <div class="card w-100">
-
-		<div class="containerTable">
-			<table class="table">
-				<thead>
-					<tr>
-						<p id="indexCompanieWork" class="font-weight-bold pl-2">
-						Trabajando con
-						<a href="{{ path_for('Companies')}}/{{rutUserLogued}}">{{companieUserLogued}}</a>
-						</p>
-					</tr>
-					<tr>
-						<th>Razón social</th>
-						<th>Estado</th>
-						<th>Vencimientos</th>
-						<th>CAE</th>
-					</tr>
-				</thead>
-				<tbody id="tbodyCompaniesList">
-					{% for comp in companiesList|slice(0, 15) %}
-					<tr>
-						<td onclick="selectCompanie('{{comp.rut}}', '{{comp.razonSocial}}')" ><a href="{{ path_for('Companies')}}/{{comp.rut}}">{{comp.razonSocial}}</a><br>{{comp.rut}}</td>
-						<td onclick="selectCompanie('{{comp.rut}}', '{{comp.razonSocial}}')" >{{comp.estadoDescripcion}}</td>
-						<td onclick="selectCompanie('{{comp.rut}}', '{{comp.razonSocial}}')" >{{comp.comprobante}} {%if comp.tipoCae != "" %} {{comp.tipoCae}} {%endif%}{{comp.proxVencimiento}}</td>
-						<td>
-							{% if comp.caes %}
-							<select class="custom-select custom-select-sm shadow-sm">
-							{% for cae in comp.caes %}
-								<option title="Quedan {{cae.disponibles}} {{cae.tipoDescripcion}}">{{cae.disponibles}} {{cae.tipoDescAbrev}}</option>
-							{% endfor %}
-							</select>
-							{% endif %}
-						</td>
-					</tr>
-					{% endfor %}
-				</tbody>
-			</table>
+	<div class="containerTable" id="containerCompanies">
+		<table class="table">
+			<thead>
+				<tr>
+					<p id="indexCompanieWork" class="font-weight-bold pl-2">
+					Trabajando con
+					<a href="{{ path_for('Companies')}}/{{rutUserLogued}}">{{companieUserLogued}}</a>
+					</p>
+				</tr>
+				<tr>
+					<th>Razón social</th>
+					<th>Estado</th>
+					<th>Vencimientos</th>
+					<th>CAE</th>
+				</tr>
+			</thead>
+			<tbody id="tbodyCompaniesList"></tbody>
+		</table>
 	</div>
 </div>
 {% else %}
@@ -48,5 +30,13 @@
 {% endif %}
 {% block script %}
 <script type="text/javascript" src="{{ path_for('Start') }}scripts/companies.js{{ version }}"></script>
+<script type="text/javascript" >
+
+	$(document).ready(()=>{
+		loadCompanies();
+	})
+
+
+</script>
 {% endblock %}
 {% endblock %}

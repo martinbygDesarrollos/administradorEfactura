@@ -1,5 +1,7 @@
 .containerTable {
   overflow: auto;
+  height: var(--containertable-height);
+  max-height: var(--containertable-height);
   scroll-margin-top: 10px;
 }
 
@@ -7,6 +9,7 @@
   position: sticky;
   top: 0;
   z-index: 1;
+  background-color: white;
 }
 
 
