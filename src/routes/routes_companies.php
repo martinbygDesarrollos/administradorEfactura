@@ -108,6 +108,23 @@ return function (App $app){
             return json_encode($response);
         }
     });
+
+
+    $app->post('/loadBranchData', function ($request, $response, $args) use ($container, $companiesController){
+
+        if ( $_SESSION['mailUserLogued'] ){
+
+            $data = $request->getParams();
+            $branchCode = $data['branch'];
+            $companie = $data['companie'];
+
+            $response = $companiesController->getBranchCompanieData($branchCode, $companie);
+            return json_encode($response);
+        }else {
+            $response->result = 1;
+            return json_encode($response);
+        }
+    });
 }
 
 ?>

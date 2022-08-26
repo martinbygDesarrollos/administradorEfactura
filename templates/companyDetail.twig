@@ -6,9 +6,9 @@
 			<tbody>
 				<tr><td><h4>{{company.razonSocial}}</h4><br><h6>{{company.rut}}</h6></td></tr>
 				<tr><td class="" >{{company.estadoDescripcion}}</td></tr>
-				<tr><td><select>
+				<tr><td><select onchange="changeCompanieData(this.value, {{company.rut}})">
 					{% for suc in company.sucursales %}
-					<option>{{suc.nombreComercial}}</option>
+					<option value="{{suc.codDGI}}">{{suc.nombreComercial}}</option>
 					{% endfor %}
 				</select></td></tr>
 
@@ -83,7 +83,7 @@
 <script type="text/javascript" src="{{ path_for('Start') }}scripts/companies.js{{ version }}"></script>
 <script type="text/javascript">
 	$(document).ready(()=>{
-		loadDataOfCompanie();
+	//	loadDataOfCompanie();
 	});
 </script>
 {% endblock %}

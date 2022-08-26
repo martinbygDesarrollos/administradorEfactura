@@ -30,7 +30,7 @@ class sendPetition{
 	public function getCompanyData($token, $rut){
 		$thisClass = new sendPetition();
 
-		return $thisClass->prepareAndSendCurl("GET", "company/".$rut, $token, null);
+		return $thisClass->prepareAndSendCurl("GET", "company/".$rut."?CustomFields=*&IncludeLogo=1", $token, null);
 	}
 
 	public function prepareAndSendCurl($typeMethod, $method, $token, $data){

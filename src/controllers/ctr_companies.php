@@ -116,6 +116,26 @@ class ctr_companies{
 		return $responseCompany;
 
 	}
+
+	//de lo que esta en memoria
+	public function getBranchCompanieData($branchCode, $companie){
+		$response = new \stdClass();
+		$response->result = 1;
+		$response->sucursal = array();
+
+		foreach ($_SESSION['companiesList'] as $key => $value) {
+			if ( $value->rut == $companie ){
+				foreach ($value->sucursales as $index => $sucursal) {
+					if ($sucursal->codDGI == $branchCode) {
+						$response->result = 2;
+						$response->sucursal = $sucursal;
+					}
+				}
+			}
+
+		}
+		return $response;
+	}
 }
 
 

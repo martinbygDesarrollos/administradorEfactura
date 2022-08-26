@@ -78,6 +78,9 @@ function createRowCompanie(obj){
 
 
 
-function loadDataOfCompanie(){
-
+function changeCompanieData( value, rut  ){
+	sendAsyncPost("loadBranchData", {branch:value, companie:rut})
+	.then((response)=>{
+		console.log(response);
+	})
 }
