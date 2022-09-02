@@ -111,15 +111,53 @@ return function (App $app){
 
 
     $app->post('/loadBranchData', function ($request, $response, $args) use ($container, $companiesController){
+        $response = new \stdClass();
 
         if ( $_SESSION['mailUserLogued'] ){
 
             $data = $request->getParams();
             $branchCode = $data['branch'];
-            $companie = $data['companie'];
+            $rut = $data['companie'];
 
-            $response = $companiesController->getBranchCompanieData($branchCode, $companie);
+            $companie = $companiesController->getCompaniesData($rut);
+            if ( $companie->result == 2 ){
+                foreach ($companie->objectResult->sucursales as $key => $value) {
+                    if($value->codDGI == $branchCode){
+                        $response->result = 2;
+                        $response->objectResult = $value;
+                        return json_encode($response);
+                    }
+                }
+            }else
+                return json_encode($companie);
+        }else {
+            $response->result = 1;
             return json_encode($response);
+        }
+    });
+
+
+
+    $app->post('/getCaesByCompanie', function ($request, $response, $args) use ($container, $companiesController){
+        $response = new \stdClass();
+
+        if ( $_SESSION['mailUserLogued'] ){
+
+            $data = $request->getParams();
+            $rut = $data['companie'];
+
+            $companie = $companiesController->getCompaniesData($rut);
+            if ( $companie->result == 2 ){
+                if ( isset($companie->objectResult->caes) ){
+                    $response->result = 2;
+                    $response->listResult = $companie->objectResult->caes;
+                }else{
+                    $response->result = 2;
+                    $response->listResult = array();
+                }
+                return json_encode($response);
+            }else
+                return json_encode($companie);
         }else {
             $response->result = 1;
             return json_encode($response);

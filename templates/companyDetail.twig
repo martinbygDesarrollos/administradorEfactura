@@ -4,9 +4,9 @@
 	<div class="card w-25">
 		<table class="table" >
 			<tbody>
-				<tr><td><h4>{{company.razonSocial}}</h4><br><h6>{{company.rut}}</h6></td></tr>
+				<tr><td><h4>{{company.razonSocial}}</h4><br><h6 id="textRutCompanieSelected">{{company.rut}}</h6></td></tr>
 				<tr><td class="" >{{company.estadoDescripcion}}</td></tr>
-				<tr><td><select onchange="changeCompanieData(this.value, {{company.rut}})">
+				<tr><td><select  id="selectBranchCompanieDetails" onchange="loadBranchCompanieData(this.value, {{company.rut}})">
 					{% for suc in company.sucursales %}
 					<option value="{{suc.codDGI}}">{{suc.nombreComercial}}</option>
 					{% endfor %}
@@ -16,64 +16,72 @@
 		</table>
 	</div>
 	<div class="card w-75" >
-		<div class="nav d-flex nav-pills mt-2 ml-2" id="v-pills-tab" role="tablist" aria-orientation="horizontal">
-			<a class="btn m-2 active" id="option-initContainer" data-toggle="pill" href="#initContainer" role="tab" aria-selected="true">Principal</a>
-			<a class="btn m-2" id="v-pills-profile-tab" data-toggle="pill" href="#visibilityContainer" role="tab" aria-controls="v-pills-profile" aria-selected="false">CAES</a>
-		</div>
-		<div class="tab-content">
-			<!-- EMPRESA -->
-			<div class="tab-pane fade active show" id="initContainer" role="tabpanel">
-				<div class="containerTable">
-		        	<table class="table">
-		        		<tbody id="tbodyCompaniesPrincipalData">
-		        			<tr><th class="w-25">Suc. principal</th><td>{{company.sucursales.0.isPrincipal}}</td></tr>
-			        		<tr><th class="w-25">Cod. DGI</th><td>{{company.sucursales.0.codDGI}}</td></tr>
-			        		<tr><th class="w-25">Nom. comercial</th><td>{{company.sucursales.0.nombreComercial}}</td></tr>
-			        		<tr><th class="w-25">Logo</th><td>
-			        			{% if company.sucursales.0.logo %}
-			        			<img src="data:image/png;base64,{{company.sucursales.0.logo}}" alt="" width="100">
-			        			{%endif%}
-			        		</td></tr>
-							<tr><th class="w-25">Dirección</th><td>{{company.sucursales.0.direccion}}</td></tr>
-			        		<tr><th class="w-25">Departamento</th><td>{{company.sucursales.0.departamento}}</td></tr>
-			        		<tr><th class="w-25">Localidad</th><td>{{company.sucursales.0.localidad}}</td></tr>
-			        		<tr><th class="w-25">Teléfono 1</th><td>{{company.sucursales.0.telephone1}}</td></tr>
-			        		<tr><th class="w-25">Teléfono 2</th><td>{{company.sucursales.0.telephone2}}</td></tr>
-			        		<tr><th class="w-25">Correo</th><td>{{company.sucursales.0.email}}</td></tr>
-			        		<tr><th class="w-25">Sitio web</th><td>{{company.sucursales.0.website}}</td></tr>
-			        		<tr><th class="w-25">Color principal</th><td>{{company.sucursales.0.colorPrimary}}</td></tr>
-			        		<tr><th class="w-25">Color secundario</th><td>{{company.sucursales.0.colorSecondary}}</td></tr>
-		        		</tbody>
-		        	</table>
-		        </div>
-		        <div class="d-flex flex-row-reverse">
-					<button class="btn btn-success" onclick="" disabled>Guardar cambios</button>
-		        </div>
+		<div class="card-header bg-light">
+			<div class="nav d-flex nav-pills bordered" id="v-pills-tab" role="tablist" aria-orientation="horizontal">
+				<a class="btn  active" id="option-branch-data" data-toggle="pill" href="#branch-data" role="tab" aria-selected="true">Principal</a>
+				<a class="btn " id="v-pills-profile-tab" data-toggle="pill" href="#caes-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">CAES</a>
+				<a class="btn " id="v-pills-profile-tab" data-toggle="pill" href="#resoluciones-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Resoluciones</a>
 			</div>
-			<!-- CAES -->
-			<div class="tab-pane fade" id="visibilityContainer" role="tabpanel">
-				<div class="containerTable" style="max-height: 30%;">
-		        	<table class="table">
-						<thead>
-							<tr>
-								<th>CFE</th>
-								<th>Vencimiento</th>
-								<th>Disponibles</th>
-								<th>Total</th>
-							</tr>
-						</thead>
-						<tbody>
-							{% for cae in company.caes %}
-							<tr>
-								<td>{{cae.tipoCFE}}</td>
-								<td>{{cae.vencimiento}}</td>
-								<td>{{cae.disponibles}}</td>
-								<td>{{cae.total}}</td>
-							</tr>
-							{% endfor %}
-						</tbody>
-					</table>
-		        </div>
+		</div>
+		<div class="card-body">
+			<div class="tab-content">
+				<!-- EMPRESA -->
+				<div class="tab-pane fade active show" id="branch-data" role="tabpanel">
+					<div class="containerTable">
+			        	<table class="table">
+			        		<tbody id="tbodyCompaniesPrincipalData">
+			        			<tr><th class="w-25">Suc. principal</th><td id="tdBranchDataPrincipal"></td></tr>
+								<tr><th class="w-25">Cod. DGI</th><td id="tdBranchDataCodDgi"></td></tr>
+								<tr><th class="w-25">Nom. comercial</th><td id="tdBranchDataNombre"></td></tr>
+								<tr><th class="w-25">Logo</th><td id="tdBranchDataLogo"></td></tr>
+								<tr><th class="w-25">Dirección</th><td id="tdBranchDataDireccion"></td></tr>
+								<tr><th class="w-25">Departamento</th><td id="tdBranchDataDepto"></td></tr>
+								<tr><th class="w-25">Localidad</th><td id="tdBranchDataLocalidad"></td></tr>
+								<tr><th class="w-25">Teléfono 1</th><td id="tdBranchDataTel"></td></tr>
+								<tr><th class="w-25">Teléfono 2</th><td id="tdBranchDataTel2"></td></tr>
+								<tr><th class="w-25">Correo</th><td id="tdBranchDataCorreo"></td></tr>
+								<tr><th class="w-25">Sitio web</th><td id="tdBranchDataWeb"></td></tr>
+								<tr><th class="w-25">Color principal</th><td id="tdBranchDataColor"></td></tr>
+								<tr><th class="w-25">Color secundario</th><td id="tdBranchDataColor2"></td></tr>
+			        		</tbody>
+			        	</table>
+
+
+				        <div class="d-flex flex-row-reverse p-1">
+							<button class="btn btn-success" onclick="" disabled>Guardar cambios</button>
+				        </div>
+			        </div>
+				</div>
+				<!-- CAES -->
+				<div class="tab-pane fade" id="caes-data" role="tabpanel">
+					<div class="containerTable" style="max-height: 30%;">
+			        	<table class="table" id="tbodyCompaniesCaesData">
+							<thead>
+								<tr>
+									<th>CFE</th>
+									<th>Vencimiento</th>
+									<th>Disponibles</th>
+									<th>Total</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+			        </div>
+				</div>
+				<!-- RESOLUCIONES -->
+				<div class="tab-pane fade" id="resoluciones-data" role="tabpanel">
+					<div class="containerTable" style="max-height: 30%;">
+			        	<table class="table">
+							<thead>
+								<tr>
+									<th>Resolución</th>
+									<th>Fecha</th>
+								</tr>
+							</thead>
+							<tbody id="tbodyCompaniesResolucionesData" ></tbody>
+						</table>
+			        </div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -83,7 +91,12 @@
 <script type="text/javascript" src="{{ path_for('Start') }}scripts/companies.js{{ version }}"></script>
 <script type="text/javascript">
 	$(document).ready(()=>{
-	//	loadDataOfCompanie();
+		branchSelected = $("#selectBranchCompanieDetails").val();
+		rutSelected = $("#textRutCompanieSelected").text();
+		loadBranchCompanieData(branchSelected, rutSelected);
+
+		loadCaesDetailsCompanies(rutSelected);
+
 	});
 </script>
 {% endblock %}

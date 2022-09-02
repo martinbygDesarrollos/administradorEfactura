@@ -72,6 +72,12 @@ to {
     animation-timing-function: linear;
 }
 
+#v-pills-tab a{
+    border: 0.1rem solid lightgray;
+    margin-right:.5rem;
+}
+
+
 @keyframes rotation {
   0% {
     transform:rotate(0deg);
