@@ -17,31 +17,62 @@ return function (App $app){
 		if ( isset($_SESSION['mailUserLogued']) ){
             $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
 
-            //aca cargar companies
-            $_SESSION['companiesList'] = $companiesController->getCompanies()->listResult;
-            $_SESSION['lastID'] = 0;
-            $args['companiesList'] = $_SESSION['companiesList'];
 
-            if ( !isset($_SESSION['companieUserLogued']) && !isset($_SESSION['rutUserLogued'])){
-                $objFirstCompanie = array_pop(array_reverse($args['companiesList']));
+            if ( isset($_SESSION['companiesList']) ){
+                $_SESSION['lastID'] = 0;
+                $args['companiesList'] = $_SESSION['companiesList'];
 
-                $_SESSION['companieUserLogued'] = $objFirstCompanie->razonSocial;
-                $_SESSION['rutUserLogued'] = $objFirstCompanie->rut;
+                if ( !isset($_SESSION['companieUserLogued']) && !isset($_SESSION['rutUserLogued'])){
+                    $objFirstCompanie = array_pop(array_reverse($args['companiesList']));
+
+                    $_SESSION['companieUserLogued'] = $objFirstCompanie->razonSocial;
+                    $_SESSION['rutUserLogued'] = $objFirstCompanie->rut;
+                }
+
+                if ( isset($_SESSION['companieUserLogued']) ){
+                    $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
+                }else{
+                    $_SESSION['companieUserLogued'] = null;
+                    $args['companieUserLogued'] = null;
+                }
+
+
+                if ( isset($_SESSION['rutUserLogued']) ){
+                    $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
+                }else{
+                    $_SESSION['rutUserLogued'] = null;
+                    $args['rutUserLogued'] = null;
+                }
             }
+            else{
 
-            if ( isset($_SESSION['companieUserLogued']) ){
-                $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
-            }else{
-                $_SESSION['companieUserLogued'] = null;
-                $args['companieUserLogued'] = null;
-            }
+                //aca cargar companies
+                $_SESSION['companiesList'] = $companiesController->getCompanies()->listResult;
+                $_SESSION['lastID'] = 0;
+                $args['companiesList'] = $_SESSION['companiesList'];
+
+                if ( !isset($_SESSION['companieUserLogued']) && !isset($_SESSION['rutUserLogued'])){
+                    $objFirstCompanie = array_pop(array_reverse($args['companiesList']));
+
+                    $_SESSION['companieUserLogued'] = $objFirstCompanie->razonSocial;
+                    $_SESSION['rutUserLogued'] = $objFirstCompanie->rut;
+                }
+
+                if ( isset($_SESSION['companieUserLogued']) ){
+                    $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
+                }else{
+                    $_SESSION['companieUserLogued'] = null;
+                    $args['companieUserLogued'] = null;
+                }
 
 
-            if ( isset($_SESSION['rutUserLogued']) ){
-                $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
-            }else{
-                $_SESSION['rutUserLogued'] = null;
-                $args['rutUserLogued'] = null;
+                if ( isset($_SESSION['rutUserLogued']) ){
+                    $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
+                }else{
+                    $_SESSION['rutUserLogued'] = null;
+                    $args['rutUserLogued'] = null;
+                }
+
             }
 
 			return $this->view->render($response, "companies.twig", $args);
