@@ -28,28 +28,86 @@
 				<!-- EMPRESA -->
 				<div class="tab-pane fade active show" id="branch-data" role="tabpanel">
 					<div class="containerTable">
-			        	<table class="table">
-			        		<tbody id="tbodyCompaniesPrincipalData">
-			        			<tr><th class="w-25">Suc. principal</th><td id="tdBranchDataPrincipal"></td></tr>
-								<tr><th class="w-25">Cod. DGI</th><td id="tdBranchDataCodDgi"></td></tr>
-								<tr><th class="w-25">Nom. comercial</th><td id="tdBranchDataNombre"></td></tr>
-								<tr><th class="w-25">Logo</th><td id="tdBranchDataLogo"></td></tr>
-								<tr><th class="w-25">Dirección</th><td id="tdBranchDataDireccion"></td></tr>
-								<tr><th class="w-25">Departamento</th><td id="tdBranchDataDepto"></td></tr>
-								<tr><th class="w-25">Localidad</th><td id="tdBranchDataLocalidad"></td></tr>
-								<tr><th class="w-25">Teléfono 1</th><td id="tdBranchDataTel"></td></tr>
-								<tr><th class="w-25">Teléfono 2</th><td id="tdBranchDataTel2"></td></tr>
-								<tr><th class="w-25">Correo</th><td id="tdBranchDataCorreo"></td></tr>
-								<tr><th class="w-25">Sitio web</th><td id="tdBranchDataWeb"></td></tr>
-								<tr><th class="w-25">Color principal</th><td id="tdBranchDataColor"></td></tr>
-								<tr><th class="w-25">Color secundario</th><td id="tdBranchDataColor2"></td></tr>
-			        		</tbody>
-			        	</table>
+						<form method="POST" id="formCompanieDetails">
+				        	<table class="table">
+				        		<tbody id="tbodyCompaniesPrincipalData">
+				        			<tr>
+				        				<div class="form__group field">
+											<label class="form__label_checkbox">Sucursal principal</label>
+											<input type="checkbox" id="tdBranchDataPrincipal" class="form__field_checkbox" onchange="datachanged()" placeholder="Sucursal principal" />
+										</div>
+									</tr>
+									<tr>
+										<div class="form__group field">
+											<input type="text" id="tdBranchDataCodDgi" class="form__field" readonly placeholder="Código DGI" />
+										</div>
+									</tr>
+									<tr>
+										<div class="form__group field">
+											<input type="text" id="tdBranchDataNombre" class="form__field" onchange="datachanged()" placeholder="Nombre comercial" />
+										</div>
+									</tr>
+									<tr>
+										<div class="form__group field">
+											<div class="pl-5 pb-1" id="tdBranchDataLogo"></div>
+											<input type="file" onchange="datachanged()" placeholder="Logo" />
+										</div>
+									</tr>
+									<tr>
+										<div class="form__group field">
+											<input type="text" id="tdBranchDataDireccion" onchange="datachanged()" class="form__field" placeholder="Dirección" />
+										</div>
+									</tr>
+									<tr>
+										<div class="form__group field">
+											<input type="text" id="tdBranchDataDepto" class="form__field" onchange="datachanged()" placeholder="Departamento" />
+										</div>
+									</tr>
+									<tr>
+										<div class="form__group field">
+											<input type="text" id="tdBranchDataLocalidad" class="form__field" onchange="datachanged()" placeholder="Localidad" />
+										</div>
+									</tr>
+									<tr>
+										<div class="form__group field">
+											<input type="text" id="tdBranchDataTel" class="form__field" onchange="datachanged()" placeholder="Teléfono 1" />
+										</div>
+									</tr>
+									<tr>
+										<div class="form__group field">
+											<input type="text" id="tdBranchDataTel2" class="form__field" onchange="datachanged()" placeholder="Teléfono 2" />
+										</div>
+									</tr>
+									<tr>
+										<div class="form__group field">
+											<input type="text" id="tdBranchDataCorreo" class="form__field" onchange="datachanged()" placeholder="Correo" />
+										</div>
+									</tr>
+									<tr>
+										<div class="form__group field">
+											<input type="text" id="tdBranchDataWeb" class="form__field" onchange="datachanged()" placeholder="Sitio web" />
+										</div>
+									</tr>
+									<tr>
+										<div class="form__group field d-flex">
+											<input type="color" id="tdBranchDataColorpicker" onchange="changeColorpickerPrincipal()" class="form__field_colorpicker m-2" name="">
+											<input type="text" id="tdBranchDataColor" class="form__field" onchange="datachanged()" placeholder="Color principal" />
+										</div>
+									</tr>
+									<tr>
+										<div class="form__group field d-flex">
+											<input type="color" id="tdBranchDataColorpicker2" onchange="changeColorpickerSec()"  class="form__field_colorpicker m-2" name="">
+											<input type="text" id="tdBranchDataColor2" class="form__field" onchange="datachanged()"  placeholder="Color secundario" />
+										</div>
+									</tr>
+				        		</tbody>
+				        	</table>
 
 
-				        <div class="d-flex flex-row-reverse p-1">
-							<button class="btn btn-success" onclick="" disabled>Guardar cambios</button>
-				        </div>
+					        <div class="d-flex flex-row-reverse p-1">
+								<button  id="buttonSubmitCompanieDetails" type="submit" class="btn btn-success" disabled>Guardar cambios</button>
+					        </div>
+				        </form>
 			        </div>
 				</div>
 				<!-- CAES -->

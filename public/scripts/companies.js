@@ -1,3 +1,9 @@
+var dataIsChanged = false;
+
+
+
+
+
 $(document).ready(()=>{
 	$('#containerCompanies').on('scroll', function() {
 		if($(this).scrollTop() + $(this).innerHeight() >= ($(this)[0].scrollHeight - 4)) {
@@ -5,7 +11,26 @@ $(document).ready(()=>{
 		}
 	});
 
+	dataIsChanged = false;
 })
+
+
+
+
+
+
+
+$("#formCompanieDetails").submit((e)=>{
+
+	e.preventDefault();
+
+	console.log("submit formulario al crear");
+})
+
+
+
+
+
 
 
 function selectCompanie( companieRut, companieName ){
@@ -92,32 +117,38 @@ function createRowsToBranchTableInfo(branch){
 
 	console.log(branch);
 	if ( branch.isPrincipal )
-		$("#tdBranchDataPrincipal").text("Si");
+		$("#tdBranchDataPrincipal").prop('checked', true);
 	else
-		$("#tdBranchDataPrincipal").text("No");
+		$("#tdBranchDataPrincipal").prop('checked', false);
 
 
-	$("#tdBranchDataCodDgi").text(branch.codDGI);
-	$("#tdBranchDataNombre").text(branch.nombreComercial);
+	$("#tdBranchDataCodDgi").val(branch.codDGI);
+	$("#tdBranchDataNombre").val(branch.nombreComercial);
 
 
 	if ( branch.logo ){
 		$("#tdBranchDataLogo").empty();
 		$("#tdBranchDataLogo").append('<img src="data:image/png;base64,'+branch.logo+'" alt="" width="100">')
 	}
-	else
+	else{
 		$("#tdBranchDataLogo").empty();
+		$("#tdBranchDataLogo").append('<p>Sin logo</p>')
+	}
 
 
-	$("#tdBranchDataDireccion").text(branch.direccion);
-	$("#tdBranchDataDepto").text(branch.departamento);
-	$("#tdBranchDataLocalidad").text(branch.localidad);
-	$("#tdBranchDataTel").text(branch.telefono1);
-	$("#tdBranchDataTel2").text(branch.telefono2);
-	$("#tdBranchDataCorreo").text(branch.email);
-	$("#tdBranchDataWeb").text(branch.website);
-	$("#tdBranchDataColor").text(branch.colorPrimary);
-	$("#tdBranchDataColor2").text(branch.colorSecondary);
+	$("#tdBranchDataDireccion").val(branch.direccion);
+	$("#tdBranchDataDepto").val(branch.departamento);
+	$("#tdBranchDataLocalidad").val(branch.localidad);
+	$("#tdBranchDataTel").val(branch.telefono1);
+	$("#tdBranchDataTel2").val(branch.telefono2);
+	$("#tdBranchDataCorreo").val(branch.email);
+	$("#tdBranchDataWeb").val(branch.website);
+
+	$("#tdBranchDataColor").val(branch.colorPrimary);
+	$("#tdBranchDataColorpicker").val(branch.colorPrimary);
+
+	$("#tdBranchDataColor2").val(branch.colorSecondary);
+	$("#tdBranchDataColorpicker2").val(branch.colorSecondary);
 }
 
 
@@ -146,4 +177,26 @@ function createRowsToCaesTableInfo(objCae){
 
 	return row;
 
+}
+
+function datachanged(){
+	dataIsChanged = true;
+	//$("#buttonSubmitCompanieDetails").removeAttr("disabled");
+}
+
+function changeColorpickerPrincipal (){
+
+	datachanged();
+
+	colorSelected = $("#tdBranchDataColorpicker").val();
+	$("#tdBranchDataColor").val(colorSelected);
+}
+
+
+function changeColorpickerSec (){
+
+	datachanged();
+
+	colorSelected = $("#tdBranchDataColorpicker2").val();
+	$("#tdBranchDataColor2").val(colorSelected);
 }
