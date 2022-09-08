@@ -24,7 +24,6 @@ return function (App $app) {
 
             if( isset($_SESSION['companiesList'] ) ){
                 //aca cargar companies
-                $_SESSION['companiesList'] = $companiesController->getCompanies()->listResult;
                 $_SESSION['lastID'] = 0;
                 $args['companiesList'] = $_SESSION['companiesList'];
 
@@ -50,7 +49,6 @@ return function (App $app) {
                     $args['rutUserLogued'] = null;
                 }
             }else{
-                $_SESSION['companiesList'] = $companiesController->getCompanies()->listResult;
                 //aca cargar companies
                 $_SESSION['companiesList'] = $companiesController->getCompanies()->listResult;
                 $_SESSION['lastID'] = 0;
