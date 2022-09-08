@@ -66,6 +66,44 @@ class ctr_rest{
 		return $response;
 
 	}
+
+
+	public function changeCompanieData($data){
+
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+
+		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
+
+		//falta cambiar el logo y cod de suc
+
+		if ( $token->result == 2 ){
+
+			$newData = new stdClass();
+			$newData->nombreComercial = $data['nombre'];
+			$newData->direccion = $data['direccion'];
+			$newData->departamento = $data['departamento'];
+			$newData->localidad = $data['localidad'];
+			$newData->telephone1 = $data['telefono'];
+			$newData->telephone2 = $data['telefono2'];
+			$newData->email = $data['correo'];
+			$newData->website = $data['sitio'];
+			$newData->colorPrimary = $data['color1'];
+			$newData->colorSecondary = $data['color2'];
+
+			$tokenRest = $token->objectResult->tokenRest;
+			$petitionResponse = $petitionClass->changeCompanieData($data['rut'], $data['codDgi'], $newData, $tokenRest);
+			$petitionResponse = json_decode($petitionResponse);
+			$response->result = 2;
+			$response->objectResult = $petitionResponse;
+		}else return $token;
+
+		return $response;
+
+	}
 }
 
 

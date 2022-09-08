@@ -182,6 +182,27 @@ return function (App $app){
                 return json_encode($companie);
         }else return $response->withRedirect($request->getUri()->getBaseUrl());
     });
+
+
+
+
+
+    $app->post('/changeCompanieData', function ($request, $response, $args) use ($container, $companiesController){
+        $response = new \stdClass();
+
+        if ( $_SESSION['mailUserLogued'] ){
+
+            $data = $request->getParams();
+            $response = $companiesController->changeCompanieData($data);
+            return json_encode($response);
+
+        }else return $response->withRedirect($request->getUri()->getBaseUrl());
+    });
+
+
+
+
+
 }
 
 ?>

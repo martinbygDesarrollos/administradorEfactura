@@ -34,70 +34,70 @@
 				        			<tr>
 				        				<div class="form__group field">
 											<label class="form__label_checkbox">Sucursal principal</label>
-											<input type="checkbox" id="tdBranchDataPrincipal" class="form__field_checkbox" onchange="datachanged()" placeholder="Sucursal principal" />
+											<input type="checkbox" id="tdBranchDataPrincipal" name="branchPrincipal" class="form__field_checkbox" onchange="datachanged()" placeholder="Sucursal principal" />
 										</div>
 									</tr>
 									<tr>
 										<div class="form__group field">
-											<input type="text" id="tdBranchDataCodDgi" class="form__field" readonly placeholder="Código DGI" />
+											<input type="text" id="tdBranchDataCodDgi" name="codDgi" class="form__field" readonly placeholder="Código DGI" />
 										</div>
 									</tr>
 									<tr>
 										<div class="form__group field">
-											<input type="text" id="tdBranchDataNombre" class="form__field" onchange="datachanged()" placeholder="Nombre comercial" />
+											<input type="text" id="tdBranchDataNombre" name="nombre" class="form__field" onchange="datachanged()" placeholder="Nombre comercial" />
 										</div>
 									</tr>
 									<tr>
 										<div class="form__group field">
 											<div class="pl-5 pb-1" id="tdBranchDataLogo"></div>
-											<input type="file" onchange="datachanged()" placeholder="Logo" />
+											<input type="file" onchange="datachanged()" name="logo" placeholder="Logo" />
 										</div>
 									</tr>
 									<tr>
 										<div class="form__group field">
-											<input type="text" id="tdBranchDataDireccion" onchange="datachanged()" class="form__field" placeholder="Dirección" />
+											<input type="text" id="tdBranchDataDireccion" name="direccion" onchange="datachanged()" class="form__field" placeholder="Dirección" />
 										</div>
 									</tr>
 									<tr>
 										<div class="form__group field">
-											<input type="text" id="tdBranchDataDepto" class="form__field" onchange="datachanged()" placeholder="Departamento" />
+											<input type="text" id="tdBranchDataDepto" name="departamento" class="form__field" onchange="datachanged()" placeholder="Departamento" />
 										</div>
 									</tr>
 									<tr>
 										<div class="form__group field">
-											<input type="text" id="tdBranchDataLocalidad" class="form__field" onchange="datachanged()" placeholder="Localidad" />
+											<input type="text" id="tdBranchDataLocalidad" name="localidad" class="form__field" onchange="datachanged()" placeholder="Localidad" />
 										</div>
 									</tr>
 									<tr>
 										<div class="form__group field">
-											<input type="text" id="tdBranchDataTel" class="form__field" onchange="datachanged()" placeholder="Teléfono 1" />
+											<input type="text" id="tdBranchDataTel" name="telefono" class="form__field" onchange="datachanged()" placeholder="Teléfono 1" />
 										</div>
 									</tr>
 									<tr>
 										<div class="form__group field">
-											<input type="text" id="tdBranchDataTel2" class="form__field" onchange="datachanged()" placeholder="Teléfono 2" />
+											<input type="text" id="tdBranchDataTel2" name="telefono2" class="form__field" onchange="datachanged()" placeholder="Teléfono 2" />
 										</div>
 									</tr>
 									<tr>
 										<div class="form__group field">
-											<input type="text" id="tdBranchDataCorreo" class="form__field" onchange="datachanged()" placeholder="Correo" />
+											<input type="text" id="tdBranchDataCorreo" name="correo" class="form__field" onchange="datachanged()" placeholder="Correo" />
 										</div>
 									</tr>
 									<tr>
 										<div class="form__group field">
-											<input type="text" id="tdBranchDataWeb" class="form__field" onchange="datachanged()" placeholder="Sitio web" />
+											<input type="text" id="tdBranchDataWeb" name="sitio" class="form__field" onchange="datachanged()" placeholder="Sitio web" />
 										</div>
 									</tr>
 									<tr>
 										<div class="form__group field d-flex">
-											<input type="color" id="tdBranchDataColorpicker" onchange="changeColorpickerPrincipal()" class="form__field_colorpicker m-2" name="">
-											<input type="text" id="tdBranchDataColor" class="form__field" onchange="datachanged()" placeholder="Color principal" />
+											<input type="color" id="tdBranchDataColorpicker" name="color1" onchange="changeColorpickerPrincipal(this.value)" class="form__field_colorpicker m-2">
+											<input type="text" id="tdBranchDataColor" name="color1" class="form__field" onchange="changeColorpickerPrincipal(this.value)" placeholder="Color principal" />
 										</div>
 									</tr>
 									<tr>
 										<div class="form__group field d-flex">
-											<input type="color" id="tdBranchDataColorpicker2" onchange="changeColorpickerSec()"  class="form__field_colorpicker m-2" name="">
-											<input type="text" id="tdBranchDataColor2" class="form__field" onchange="datachanged()"  placeholder="Color secundario" />
+											<input type="color" id="tdBranchDataColorpicker2" onchange="changeColorpickerSec(this.value)"  class="form__field_colorpicker m-2" name="color2">
+											<input type="text" id="tdBranchDataColor2" name="color2" class="form__field" onchange="changeColorpickerSec(this.value)"  placeholder="Color secundario" />
 										</div>
 									</tr>
 				        		</tbody>

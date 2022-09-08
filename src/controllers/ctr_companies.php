@@ -116,6 +116,17 @@ class ctr_companies{
 		return $responseCompany;
 
 	}
+
+
+
+	public function changeCompanieData( $data ){
+
+		$restController = new ctr_rest();
+
+		$responseCompanies = $restController->changeCompanieData($data);
+		return $responseCompanies;
+
+	}
 }
 
 

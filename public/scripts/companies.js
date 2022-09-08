@@ -1,5 +1,5 @@
 var dataIsChanged = false;
-
+var companiesList = null;
 
 
 
@@ -23,8 +23,26 @@ $(document).ready(()=>{
 $("#formCompanieDetails").submit((e)=>{
 
 	e.preventDefault();
+	//document.getElementById("formCompanieDetails")
+	//console.log("submit formulario al crear");
 
-	console.log("submit formulario al crear");
+
+	/*
+	var formData = new FormData(document.getElementById("formCompanieDetails"));
+	let rutSelected = $("#textRutCompanieSelected").text();
+
+
+	formData.append("rut", rutSelected);
+
+	sendAsyncPostForm("changeCompanieData", formData)
+	.then(( response )=>{
+		console.log(response);
+		if (response.result == 2){
+			window.location.reload();
+		}
+	})*/
+
+
 })
 
 
@@ -51,6 +69,9 @@ function loadCompanies(){
 	.then((response)=>{
 		//console.log(response);
 		if ( response.result == 2 ){
+
+			companiesList = response.companiesList;
+
 			if ( response.companiesList.length > 0 ){
 				for (var i = 0; i < response.companiesList.length; i++) {
 					row = createRowCompanie(response.companiesList[i]);
@@ -138,8 +159,8 @@ function createRowsToBranchTableInfo(branch){
 	$("#tdBranchDataDireccion").val(branch.direccion);
 	$("#tdBranchDataDepto").val(branch.departamento);
 	$("#tdBranchDataLocalidad").val(branch.localidad);
-	$("#tdBranchDataTel").val(branch.telefono1);
-	$("#tdBranchDataTel2").val(branch.telefono2);
+	$("#tdBranchDataTel").val(branch.telephone1);
+	$("#tdBranchDataTel2").val(branch.telephone2);
 	$("#tdBranchDataCorreo").val(branch.email);
 	$("#tdBranchDataWeb").val(branch.website);
 
@@ -180,24 +201,24 @@ function createRowsToCaesTableInfo(objCae){
 
 function datachanged(){
 	dataIsChanged = true;
-	//$("#buttonSubmitCompanieDetails").removeAttr("disabled");
+	$("#buttonSubmitCompanieDetails").removeAttr("disabled");
 }
 
-function changeColorpickerPrincipal (){
+function changeColorpickerPrincipal (value){
 
 	datachanged();
 
-	colorSelected = $("#tdBranchDataColorpicker").val();
-	$("#tdBranchDataColor").val(colorSelected);
+	$("#tdBranchDataColorpicker").val(value);
+	$("#tdBranchDataColor").val(value);
 }
 
 
-function changeColorpickerSec (){
+function changeColorpickerSec (value){
 
 	datachanged();
 
-	colorSelected = $("#tdBranchDataColorpicker2").val();
-	$("#tdBranchDataColor2").val(colorSelected);
+	$("#tdBranchDataColorpicker2").val(value);
+	$("#tdBranchDataColor2").val(value);
 }
 
 
