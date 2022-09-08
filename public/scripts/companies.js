@@ -64,7 +64,6 @@ function loadCompanies(){
 
 
 function createRowCompanie(obj){
-	console.log(obj);
 	tipocae = "";
 	if ( obj.tipoCae ){
 		tipocae = " "+obj.tipoCae
@@ -199,4 +198,28 @@ function changeColorpickerSec (){
 
 	colorSelected = $("#tdBranchDataColorpicker2").val();
 	$("#tdBranchDataColor2").val(colorSelected);
+}
+
+
+function searchCompaniesFromList(text){
+
+
+	var input, filter, tbody, tr, td, i, txtValue;
+	input = text;
+	filter = input.toUpperCase();
+	tbody = document.getElementById("tbodyCompaniesList");
+	tr = tbody.getElementsByTagName("tr");
+	for (i = 0; i < tr.length; i++) {
+		td = tr[i].getElementsByTagName("td")[0];
+		if (td) {
+		  txtValue = td.textContent || td.innerText;
+		  if (txtValue.toUpperCase().indexOf(filter) > -1) {
+		    tr[i].style.display = "";
+		  } else {
+		    tr[i].style.display = "none";
+		  }
+		}
+	}
+
+
 }

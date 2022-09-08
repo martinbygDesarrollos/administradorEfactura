@@ -8,17 +8,21 @@
 	<div class="containerTable" id="containerCompanies">
 		<table class="table">
 			<thead>
-				<tr>
-					<p id="indexCompanieWork" class="font-weight-bold pl-2">
-					Trabajando con
-					<a href="{{ path_for('Companies')}}/{{rutUserLogued}}">{{companieUserLogued}}</a>
-					</p>
-				</tr>
+				<div class="d-flex justify-content-between">
+					<div class="">
+						<p id="indexCompanieWork" class="font-weight-bold pl-2">&nbsp;Trabajando con&nbsp;<a href="{{ path_for('Companies')}}/{{rutUserLogued}}">{{companieUserLogued}}</a></p>
+					</div>
+					<div class="col-5">
+						<div class="form__group field">
+							<input type="text" id="" class="form__field" onkeyup="searchCompaniesFromList(this.value)" placeholder="Buscar empresa" />
+						</div>
+					</div>
+				</div>
 				<tr>
 					<th>Razón social</th>
 					<th>Estado</th>
 					<th>Vencimientos</th>
-					<th>CAE</th>
+					<th>CAEs disponibles</th>
 				</tr>
 			</thead>
 			<tbody id="tbodyCompaniesList"></tbody>

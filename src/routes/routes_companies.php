@@ -110,10 +110,7 @@ return function (App $app){
 
             $response->result = 2;
             return json_encode($response);
-        }else {
-            $response->result = 1;
-            return json_encode($response);
-        }
+        }else return $response->withRedirect($request->getUri()->getBaseUrl());
     });
 
 
@@ -134,10 +131,7 @@ return function (App $app){
 
             $response->lastid = $_SESSION['lastID'];
             return json_encode($response);
-        }else {
-            $response->result = 1;
-            return json_encode($response);
-        }
+        }else return $response->withRedirect($request->getUri()->getBaseUrl());
     });
 
 
@@ -161,10 +155,7 @@ return function (App $app){
                 }
             }else
                 return json_encode($companie);
-        }else {
-            $response->result = 1;
-            return json_encode($response);
-        }
+        }else return $response->withRedirect($request->getUri()->getBaseUrl());
     });
 
 
@@ -189,10 +180,7 @@ return function (App $app){
                 return json_encode($response);
             }else
                 return json_encode($companie);
-        }else {
-            $response->result = 1;
-            return json_encode($response);
-        }
+        }else return $response->withRedirect($request->getUri()->getBaseUrl());
     });
 }
 
