@@ -26,8 +26,6 @@ $("#formCompanieDetails").submit((e)=>{
 	//document.getElementById("formCompanieDetails")
 	//console.log("submit formulario al crear");
 
-
-	/*
 	var formData = new FormData(document.getElementById("formCompanieDetails"));
 	let rutSelected = $("#textRutCompanieSelected").text();
 
@@ -40,8 +38,7 @@ $("#formCompanieDetails").submit((e)=>{
 		if (response.result == 2){
 			window.location.reload();
 		}
-	})*/
-
+	})
 
 })
 
