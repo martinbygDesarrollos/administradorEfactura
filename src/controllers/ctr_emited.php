@@ -9,25 +9,39 @@ class ctr_emited{
 	public function resendXml( $rut, $data ){
 
 		$restController = new ctr_rest();
+		$responseSobre = new \stdClass();
 
-		$arrayCfes = array();
-  		$arrayCfeData = array(
-  			"tipoCFE" => $data['nameSelectTipoCfeSendXml'],
-  			"serieCFE" => strtoupper($data['nameInputSerieCfeSendXml']),
-  			"numeroCFE" => $data['nameInputNumeroCfeSendXml']
-  		);
+		if ( isset($data) ){
+			$lengthCfes = $data['numberCfes'];
 
-  		array_push($arrayCfes, $arrayCfeData);
+			$arrayCfes = array();
 
-  		$mailsList = str_replace(" ","",$data['nameInputMailsCopySendXml']);
-  		$mailsList = explode(",", $mailsList);
+			for ($i=0; $i < $lengthCfes; $i++) {
+				$arrayCfeData = array(
+		  			"tipoCFE" => $data['nameSelectTipoCfeSendXml'.$i],
+		  			"serieCFE" => strtoupper($data['nameInputSerieCfeSendXml'.$i]),
+		  			"numeroCFE" => $data['nameInputNumeroCfeSendXml'.$i]
+		  		);
 
-  		$dataToSend = array(
-  			'cfes' => $arrayCfes,
-  			'copyTo' => $mailsList);
+		  		array_push($arrayCfes, $arrayCfeData);
+			}
 
-		$responseSobre = $restController->sendsobre($rut, $dataToSend);
-		return $responseSobre;
+
+	  		$mailsList = str_replace(" ","",$data['nameInputMailsCopySendXml']);
+	  		$mailsList = explode(",", $mailsList);
+
+	  		$dataToSend = array(
+	  			'cfes' => $arrayCfes,
+	  			'copyTo' => $mailsList);
+
+			$responseSobre = $restController->sendsobre($rut, $dataToSend);
+			return $responseSobre;
+
+		}else{
+			$responseSobre->result = 1;
+			$responseSobre->message = sobre_no_data;
+			return $responseSobre;
+		}
 
 	}
 }

@@ -7,26 +7,32 @@
 	</div>
 	<div class="card-body  pl-4">
 		<form method="POST" id="idFormEmited">
-			<label>Enviar sobre a receptor electrónico (xml)</label>
-			<div class="form-row" >
-				<div class="form__group field w-25 m-2">
-					<select class="form__field" id="idSelectTipoCfeSendXml" name="nameSelectTipoCfeSendXml">
-						<option value="111" selected>E-Factura</option>
-						<option value="101" >E-Ticket</option>
-					</select>
-				</div>
-				<div class="form__group field m-2">
-					<input type="text" id="idInputSerieCfeSendXml" name="nameInputSerieCfeSendXml" class="form__field input_uppercase" placeholder="Serie" required/>
-				</div>
-				<div class="form__group field m-2">
-					<input type="text" id="idInputNumeroCfeSendXml" name="nameInputNumeroCfeSendXml" class="form__field" placeholder="Número" required/>
+
+			<div class="d-flex justify-content-between" >
+				<label>Enviar sobre a receptor electrónico (xml)</label>
+				<button id="" class="btn" type="button" onclick="addRowToInsertCfeData()" ><i class="fas fa-plus-circle"></i></button>
+			</div>
+			<div id="rowsToInsertCfeData" >
+				<div class="form-row" >
+					<div class="form__group field w-25 m-2">
+						<select class="form__field" id="idSelectTipoCfeSendXml" name="nameSelectTipoCfeSendXml0">
+							<option value="111" selected>E-Factura</option>
+							<option value="101" >E-Ticket</option>
+						</select>
+					</div>
+					<div class="form__group field m-2">
+						<input type="text" id="idInputSerieCfeSendXml" name="nameInputSerieCfeSendXml0" class="form__field input_uppercase" placeholder="Serie" required/>
+					</div>
+					<div class="form__group field m-2">
+						<input type="text" id="idInputNumeroCfeSendXml" name="nameInputNumeroCfeSendXml0" class="form__field" placeholder="Número" required/>
+					</div>
 				</div>
 			</div>
 			<br><br>
 			<label>Copiar a</label>
 			<div class="form-row" >
 				<div class="form__group field w-100">
-					<input type="text" id="idInputMailsCopySendXml" name="nameInputMailsCopySendXml" class="form__field" placeholder="Correo" required/>
+					<input type="text" id="idInputMailsCopySendXml" name="nameInputMailsCopySendXml" class="form__field" placeholder="Correo" />
 				</div>
 			</div>
 			<br><br>
