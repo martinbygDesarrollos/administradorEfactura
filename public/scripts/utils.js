@@ -43,3 +43,14 @@ function dateTypeHtml( date ){ // entrada 2023-02-04T23:24:21.142-03:00 salida 0
 	newDate = date.substr(8, 2)+"/"+date.substr(5,2)+"/"+date.substr(2,2);
 	return newDate;
 }
+
+
+function showMessage(message){
+	// Get the snackbar DIV
+	var x = document.getElementById("snackbar");
+	// Add the "show" class to DIV
+	x.textContent = message;
+	x.className = "show";
+	// After 3 seconds, remove the show class from DIV
+	setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+}

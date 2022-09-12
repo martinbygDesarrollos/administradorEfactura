@@ -11,9 +11,11 @@ return function (App $app) {
 
     $routesUsers = require_once __DIR__ . "/../src/routes/routes_users.php";
     $routesCompanies = require_once __DIR__ . "/../src/routes/routes_companies.php";
+    $routesEmited = require_once __DIR__ . "/../src/routes/routes_emited.php";
 
     $routesUsers($app);
     $routesCompanies($app);
+    $routesEmited($app);
 
     //ruta de inicio
     $app->get('/', function ($request, $response, $args) use ($container, $companiesController) {

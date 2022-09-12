@@ -95,6 +95,17 @@ return function (App $app){
 
 
 
+    //seccion de comprobantes enviados, por ahora funcionamiento de reenvio de sobres
+    $app->get('/facturacion', function ($request, $response, $args) use ($container, $companiesController){
+        $args['version'] = FECHA_ULTIMO_PUSH;
+        $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
+        $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
+        if ( isset($_SESSION['mailUserLogued']) ){
+            return $this->view->render($response, "emited.twig", $args);
+        }else return $response->withRedirect($request->getUri()->getBaseUrl());
+    })->setName("Emited");
+
+
 
     //cambiar los datos de sesion del usuario
     $app->post('/companies', function ($request, $response, $args) use ($container, $companiesController){
@@ -110,7 +121,7 @@ return function (App $app){
 
             $response->result = 2;
             return json_encode($response);
-        }else return $response->withRedirect($request->getUri()->getBaseUrl());
+        }else return json_encode(["result"=>0]);
     });
 
 
@@ -131,7 +142,7 @@ return function (App $app){
 
             $response->lastid = $_SESSION['lastID'];
             return json_encode($response);
-        }else return $response->withRedirect($request->getUri()->getBaseUrl());
+        }else json_encode(["result"=>0]);
     });
 
 
@@ -155,7 +166,7 @@ return function (App $app){
                 }
             }else
                 return json_encode($companie);
-        }else return $response->withRedirect($request->getUri()->getBaseUrl());
+        }else return json_encode(["result"=>0]);
     });
 
 
@@ -180,28 +191,24 @@ return function (App $app){
                 return json_encode($response);
             }else
                 return json_encode($companie);
-        }else return $response->withRedirect($request->getUri()->getBaseUrl());
+        }else return json_encode(["result"=>0]);
     });
 
 
 
 
-
+    //editar los datos basicos de la sucursal
     $app->post('/changeCompanieData', function ($request, $response, $args) use ($container, $companiesController){
-        $response = new \stdClass();
 
         if ( $_SESSION['mailUserLogued'] ){
+            $response = new \stdClass();
 
             $data = $request->getParams();
             $response = $companiesController->changeCompanieData($data);
             return json_encode($response);
 
-        }else return $response->withRedirect($request->getUri()->getBaseUrl());
+        }else return json_encode(["result"=>0]);
     });
-
-
-
-
 
 }
 

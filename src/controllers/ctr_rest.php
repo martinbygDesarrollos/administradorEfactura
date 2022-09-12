@@ -13,6 +13,7 @@ class ctr_rest{
 
 		if ( $petitionResponse->resultado->codigo == 200 ){
 			$petitionResponse->result = 2;
+			$petitionResponse->message = OK;
 		}else {
 			$petitionResponse->result = 1;
 			$petitionResponse->message = $petitionResponse->resultado->error;
@@ -104,6 +105,35 @@ class ctr_rest{
 		return $response;
 
 	}
+
+
+	public function sendsobre( $rut, $data ){
+
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+		$response->message = "error";
+
+		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
+		if ( $token->result == 2 ){
+			$tokenRest = $token->objectResult->tokenRest;
+			$petitionResponse = $petitionClass->sendsobre($rut, $data, $tokenRest);
+			$petitionResponse = json_decode($petitionResponse);
+
+			if ( $petitionResponse->resultado->codigo == 200 ){
+				$response->result = 2;
+			}else{
+				$response->result = 1;
+				$response->message = $petitionResponse->resultado->error;
+			}
+		}else return $token;
+
+		return $response;
+
+	}
+
 }
 
 

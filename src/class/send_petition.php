@@ -43,6 +43,12 @@ class sendPetition{
 
 
 
+	public function sendsobre ($rut, $data, $token){
+		$thisClass = new sendPetition();
+		return $thisClass->prepareAndSendCurl("POST", "company/".$rut."/cfe/sendsobre", $token, $data);
+	}
+
+
 	public function prepareAndSendCurl($typeMethod, $method, $token, $data){
 		$thisClass = new sendPetition();
 		$curlPetition = curl_init(URL_REST . $method);

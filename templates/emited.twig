@@ -1,0 +1,43 @@
+{% extends "base.twig" %}
+{% block content %}
+{% if mailUserLogued %}
+<div class="card w-100">
+	<div class="card-header">
+		Comprobantes emitidos
+	</div>
+	<div class="card-body  pl-4">
+		<form method="POST" id="idFormEmited">
+			<label>Enviar sobre a receptor electrónico (xml)</label>
+			<div class="form-row" >
+				<div class="form__group field w-25 m-2">
+					<select class="form__field" id="idSelectTipoCfeSendXml" name="nameSelectTipoCfeSendXml">
+						<option value="111" selected>E-Factura</option>
+						<option value="101" >E-Ticket</option>
+					</select>
+				</div>
+				<div class="form__group field m-2">
+					<input type="text" id="idInputSerieCfeSendXml" name="nameInputSerieCfeSendXml" class="form__field input_uppercase" placeholder="Serie" required/>
+				</div>
+				<div class="form__group field m-2">
+					<input type="text" id="idInputNumeroCfeSendXml" name="nameInputNumeroCfeSendXml" class="form__field" placeholder="Número" required/>
+				</div>
+			</div>
+			<br><br>
+			<label>Copiar a</label>
+			<div class="form-row" >
+				<div class="form__group field w-100">
+					<input type="text" id="idInputMailsCopySendXml" name="nameInputMailsCopySendXml" class="form__field" placeholder="Correo" required/>
+				</div>
+			</div>
+			<br><br>
+			<div class="form-row d-flex flex-row-reverse" >
+				<button id="buttonSubmitEmitedForm" class="btn btn-success" type="submit" >Envíar</button>
+			</div>
+		</form>
+	</div>
+</div>
+{% endif %}
+{% block script %}
+<script type="text/javascript" src="{{ path_for('Start') }}scripts/emited.js{{ version }}"></script>
+{% endblock %}
+{% endblock %}

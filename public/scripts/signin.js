@@ -13,6 +13,8 @@ function signIn(){
 		console.log("respuesta del login", response);
 		if(response.result == 2){
 			window.location.href = getSiteURL();
+		}else if ( response.result == 0 ){
+			window.location.href = getSiteURL() + "cerrar-session";
 		}
 	})
 }

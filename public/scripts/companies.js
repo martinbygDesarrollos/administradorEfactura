@@ -37,6 +37,8 @@ $("#formCompanieDetails").submit((e)=>{
 		console.log(response);
 		if (response.result == 2){
 			window.location.reload();
+		}else if ( response.result == 0 ){
+			window.location.href = getSiteURL() + "cerrar-session";
 		}
 	})
 
@@ -55,6 +57,8 @@ function selectCompanie( companieRut, companieName ){
 		if ( response.result == 2 ){
 			$("#indexCompanieWork a").text(companieName);
 			$("#indexCompanieName").text(companieName);
+		}else if ( response.result == 0 ){
+			window.location.href = getSiteURL() + "cerrar-session";
 		}
 	})
 }
@@ -75,6 +79,8 @@ function loadCompanies(){
 					$("#tbodyCompaniesList").append(row);
 				}
 			}
+		}else if ( response.result == 0 ){
+			window.location.href = getSiteURL() + "cerrar-session";
 		}
 	})
 
@@ -125,6 +131,8 @@ function loadBranchCompanieData( value, rut  ){
 	.then((response)=>{
 		if ( response.result == 2 ){
 			createRowsToBranchTableInfo(response.objectResult);
+		}else if ( response.result == 0 ){
+			window.location.href = getSiteURL() + "cerrar-session";
 		}
 	})
 }
@@ -179,7 +187,10 @@ function loadCaesDetailsCompanies( rut ){
 				row = createRowsToCaesTableInfo(response.listResult[i]);
 				$("#tbodyCompaniesCaesData").append(row);
 			}
-		}else $("#tbodyCompaniesCaesData").empty();
+		}else if ( response.result == 0 ){
+			window.location.href = getSiteURL() + "cerrar-session";
+		}
+		else $("#tbodyCompaniesCaesData").empty();
 	})
 }
 
