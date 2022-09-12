@@ -164,8 +164,8 @@ return function (App $app){
 
             $response->companiesList = array_slice($companies,$_SESSION['lastID'],15);
 
-            if ($_SESSION['lastID'] + 15 > count($auxCompanieLists)){
-                $_SESSION['lastID'] = count($auxCompanieLists);
+            if ($_SESSION['lastID'] + 15 > count($companiesController)){
+                $_SESSION['lastID'] = count($companiesController);
             } else
                 $_SESSION['lastID'] = $_SESSION['lastID'] + 15;
 
