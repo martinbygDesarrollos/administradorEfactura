@@ -133,11 +133,11 @@ return function (App $app){
             $response->result = 2;
 
             $data = $request->getParams();
-            $lastid = $data['lastid'];
+            /*$lastid = $data['lastid'];
 
             if ( isset($lastid) && $lastid == 0){
                 $_SESSION['lastID'] = $lastid;
-            }
+            }*/
 
             $namecompanie = $data['namecompanie'];
             $namecompanieup = strtoupper($data['namecompanie']);

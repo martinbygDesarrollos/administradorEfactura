@@ -1,7 +1,7 @@
 var dataIsChanged = false;
 var companiesList = null;
 
-var lastid = 0;
+//var lastid = 0;
 var textToSearch = null;
 
 
@@ -67,11 +67,11 @@ function selectCompanie( companieRut, companieName ){
 
 function loadCompanies(){
 
-	sendAsyncPost("loadCompanies", {lastid:lastid, namecompanie:textToSearch})
+	sendAsyncPost("loadCompanies", {namecompanie:textToSearch})
 	.then((response)=>{
 		//console.log(response);
 		if ( response.result == 2 ){
-			lastid = response.lastid;
+			//lastid = response.lastid;
 
 			companiesList = response.companiesList;
 
@@ -235,7 +235,7 @@ function changeColorpickerSec (value){
 function searchCompaniesFromList(text){
 
 	textToSearch = text;
-	lastid = 0;
+	//lastid = 0;
 	$("#tbodyCompaniesList").empty();
 	loadCompanies();
 	/*var input, filter, tbody, tr, td, i, txtValue;
