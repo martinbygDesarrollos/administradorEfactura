@@ -1,7 +1,7 @@
 var dataIsChanged = false;
 var companiesList = null;
 
-//var lastid = 0;
+var lastid = 0;
 var textToSearch = null;
 
 
@@ -67,19 +67,20 @@ function selectCompanie( companieRut, companieName ){
 
 function loadCompanies(){
 
-	sendAsyncPost("loadCompanies", {namecompanie:textToSearch})
+	sendAsyncPost("loadCompanies", {lastid:lastid})
 	.then((response)=>{
-		//console.log(response);
 		if ( response.result == 2 ){
-			//lastid = response.lastid;
-
 			companiesList = response.companiesList;
 
-			if ( response.companiesList.length > 0 ){
-				for (var i = 0; i < response.companiesList.length; i++) {
-					row = createRowCompanie(response.companiesList[i]);
-					$("#tbodyCompaniesList").append(row);
+			if ( response.lastid != lastid ){
+				lastid = response.lastid;
+				if ( response.companiesList ){
+					for (var i = 0; i < response.companiesList.length; i++) {
+						row = createRowCompanie(response.companiesList[i]);
+						$("#tbodyCompaniesList").append(row);
+					}
 				}
+
 			}
 		}else if ( response.result == 0 ){
 			window.location.href = getSiteURL() + "cerrar-session";
@@ -233,27 +234,26 @@ function changeColorpickerSec (value){
 
 
 function searchCompaniesFromList(text){
+	if ( text.length >= 3 ){
+		$("#tbodyCompaniesList").empty();
+		sendAsyncPost("loadCompaniesByName", {name:text})
+		.then((response)=>{
+			if ( response.result == 2 ){
+				companiesList = response.companiesList;
+				if ( response.companiesList ){
+					for (var i = 0; i < response.companiesList.length; i++) {
 
-	textToSearch = text;
-	//lastid = 0;
-	$("#tbodyCompaniesList").empty();
-	loadCompanies();
-	/*var input, filter, tbody, tr, td, i, txtValue;
-	input = text;
-	filter = input.toUpperCase();
-	tbody = document.getElementById("tbodyCompaniesList");
-	tr = tbody.getElementsByTagName("tr");
-	for (i = 0; i < tr.length; i++) {
-		td = tr[i].getElementsByTagName("td")[0];
-		if (td) {
-		  txtValue = td.textContent || td.innerText;
-		  if (txtValue.toUpperCase().indexOf(filter) > -1) {
-		    tr[i].style.display = "";
-		  } else {
-		    tr[i].style.display = "none";
-		  }
-		}
-	}*/
-
-
+						row = createRowCompanie(response.companiesList[i]);
+						$("#tbodyCompaniesList").append(row);
+					}
+				}
+			}else if ( response.result == 0 ){
+				window.location.href = getSiteURL() + "cerrar-session";
+			}
+		})
+	}else{
+		$("#tbodyCompaniesList").empty();
+		lastid = 0;
+		loadCompanies();
+	}
 }

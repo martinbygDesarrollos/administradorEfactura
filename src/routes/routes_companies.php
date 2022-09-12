@@ -133,48 +133,58 @@ return function (App $app){
             $response->result = 2;
 
             $data = $request->getParams();
-            /*$lastid = $data['lastid'];
-
-            if ( isset($lastid) && $lastid == 0){
-                $_SESSION['lastID'] = $lastid;
-            }*/
-
-            $namecompanie = $data['namecompanie'];
-            $namecompanieup = strtoupper($data['namecompanie']);
+            $lastid = $data['lastid'];
 
 
-            $companies = $_SESSION['companiesList'];
-            $arrayAuxCompanies = array();
+            $response->companiesList = array_slice($_SESSION['companiesList'],$lastid,15);
 
+            if ($lastid + 15 > count($_SESSION['companiesList'])){
+                $lastid = count($_SESSION['companiesList']);
+            } else
+                $lastid = $lastid + 15;
+
+
+
+            $response->lastid = $lastid;
+            return json_encode($response);
+        }else json_encode(["result"=>0]);
+    });
+
+
+
+
+    $app->post('/loadCompaniesByName', function ($request, $response, $args) use ($container, $companiesController){
+
+        if ( $_SESSION['mailUserLogued'] ){
+            $response = new \stdClass();
+            $response->result = 2;
+
+            $companies = array();
+
+            $data = $request->getParams();
+            $namecompanie = $data['name'];
+            $namecompanieup = strtoupper($data['name']);
 
             if ( isset($namecompanie) && $namecompanie != "" ){
 
-                foreach ($_SESSION['companiesList'] as $key => $value) {
+                foreach ( $_SESSION['companiesList'] as $key => $value) {
                    $pos = strpos($value->razonSocial, $namecompanie);
                    $pos1 = strpos($value->razonSocial, $namecompanieup);
 
                     if ($pos !== false || $pos1 !== false) {
-                        array_push($arrayAuxCompanies, $value);
+                        array_push($companies, $value);
                     }
                 }
-
-                $companies = $arrayAuxCompanies;
             }
 
 
-            $response->companiesList = array_slice($companies,$_SESSION['lastID'],15);
-
-            if ($_SESSION['lastID'] + 15 > count($companies)){
-                $_SESSION['lastID'] = count($companies);
-            } else
-                $_SESSION['lastID'] = $_SESSION['lastID'] + 15;
-
-
-
-            $response->lastid = $_SESSION['lastID'];
+            $response->companiesList = $companies;
             return json_encode($response);
         }else json_encode(["result"=>0]);
     });
+
+
+
 
 
     $app->post('/loadBranchData', function ($request, $response, $args) use ($container, $companiesController){
