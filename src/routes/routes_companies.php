@@ -131,10 +131,41 @@ return function (App $app){
         if ( $_SESSION['mailUserLogued'] ){
             $response = new \stdClass();
             $response->result = 2;
-            $response->companiesList = array_slice($_SESSION['companiesList'],$_SESSION['lastID'],15);
 
-            if ($_SESSION['lastID'] + 15 > count($_SESSION['companiesList'])){
-                $_SESSION['lastID'] = count($_SESSION['companiesList']);
+            $data = $request->getParams();
+            $lastid = $data['lastid'];
+
+            if ( isset($lastid) && $lastid == 0){
+                $_SESSION['lastID'] = $lastid;
+            }
+
+            $namecompanie = $data['namecompanie'];
+            $namecompanieup = strtoupper($data['namecompanie']);
+
+
+            $companies = $_SESSION['companiesList'];
+            $arrayAuxCompanies = array();
+
+
+            if ( isset($namecompanie) && $namecompanie != "" ){
+
+                foreach ($_SESSION['companiesList'] as $key => $value) {
+                   $pos = strpos($value->razonSocial, $namecompanie);
+                   $pos1 = strpos($value->razonSocial, $namecompanieup);
+
+                    if ($pos !== false || $pos1 !== false) {
+                        array_push($arrayAuxCompanies, $value);
+                    }
+                }
+
+                $companies = $arrayAuxCompanies;
+            }
+
+
+            $response->companiesList = array_slice($companies,$_SESSION['lastID'],15);
+
+            if ($_SESSION['lastID'] + 15 > count($auxCompanieLists)){
+                $_SESSION['lastID'] = count($auxCompanieLists);
             } else
                 $_SESSION['lastID'] = $_SESSION['lastID'] + 15;
 

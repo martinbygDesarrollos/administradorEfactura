@@ -1,7 +1,8 @@
 var dataIsChanged = false;
 var companiesList = null;
 
-
+var lastid = 0;
+var textToSearch = null;
 
 
 $(document).ready(()=>{
@@ -66,10 +67,11 @@ function selectCompanie( companieRut, companieName ){
 
 function loadCompanies(){
 
-	sendAsyncPost("loadCompanies")
+	sendAsyncPost("loadCompanies", {lastid:lastid, namecompanie:textToSearch})
 	.then((response)=>{
 		//console.log(response);
 		if ( response.result == 2 ){
+			lastid = response.lastid;
 
 			companiesList = response.companiesList;
 
@@ -232,8 +234,11 @@ function changeColorpickerSec (value){
 
 function searchCompaniesFromList(text){
 
-
-	var input, filter, tbody, tr, td, i, txtValue;
+	textToSearch = text;
+	lastid = 0;
+	$("#tbodyCompaniesList").empty();
+	loadCompanies();
+	/*var input, filter, tbody, tr, td, i, txtValue;
 	input = text;
 	filter = input.toUpperCase();
 	tbody = document.getElementById("tbodyCompaniesList");
@@ -248,7 +253,7 @@ function searchCompaniesFromList(text){
 		    tr[i].style.display = "none";
 		  }
 		}
-	}
+	}*/
 
 
 }
