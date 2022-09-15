@@ -80,6 +80,14 @@
   transition: border-color 0.2s;
 }
 
+.form__field_select {
+  cursor: pointer;
+  margin-left: 0.5rem;
+  border: 0.1rem solid lightgrey;
+  outline: 0;
+  font-size: 1.1rem;
+  padding: 0.5rem 0 0 3%;
+}
 
 .input_uppercase{
   text-transform:uppercase;
@@ -98,4 +106,28 @@
 }
 ::placeholder { /* Recent browsers */
     text-transform: none;
+}
+
+
+.badge {
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -o-border-radius: 10px;
+  -ms-border-radius: 10px;
+  background-clip: padding-box;
+  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+  -webkit-box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+  -moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  display: inline-block;
+  min-width: 10px;
+  padding: 3px 7px;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  background-color: #777;
 }

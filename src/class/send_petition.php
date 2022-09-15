@@ -49,6 +49,37 @@ class sendPetition{
 	}
 
 
+
+	//se cambia de estado pasa de PENDIENTE_POSTULACIÓN a PENDIENTE_CERTIFICACIÓN
+	public function aprobarPostulacion ($rut, $token){
+		$thisClass = new sendPetition();
+		return $thisClass->prepareAndSendCurl("POST", "company/".$rut."/approve", $token,null);
+	}
+
+
+
+	//cambio de estado de PENDIENTE_CERTIFICACIÓN a PENDIENTE_RESOLUCIÓN
+	public function aprobarCertificacion ($rut, $token){
+		$thisClass = new sendPetition();
+		return $thisClass->prepareAndSendCurl("POST", "company/".$rut."/certificate", $token, null);
+	}
+
+
+
+	//cambia el estado de la empresa a suspendida
+	public function suspenderEmpresa ($rut, $data, $token){
+		$thisClass = new sendPetition();
+		return $thisClass->prepareAndSendCurl("POST", "company/".$rut."/suspend", $token, $data);
+	}
+
+
+	//cambia el estado de la empresa a EN_ESPERA_PARA_COMENZAR y cargar datos a las resoluciones
+	public function cargarResolucion ($rut, $data, $token){
+		$thisClass = new sendPetition();
+		return $thisClass->prepareAndSendCurl("POST", "company/".$rut."/loadresolution", $token, $data);
+	}
+
+
 	public function prepareAndSendCurl($typeMethod, $method, $token, $data){
 		$thisClass = new sendPetition();
 		$curlPetition = curl_init(URL_REST . $method);

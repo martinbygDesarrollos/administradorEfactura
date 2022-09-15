@@ -41,6 +41,24 @@
 	{% include("slider.twig") %}
 	{% include("footer.twig")%}
 	<div id="snackbar"></div>
+	<div id="modalResponse" class="modal" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" accesskey="x" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p id="modalMessageResponse" class="text-center"></p>
+				</div>
+				<div class="modal-footer">
+					<button id="modalButtonResponseCancel" type="button" class="btn btn-light" onclick="$('#modalResponse').modal('hide')"></button>
+					<button id="modalButtonResponse" type="button" class="btn btn-success"></button>
+				</div>
+			</div>
+		</div>
+	</div>
 	<script type="text/javascript" src="{{ path_for('Start') }}scripts/base.js{{ version }}"></script>
 	<script type="text/javascript" src="{{ path_for('Start') }}scripts/sendPost.js{{ version }}"></script>
 	<script type="text/javascript" src="{{ path_for('Start') }}scripts/utils.js{{ version }}"></script>

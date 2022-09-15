@@ -54,3 +54,62 @@ function showMessage(message){
 	// After 5 seconds, remove the show class from DIV
 	setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
 }
+
+
+
+
+
+function showReplyMessage(typeColour, message, buttonsucces, buttoncancel){
+
+
+	$("#modalButtonResponseCancel").text("Cancelar");
+	if ( buttoncancel )
+		$("#modalButtonResponseCancel").text(buttoncancel);
+
+	$("#modalButtonResponse").text("Ok");
+	if ( buttonsucces )
+		$("#modalButtonResponse").text(buttonsucces);
+
+
+	$('#modalButtonResponseCancel').click(function(){
+		$('#modalResponse').modal('hide');
+	});
+
+	$('#modalColourResponse').removeClass('alert-success');
+	$('#modalColourResponse').removeClass('alert-warning');
+	$('#modalColourResponse').removeClass('alert-danger');
+
+	if(typeColour == 0)
+		$('#modalColourResponse').addClass('alert-danger');
+	else if(typeColour == 2)
+		$('#modalColourResponse').addClass('alert-success');
+	else if(typeColour == 1)
+		$('#modalColourResponse').addClass('alert-warning');
+
+	if ( typeof message == "object"){
+		let newMessage = "";
+		message.forEach(element => {
+			newMessage += element + "<br>";
+		});
+		$('#modalMessageResponse').html(newMessage);
+	}else $('#modalMessageResponse').html(message);
+
+	$("#modalResponse").modal();
+}
+
+
+
+function statusDescription( valueStatus ){
+
+	switch (valueStatus) {
+		case 1: return "Pendiente usuario";
+		case 2: return "Pendiente postulación";
+		case 3: return "Pendiente aprobación"; //ff9800
+		case 4: return "Pendiente certificación"; //4CAF50 4CAF50
+		case 5: return "Pendiente resolución";
+		case 6: return "Emisor habilitado";
+		case 7: return "Emisor no habilitado"; //F44336
+		case 8: return "En espera para comenzar";
+	}
+
+}

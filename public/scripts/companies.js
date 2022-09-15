@@ -116,10 +116,23 @@ function createRowCompanie(obj){
 		selectCaes += '</select>'
 	}
 
+	let estado = '<span class="badge">'+obj.estadoDescripcion+'</span>';
+	if (obj.estado == 2 || obj.estado == 7) {
+		estado = '<span class="badge" style="background-color: #F44336">'+obj.estadoDescripcion+'</span>';
+	}
+	else if ( obj.estado == 3 ) {
+		estado = '<span class="badge" style="background-color: #FF9800">'+obj.estadoDescripcion+'</span>';
+	}
+	else if (obj.estado == 4 || obj.estado == 6) {
+		estado = '<span class="badge" style="background-color: #4CAF50">'+obj.estadoDescripcion+'</span>';
+	}
+	else if (obj.estado == 5) {
+		estado = '<span class="badge" style="background-color: blue">'+obj.estadoDescripcion+'</span>';
+	}
 
 
 	let row = '<tr><td onclick="selectCompanie(`'+obj.rut+'`, `'+obj.razonSocial+'`)" ><a href="'+getSiteURL()+'empresas/'+obj.rut+'">'+obj.razonSocial+'</a><br>'+obj.rut+'</td>';
-	row += '<td onclick="selectCompanie(`'+obj.rut+'`, `'+obj.razonSocial+'`)" >'+obj.estadoDescripcion+'</td>';
+	row += '<td onclick="selectCompanie(`'+obj.rut+'`, `'+obj.razonSocial+'`)" >'+estado+'</td>';
 	row += '<td onclick="selectCompanie(`'+obj.rut+'`, `'+obj.razonSocial+'`)" >'+comprobante+tipocae+' '+ vencimiento+'</td>';
 	row += '<td>'+selectCaes+'</td></tr>';
 
@@ -143,7 +156,6 @@ function loadBranchCompanieData( value, rut  ){
 
 function createRowsToBranchTableInfo(branch){
 
-	console.log(branch);
 	if ( branch.isPrincipal )
 		$("#tdBranchDataPrincipal").prop('checked', true);
 	else

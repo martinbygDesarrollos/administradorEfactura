@@ -127,6 +127,28 @@ class ctr_companies{
 		return $responseCompanies;
 
 	}
+
+
+	public function changeStatusCompanie($newStatus){
+
+
+		switch ($newStatus) {
+			case 4:
+				changeStatusToPendCertificacion();
+				break;
+		}
+
+		$restController = new ctr_rest();
+
+		$responseCompanies = $restController->changeCompanieData($data);
+		return $responseCompanies;
+
+	}
+
+
+	public function changeStatusToPendCertificacion(){
+		return;
+	}
 }
 
 
