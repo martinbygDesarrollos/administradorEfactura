@@ -53,7 +53,8 @@ class sendPetition{
 	//se cambia de estado pasa de PENDIENTE_POSTULACIÓN a PENDIENTE_CERTIFICACIÓN
 	public function aprobarPostulacion ($rut, $token){
 		$thisClass = new sendPetition();
-		return $thisClass->prepareAndSendCurl("POST", "company/".$rut."/approve", $token,null);
+		$data = new \stdClass();
+		return $thisClass->prepareAndSendCurl("POST", "company/".$rut."/approve", $token, $data);
 	}
 
 
@@ -61,7 +62,8 @@ class sendPetition{
 	//cambio de estado de PENDIENTE_CERTIFICACIÓN a PENDIENTE_RESOLUCIÓN
 	public function aprobarCertificacion ($rut, $token){
 		$thisClass = new sendPetition();
-		return $thisClass->prepareAndSendCurl("POST", "company/".$rut."/certificate", $token, null);
+		$data = new \stdClass();
+		return $thisClass->prepareAndSendCurl("POST", "company/".$rut."/certificate", $token, $data);
 	}
 
 

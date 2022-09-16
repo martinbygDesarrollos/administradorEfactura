@@ -45,14 +45,40 @@ function dateTypeHtml( date ){ // entrada 2023-02-04T23:24:21.142-03:00 salida 0
 }
 
 
-function showMessage(message){
+function showMessage(result, message){
+	console.log("funcion de los mensajes");
 	// Get the snackbar DIV
 	var x = document.getElementById("snackbar");
+	console.log(x)
+	var y = document.getElementById("snackbarText");
 	// Add the "show" class to DIV
-	x.textContent = message;
-	x.className = "show";
-	// After 5 seconds, remove the show class from DIV
-	setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
+	y.textContent = message;
+
+	if (result == 0){
+		console.log("result 0");
+		x.className = "show";
+		x.style = "background-color: #F44336DD;";
+
+	}
+	else if( result == 1 ){
+		console.log("result 1");
+		x.className = "show";
+		x.style = "background-color: #FF9800DD;";
+		setTimeout(function(){ x.className = "fade" }, 5000);
+	}
+	else if( result == 2 ){
+		console.log("result 2");
+		x.className = "show";
+		x.style = "background-color: #4CAF50DD;";
+		setTimeout(function(){ x.className = "fade"; x.style = ""; }, 2000);
+	}
+
+
+	$('#snackbarButton').click(function(){
+		console.log(x);
+		x.className = "fade";
+		x.style = "";
+	});
 }
 
 

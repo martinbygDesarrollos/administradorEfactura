@@ -11,19 +11,17 @@ function changestatusCompanie( newStatus, currentStatus ){
 
 	console.log(newStatus, currentStatus);
 
-	showReplyMessage(1, "Pasar de '"+currentStatusLabel+"' a '"+newStatusLabel+"'.<br>Aún no se puede cambiar el estado.", null, null);
-	/*showReplyMessage(1, "Pasar de '"+currentStatusLabel+"' a '"+newStatusLabel+"'.<br>¿Confirma el cambio de estado?", "SI", "No");
-
+	showReplyMessage(1, "Pasar de '"+currentStatusLabel+"' a '"+newStatusLabel+"'.<br>¿Confirma el cambio de estado?", "SI", "No");
 	$('#modalButtonResponse').click(function(){
+		$('#modalButtonResponse').attr("disabled", "");
 
 		sendAsyncPost("changeStatusCompanie",{newStatus:newStatus})
 		.then((response)=>{
-			console.log(response);
-			if ( response.result == 0 ){
-				window.location.href = getSiteURL() + "cerrar-session";
-			}
+			$('#modalButtonResponse').removeAttr("disabled");
+			$('#modalResponse').modal('hide');
+			showMessage(response.result, response.message);
 		})
 
-	});*/
+	});
 
 }

@@ -129,25 +129,47 @@ class ctr_companies{
 	}
 
 
-	public function changeStatusCompanie($newStatus){
+	public function changeStatusCompanie($newStatus, $rut){
+
+		$companieController = new ctr_companies();
+		$response = new stdClass();
+		$response->result = 1;
+		$response->message = "No se ha podido procesar el cambio de estado";
 
 
 		switch ($newStatus) {
 			case 4:
-				changeStatusToPendCertificacion();
-				break;
+				$response = $companieController->changeStatusToPendPostulacion($rut);
+				return $response;
+			case 5:
+				$response = $companieController->changeStatusToPendCertificacion($rut);
+				return $response;
+			default:
+				return $response;
+
 		}
+
+	}
+
+
+	public function changeStatusToPendPostulacion( $rut ){
 
 		$restController = new ctr_rest();
 
-		$responseCompanies = $restController->changeCompanieData($data);
+		$responseCompanies = $restController->statusPendPostulacion($rut);
 		return $responseCompanies;
 
 	}
 
 
-	public function changeStatusToPendCertificacion(){
-		return;
+
+	public function changeStatusToPendCertificacion( $rut ){
+
+		$restController = new ctr_rest();
+
+		$responseCompanies = $restController->statusPendCertificacion($rut);
+		return $responseCompanies;
+
 	}
 }
 

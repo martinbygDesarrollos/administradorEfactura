@@ -134,6 +134,66 @@ class ctr_rest{
 
 	}
 
+
+
+
+	public function statusPendPostulacion( $rut ){
+
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+
+		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
+		if ( $token->result == 2 ){
+			$tokenRest = $token->objectResult->tokenRest;
+			$petitionResponse = $petitionClass->aprobarPostulacion($rut, $tokenRest);
+			$petitionResponse = json_decode($petitionResponse);
+
+			if ( $petitionResponse->resultado->codigo == 200 ){
+				$response->result = 2;
+				$response->message = $petitionResponse->resultado->error;
+			}else{
+				$response->result = 1;
+				$response->message = $petitionResponse->resultado->error;
+			}
+		}else return $token;
+
+		return $response;
+
+	}
+
+
+
+
+	public function statusPendCertificacion( $rut ){
+
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+
+		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
+		if ( $token->result == 2 ){
+			$tokenRest = $token->objectResult->tokenRest;
+			$petitionResponse = $petitionClass->aprobarCertificacion($rut, $tokenRest);
+			$petitionResponse = json_decode($petitionResponse);
+
+			if ( $petitionResponse->resultado->codigo == 200 ){
+				$response->result = 2;
+				$response->message = $petitionResponse->resultado->error;
+			}else{
+				$response->result = 1;
+				$response->message = $petitionResponse->resultado->error;
+			}
+		}else return $token;
+
+		return $response;
+
+	}
+
 }
 
 

@@ -273,7 +273,10 @@ return function (App $app){
 
             $data = $request->getParams();
             $newStatus = $data['newStatus'];
-            $response = $companiesController->changeStatusCompanie($newStatus);
+            $rut = $_SESSION['rutUserLogued'];
+
+
+            $response = $companiesController->changeStatusCompanie($newStatus, $rut);
             return json_encode($response);
 
         }else return json_encode(["result"=>0]);
