@@ -97,4 +97,9 @@ to {
   html, body{
     font-size:1rem;
   }
+
+
+  .notShowMobile{
+    display: none;
+}
 }

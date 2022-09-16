@@ -282,6 +282,21 @@ return function (App $app){
         }else return json_encode(["result"=>0]);
     });
 
+
+
+
+    $app->post('/loadResolutions', function ($request, $response, $args) use ($container, $companiesController){
+
+        if ( $_SESSION['mailUserLogued'] ){
+            $response = new \stdClass();
+
+            $data = $request->getParams();
+
+            return json_encode(["result"=>1, "message"=>"En desarrollo"]);
+
+        }else return json_encode(["result"=>0]);
+    });
+
 }
 
 ?>

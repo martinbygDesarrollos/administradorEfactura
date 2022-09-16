@@ -169,19 +169,7 @@
 			        </div>
 				</div>
 				<!-- RESOLUCIONES -->
-				<div class="tab-pane fade" id="resoluciones-data" role="tabpanel">
-					<div class="containerTable" style="max-height: 30%;">
-			        	<table class="table">
-							<thead>
-								<tr>
-									<th>Resolución</th>
-									<th>Fecha</th>
-								</tr>
-							</thead>
-							<tbody id="tbodyCompaniesResolucionesData" ></tbody>
-						</table>
-			        </div>
-				</div>
+				{% include("resolucionesComapnieDetails.twig") %}
 			</div>
 		</div>
 	</div>
@@ -190,6 +178,7 @@
 {% block script %}
 <script type="text/javascript" src="{{ path_for('Start') }}scripts/companies.js{{ version }}"></script>
 <script type="text/javascript" src="{{ path_for('Start') }}scripts/statusCompanies.js{{ version }}"></script>
+<script type="text/javascript" src="{{ path_for('Start') }}scripts/resolutions.js{{ version }}"></script>
 <script type="text/javascript">
 	$(document).ready(()=>{
 		branchSelected = $("#selectBranchCompanieDetails").val();

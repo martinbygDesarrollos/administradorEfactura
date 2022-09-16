@@ -131,3 +131,10 @@
   vertical-align: middle;
   background-color: #777;
 }
+
+
+
+
+.modal-dialog{
+  max-width: 50%;
+}
