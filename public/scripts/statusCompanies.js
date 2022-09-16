@@ -10,7 +10,9 @@ function changestatusCompanie( newStatus, currentStatus ){
 	let newStatusLabel = statusDescription(newStatus);
 
 	console.log(newStatus, currentStatus);
-	showReplyMessage(1, "Pasar de '"+currentStatusLabel+"' a '"+newStatusLabel+"'.<br>¿Confirma el cambio de estado?", "SI", "No");
+
+	showReplyMessage(1, "Pasar de '"+currentStatusLabel+"' a '"+newStatusLabel+"'.<br>Aún no se puede cambiar el estado.", null, null);
+	/*showReplyMessage(1, "Pasar de '"+currentStatusLabel+"' a '"+newStatusLabel+"'.<br>¿Confirma el cambio de estado?", "SI", "No");
 
 	$('#modalButtonResponse').click(function(){
 
@@ -22,6 +24,6 @@ function changestatusCompanie( newStatus, currentStatus ){
 			}
 		})
 
-	});
+	});*/
 
 }
