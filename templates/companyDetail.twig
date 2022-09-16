@@ -1,33 +1,6 @@
 {% extends "base.twig" %}
 {% block content %}
 <div class="w-100 row justify-between-content " style="max-height: var(--containertable-height);">
-	<div class="card w-25">
-		<table class="table" >
-			<tbody>
-				<tr><td><h4>{{company.razonSocial}}</h4><br><h6 id="textRutCompanieSelected">{{company.rut}}</h6>
-
-					{% if company.estado == 7 or company.estado == 2 %}
-					<span class="badge" style="background-color: #F44336">{{company.estadoDescripcion}}</span>
-					{% elseif company.estado == 3 %}
-					<span class="badge" style="background-color: #FF9800">{{company.estadoDescripcion}}</span>
-					{% elseif company.estado == 4 or company.estado == 6 %}
-					<span class="badge" style="background-color: #4CAF50">{{company.estadoDescripcion}}</span>
-					{% elseif company.estado == 5 %}
-					<span class="badge" style="background-color: blue">{{company.estadoDescripcion}}</span>
-					{%endif%}
-
-				</td></tr>
-				<tr><td>
-					<label>Sucursales</label><br>
-					<select  id="selectBranchCompanieDetails" class="custom-select custom-select-sm shadow-sm" onchange="loadBranchCompanieData(this.value, {{company.rut}})">
-					{% for suc in company.sucursales %}
-					<option value="{{suc.codDGI}}">{{suc.nombreComercial}}</option>
-					{% endfor %}
-				</select></td></tr>
-
-			</tbody>
-		</table>
-	</div>
 	<div class="card w-75" >
 		<div class="card-header bg-light">
 			<div class="nav d-flex nav-pills bordered" id="v-pills-tab" role="tablist" aria-orientation="horizontal">
@@ -44,7 +17,7 @@
 						<form method="POST" id="formCompanieDetails">
 				        	<table class="table">
 				        		<tbody id="">
-				        			<tr class="w-100">
+				        			<!--tr class="w-100">
 				        				<td class="col-4">
 											<label class="font-weight-bold">Sucursal principal</label>
 				        				</td>
@@ -63,21 +36,43 @@
 												<input type="text" id="tdBranchDataCodDgi" name="codDgi" class="form__field" readonly placeholder="Código DGI" />
 											</div>
 										</td>
-									</tr>
+									</tr-->
+									{% if company.sucursales %}
+									<div class="d-flex flex-row-reverse">
+										<select  id="selectBranchCompanieDetails" class="custom-select custom-select-sm shadow-sm w-25" onchange="loadBranchCompanieData(this.value, {{company.rut}})">
+											{% for suc in company.sucursales %}
+												{% if suc.isPrincipal %}
+												<option value="{{suc.codDGI}}">{{suc.codDGI}} - PRINCIPAL</option>
+												{% else%}
+												<option value="{{suc.codDGI}}">{{suc.codDGI}} - SUCURSAL</option>
+												{%endif%}
+
+											{% endfor %}
+										</select>
+									</div>
+									{% endif %}
 									<tr class="w-100">
 										<td class="col-4">
 											<label class="font-weight-bold">Estado</label>
 				        				</td>
 				        				<td>
 						        			<select class="form__field" onchange="changestatusCompanie(this.value, {{company.estado}})">
-													<option value="1">Pendiente usuario</option>
-													<option value="2">Pendiente postulación</option>
-													<option value="3">Pendiente aprobación</option>
-													<option value="4">Pendiente certificación</option>
-													<option value="5">Pendiente resolución</option>
-													<option value="6">Emisor habilitado</option>
-													<option value="7">Emisor no habilitado</option>
-													<option value="8">En espera para comenzar</option>
+												{% if company.estado == 1 %}<option value="1" selected>Pendiente usuario</option>
+												{%else%}<option value="1">Pendiente usuario</option>{%endif%}
+												{% if company.estado == 2 %}<option value="2" selected>Pendiente postulación</option>
+												{%else%}<option value="2">Pendiente postulación</option>{%endif%}
+												{% if company.estado == 3 %}<option value="3" selected>Pendiente aprobación</option>
+												{%else%}<option value="3">Pendiente aprobación</option>{%endif%}
+												{% if company.estado == 4 %}<option value="4" selected>Pendiente certificación</option>
+												{%else%}<option value="4">Pendiente certificación</option>{%endif%}
+												{% if company.estado == 5 %}<option value="5" selected>Pendiente resolución</option>
+												{%else%}<option value="5">Pendiente resolución</option>{%endif%}
+												{% if company.estado == 6 %}<option value="6" selected>Emisor habilitado</option>
+												{%else%}<option value="6">Emisor habilitado</option>{%endif%}
+												{% if company.estado == 7 %}<option value="7" selected>Emisor no habilitado</option>
+												{%else%}<option value="7">Emisor no habilitado</option>{%endif%}
+												{% if company.estado == 8 %}<option value="8" selected>En espera para comenzar</option>
+												{%else%}<option value="8">En espera para comenzar</option>{%endif%}
 											</select>
 										</td>
 									</tr>
@@ -200,7 +195,6 @@
 		branchSelected = $("#selectBranchCompanieDetails").val();
 		rutSelected = $("#textRutCompanieSelected").text();
 		loadBranchCompanieData(branchSelected, rutSelected);
-
 		loadCaesDetailsCompanies(rutSelected);
 
 	});

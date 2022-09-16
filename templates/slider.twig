@@ -5,29 +5,6 @@
                 <img src="{{path_for('Start')}}img/LogoHeader.png" alt="Logo empresarial" width="150">
             </a>
         </div>
-        <br>
-        {% if companieUserLogued %}
-        <span id="indexCompanieName" class="text-template-background text-center font-italic ml-1 m-0">{{ companieUserLogued }}</span>
-        {% endif %}
     </div>
-    <ul class="nav nav-pills flex-column bg-light mb-0">
-        {% if mailUserLogued %}
-        <li class="nav-item">
-            <a href="{{ path_for('Companies') }}" id="nav-link-companie" class="nav-link text-dark font-italic active">
-                Mis empresas
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="{{ path_for('Emited') }}" id="nav-link-customer" class="nav-link text-dark font-italic">
-                Facturación
-            </a>
-        </li>
-        {%else%}
-        <li class="nav-item">
-            <a href="{{ path_for('Start') }}" id="nav-link-home" class="nav-link text-dark font-italic">
-                Inicio
-            </a>
-        </li>
-        {%endif%}
-    </ul>
+        {% include("companieDataNav.twig") %}
 </div>

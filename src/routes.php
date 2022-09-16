@@ -43,13 +43,19 @@ return function (App $app) {
                     $args['companieUserLogued'] = null;
                 }
 
-
+                $args["company"] = null;
                 if ( isset($_SESSION['rutUserLogued']) ){
                     $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
+
+                    $company = $companiesController->getCompaniesData($_SESSION['rutUserLogued'])->objectResult;
+                    $args["company"] = $company;
+
                 }else{
                     $_SESSION['rutUserLogued'] = null;
                     $args['rutUserLogued'] = null;
                 }
+
+
             }else{
                 //aca cargar companies
                 $_SESSION['companiesList'] = $companiesController->getCompanies()->listResult;
@@ -70,15 +76,20 @@ return function (App $app) {
                     $args['companieUserLogued'] = null;
                 }
 
-
+                $args["company"] = null;
                 if ( isset($_SESSION['rutUserLogued']) ){
                     $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
+
+                    $company = $companiesController->getCompaniesData($_SESSION['rutUserLogued'])->objectResult;
+                    $args["company"] = $company;
+
                 }else{
                     $_SESSION['rutUserLogued'] = null;
                     $args['rutUserLogued'] = null;
                 }
-            }
 
+
+            }
 
         }else {
             $args['rutUserLogued'] = null;

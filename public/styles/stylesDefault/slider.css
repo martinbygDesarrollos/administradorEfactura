@@ -102,6 +102,18 @@
         margin-left: 14rem;
         width: calc(100% - 14rem);
     }
+
+    .w-75{
+        width: 100%!important;
+    }
+
+    .w-50{
+        width: 100%!important;
+    }
+
+    .w-25{
+        width: 50%!important;
+    }
 }
 
 
@@ -163,6 +175,18 @@
     #content.active {
         margin-left: 14rem;
         width: calc(100% - 14rem);
+    }
+
+    .w-75{
+        width: 100%!important;
+    }
+
+    .w-50{
+        width: 100%!important;
+    }
+
+    .w-25{
+        width: 50%!important;
     }
 }
 /*
