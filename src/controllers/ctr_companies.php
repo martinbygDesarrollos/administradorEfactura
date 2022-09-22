@@ -171,6 +171,21 @@ class ctr_companies{
 		return $responseCompanies;
 
 	}
+
+
+
+
+	public function loadResolutions( $rut, $data ){
+
+		$restController = new ctr_rest();
+
+		$data["emitterDate"] = substr($data["emitterDate"],8,2)."/".substr($data["emitterDate"],5,2)."/".substr($data["emitterDate"],0,4);
+
+
+		$responseCompanies = $restController->loadResolutions($rut, $data);
+		return $responseCompanies;
+
+	}
 }
 
 

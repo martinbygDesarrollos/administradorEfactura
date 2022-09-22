@@ -21,8 +21,11 @@ $("#idFormEmited").submit((e)=>{
 
 		sendAsyncPostForm("resendXml", formData)
 		.then((response)=>{
+
 			$("#buttonSubmitEmitedForm").removeAttr("disabled");
-			showMessage(response.message);
+
+			showMessage(response.result , response.message);
+
 			if ( response.result == 0 ){
 				window.location.href = getSiteURL() + "cerrar-session";
 			}
@@ -45,5 +48,14 @@ function addRowToInsertCfeData(){
 	newRow += '<div class="form__group field m-2"><input type="text" id="" name="nameInputNumeroCfeSendXml'+rowNumber+'" class="form__field" placeholder="Número" required/></div></div>';
 
 	$("#rowsToInsertCfeData").append(newRow);
+
+}
+
+
+
+
+function clearXmlForm(){
+
+
 
 }

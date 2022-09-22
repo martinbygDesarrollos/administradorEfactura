@@ -76,8 +76,9 @@ class sendPetition{
 
 
 	//cambia el estado de la empresa a EN_ESPERA_PARA_COMENZAR y cargar datos a las resoluciones
-	public function cargarResolucion ($rut, $data, $token){
+	public function cargarResolucion ($rut, $token, $data){
 		$thisClass = new sendPetition();
+
 		return $thisClass->prepareAndSendCurl("POST", "company/".$rut."/loadresolution", $token, $data);
 	}
 

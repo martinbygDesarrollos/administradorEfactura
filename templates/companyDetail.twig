@@ -6,7 +6,8 @@
 			<div class="nav d-flex nav-pills bordered" id="v-pills-tab" role="tablist" aria-orientation="horizontal">
 				<a class="btn  active" id="option-branch-data" data-toggle="pill" href="#branch-data" role="tab" aria-selected="true">Principal</a>
 				<a class="btn " id="v-pills-profile-tab" data-toggle="pill" href="#caes-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">CAES</a>
-				<a class="btn " id="v-pills-profile-tab" data-toggle="pill" href="#resoluciones-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Resoluciones</a>
+				<a class="btn " data-toggle="pill" href="#resoluciones-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Resoluciones</a>
+				<a class="btn " data-toggle="pill" href="#facturacion-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Facturación</a>
 			</div>
 		</div>
 		<div class="card-body">
@@ -17,26 +18,6 @@
 						<form method="POST" id="formCompanieDetails">
 				        	<table class="table">
 				        		<tbody id="">
-				        			<!--tr class="w-100">
-				        				<td class="col-4">
-											<label class="font-weight-bold">Sucursal principal</label>
-				        				</td>
-				        				<td>
-					        				<div class="">
-												<input type="checkbox" id="tdBranchDataPrincipal" name="branchPrincipal" class="" onchange="datachanged()" placeholder="Sucursal principal" />
-											</div>
-										</td>
-									</tr>
-									<tr class="w-100">
-										<td class="col-4">
-											<label class="font-weight-bold">Código DGI</label>
-										</td>
-										<td>
-											<div class="">
-												<input type="text" id="tdBranchDataCodDgi" name="codDgi" class="form__field" readonly placeholder="Código DGI" />
-											</div>
-										</td>
-									</tr-->
 									{% if company.sucursales %}
 									<div class="d-flex flex-row-reverse">
 										<select  id="selectBranchCompanieDetails" class="custom-select custom-select-sm shadow-sm w-25" onchange="loadBranchCompanieData(this.value, {{company.rut}})">
@@ -170,6 +151,10 @@
 				</div>
 				<!-- RESOLUCIONES -->
 				{% include("resolucionesComapnieDetails.twig") %}
+
+
+				<!-- FACTURACION -->
+				{% include("emited.twig") %}
 			</div>
 		</div>
 	</div>
@@ -179,6 +164,8 @@
 <script type="text/javascript" src="{{ path_for('Start') }}scripts/companies.js{{ version }}"></script>
 <script type="text/javascript" src="{{ path_for('Start') }}scripts/statusCompanies.js{{ version }}"></script>
 <script type="text/javascript" src="{{ path_for('Start') }}scripts/resolutions.js{{ version }}"></script>
+<script type="text/javascript" src="{{ path_for('Start') }}scripts/emited.js{{ version }}"></script>
+
 <script type="text/javascript">
 	$(document).ready(()=>{
 		branchSelected = $("#selectBranchCompanieDetails").val();

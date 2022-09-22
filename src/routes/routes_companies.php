@@ -291,8 +291,11 @@ return function (App $app){
             $response = new \stdClass();
 
             $data = $request->getParams();
+            $rut = $_SESSION['rutUserLogued'];
 
-            return json_encode(["result"=>1, "message"=>"En desarrollo"]);
+
+            $response = $companiesController->loadResolutions($rut, $data);
+            return json_encode($response);
 
         }else return json_encode(["result"=>0]);
     });
