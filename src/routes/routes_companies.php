@@ -128,11 +128,12 @@ return function (App $app){
             $rut = $data['rut'];
             $razonSocial = $data['name'];
 
-            $_SESSION['companieUserLogued'] = $razonSocial;
-            $_SESSION['rutUserLogued'] = $rut;
 
-            $response->result = 2;
-            return json_encode($response);
+            $company = $companiesController->getCompaniesData($rut);
+            $_SESSION['companieUserLogued'] = $company->objectResult->razonSocial;
+            $_SESSION['rutUserLogued'] = $company->objectResult->rut;
+
+            return json_encode($company);
         }else return json_encode(["result"=>0]);
     });
 

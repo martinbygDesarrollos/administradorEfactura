@@ -141,6 +141,20 @@ function statusDescription( valueStatus ){
 }
 
 
+function getButtonByStatus( valueStatus ){
+
+	switch (valueStatus) {
+		case 1:
+		case 2: return '<span class="badge" style="background-color: #F44336">Pendiente postulación</span>';
+		case 3: return '<span class="badge" style="background-color: #FF9800">Pendiente aprobación</span>'; //ff9800
+		case 4: return '<span class="badge" style="background-color: #4CAF50">Pendiente certificación</span>'; //4CAF50 4CAF50
+		case 5: return '<span class="badge" style="background-color: blue">Pendiente resolución</span>';
+		case 6: return '<span class="badge" style="background-color: #4CAF50">Emisor habilitado</span>';
+		case 7: return '<span class="badge" style="background-color: #F44336">Emisor no habilitado</span>'; //F44336
+		case 8: return '<span class="badge">En espera para comenzar</span>';
+	}
+
+}
 
 
 function getCurrentDate(){

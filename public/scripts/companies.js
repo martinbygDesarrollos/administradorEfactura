@@ -55,9 +55,18 @@ function selectCompanie( companieRut, companieName ){
 
 	sendAsyncPost("companies", {rut:companieRut, name:companieName})
 	.then((response)=>{
+		console.log(response);
 		if ( response.result == 2 ){
-			$("#indexCompanieWork a").text(companieName);
-			$("#indexCompanieName").text(companieName);
+			$("#indexCompanieWork a").text(response.objectResult.razonSocial);
+			$("#indexCompanieName").text(response.objectResult.razonSocial);
+
+			$("#textRutCompanieSelected").text(response.objectResult.rut);
+
+
+			let status = getButtonByStatus(response.objectResult.estado);
+			$("#statusCompanieSelected").empty();
+			$("#statusCompanieSelected").append(status);
+
 		}else if ( response.result == 0 ){
 			window.location.href = getSiteURL() + "cerrar-session";
 		}
