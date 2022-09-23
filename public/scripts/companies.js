@@ -21,19 +21,13 @@ $(document).ready(()=>{
 
 
 function getDateLastCfeReceipt(){
-	return new Promise( function(resolve, reject){
-		$.ajax({
-			async: true,
-			url: "https://sigecom.uy/erp/public/ultcfe.txt",
-			type: "GET",
-			success: function (response) {
-				console.log(response);
-				response = response.trim();
-				var response = jQuery.parseJSON(response);
-				resolve(response);
-			}
-		});
-	});
+
+	sendAsyncPost("getDateLastCfeReceipt")
+	.then((response)=>{
+		console.log(response);
+
+		$("#dateLastCfeReceipt").text(response);
+	})
 }
 
 

@@ -78,6 +78,17 @@ to {
 }
 
 
+
+
+.navItemDown{
+    position:absolute;
+    bottom:0.5rem;
+    right:0;
+    left:0.5rem;
+}
+
+
+
 @keyframes rotation {
   0% {
     transform:rotate(0deg);
@@ -99,7 +110,35 @@ to {
   }
 
 
-  .notShowMobile{
-    display: none;
+    .notShowMobile{
+        display: none;
+    }
+
+
+    .navItemDown{
+        position:absolute;
+        bottom:0.5rem;
+        right:0;
+        left:0.5rem;
+    }
 }
+
+@media (min-width: 500px) and (max-width: 768px) {
+    .navItemDown{
+        position:absolute;
+        bottom:0.5rem;
+        right:0;
+        left:0.5rem;
+    }
+}
+
+
+
+@media (max-width: 499px) {
+    .navItemDown{
+        position:absolute;
+        bottom:0.5rem;
+        right:0;
+        left:0.5rem;
+    }
 }

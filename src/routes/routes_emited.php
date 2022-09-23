@@ -25,6 +25,22 @@ return function (App $app){
         }else return json_encode(["result"=>0]);
 
     });
+
+
+
+
+
+    $app->post('/getDateLastCfeReceipt', function ($request, $response, $args) use ($container, $emitedController){
+
+        if ( $_SESSION['mailUserLogued'] ){
+
+
+            $response = file_get_contents('https://sigecom.uy/erp/public/ultcfe.txt');
+            return json_encode($response);
+
+        }else return json_encode(["result"=>0]);
+
+    });
 }
 
 ?>
