@@ -13,10 +13,28 @@ $(document).ready(()=>{
 	});
 
 	dataIsChanged = false;
+
+
+	getDateLastCfeReceipt();
+
 })
 
 
-
+function getDateLastCfeReceipt(){
+	return new Promise( function(resolve, reject){
+		$.ajax({
+			async: true,
+			url: "https://sigecom.uy/erp/public/ultcfe.txt",
+			type: "GET",
+			success: function (response) {
+				console.log(response);
+				response = response.trim();
+				var response = jQuery.parseJSON(response);
+				resolve(response);
+			}
+		});
+	});
+}
 
 
 

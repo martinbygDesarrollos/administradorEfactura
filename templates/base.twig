@@ -21,10 +21,13 @@
 <body class="d-flex flex-column" style="background-image: url('{{ path_for('Start')}}img/backGround.png'); background-repeat: no-repeat; background-attachment: fixed; background-size: cover;">
 	<div class="page-contentClass page-content" id="content">
 		<div class="d-flex justify-content-between">
-			<button id="sidebarCollapse" type="button" class="btn background-template-color text-template-color m-2"></button>
+			<div>
+				<button id="sidebarCollapse" type="button" class="btn background-template-color text-template-color m-2"></button>
+				<a id="" type="button" href="{{ path_for('Start') }}" class="btn background-template-color text-template-color m-2"><i class="fas fa-home"></i></a>
+			</div>
 			{% if mailUserLogued %}
-			<div class="row mr-2">
-				<h6 class="text-template-background font-italic mt-3">{{mailUserLogued}}</h6>
+			<div class="d-flex">
+				<h6 class="text-template-background font-italic mt-3 notShowMobile">{{mailUserLogued}}</h6>
 				<a href="{{path_for('SignOut')}}" class="btn btn-danger text-white shadow-sm m-2" data-toggle="tooltip" data-placement="top" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></a>
 			</div>
 			{%else%}
