@@ -183,8 +183,10 @@ return function (App $app){
                 foreach ( $_SESSION['companiesList'] as $key => $value) {
                    $pos = strpos($value->razonSocial, $namecompanie);
                    $pos1 = strpos($value->razonSocial, $namecompanieup);
+                   $pos2 = strpos($value->rut, $namecompanie);
 
-                    if ($pos !== false || $pos1 !== false) {
+
+                    if ($pos !== false || $pos1 !== false || $pos2 !== false) {
                         array_push($companies, $value);
                     }
                 }
