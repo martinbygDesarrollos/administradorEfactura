@@ -23,7 +23,8 @@ $("#idFormLoadResolutions").submit((e)=>{
 })
 
 
+function changeDataFormResolutions(){
 
-function openModalLoadResolution(){
-	$("#modalLoadResolutions").modal("show");
+	$("#buttonFormLoadResolutions").removeAttr("disabled");
+
 }

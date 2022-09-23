@@ -294,7 +294,6 @@ return function (App $app){
             $data = $request->getParams();
             $rut = $_SESSION['rutUserLogued'];
 
-
             $response = $companiesController->loadResolutions($rut, $data);
             return json_encode($response);
 

@@ -1,111 +1,48 @@
 <div class="tab-pane fade" id="resoluciones-data" role="tabpanel">
-	<div class="d-flex flex-row-reverse"><button class="btn btn-info notShowMobile" onclick="openModalLoadResolution()" >Cargar resoluciones</button></div>
 	<div class="containerTable" style="max-height: 30%;">
-    	<table class="table">
-			<thead>
-				<tr>
-					<th>Resolución</th>
-					<th>Fecha</th>
-				</tr>
-			</thead>
-			<tbody id="tbodyCompaniesResolucionesData" >
-				<tr>
-					<td><label class="">Fecha de emisión</label></td>
-					<td><input type="date" id="" name="" class="form__field" placeholder="" readonly /></td>
-				</tr>
-				<tr>
-					<td><label>Resolución EFactura</label></td>
-					<td><input type="text" id="" name="" class="form__field" placeholder="" readonly /></td>
-				</tr>
-				<tr>
-					<td><label>Resolución EResguardo</label></td>
-					<td><input type="text" id="" name="" class="form__field" placeholder="" readonly /></td>
-				</tr>
-				<tr>
-					<td><label>Resolución ERemito</label></td>
-					<td><input type="text" id="" name="" class="form__field" placeholder="" readonly /></td>
-				</tr>
-				<tr>
-					<td><label>Resolución EFactura Exportación</label></td>
-					<td><input type="text" id="" name="" class="form__field" placeholder="" readonly /></td>
-				</tr>
-				<tr>
-					<td><label>Resolución EFactura Cuenta Ajena</label></td>
-					<td><input type="text" id="" name="" class="form__field" placeholder="" readonly /></td>
-				</tr>
-				<tr>
-					<td><label>Resolución EBoleta de Entrada</label></td>
-					<td><input type="text" id="" name="" class="form__field" placeholder="" readonly /></td>
-				</tr>
-			</tbody>
-		</table>
+		<form method="POST" id="idFormLoadResolutions" >
+	    	<table class="table">
+				<thead>
+					<tr>
+						<th>Resolución</th>
+						<th>Fecha</th>
+					</tr>
+				</thead>
+				<tbody id="tbodyCompaniesResolucionesData" >
+					<tr>
+						<td><label class="">Fecha de emisión</label></td>
+						<td><input type="date" id="" name="emitterDate" onchange="changeDataFormResolutions()" class="form__field" placeholder="" /></td>
+					</tr>
+					<tr>
+						<td><label>Resolución EFactura</label></td>
+						<td><input type="text" id="" name="dgiResolutionEFact" onchange="changeDataFormResolutions()" class="form__field" placeholder="" value="{{company.dgiResolutionEFac}}" /></td>
+					</tr>
+					<tr>
+						<td><label>Resolución EResguardo</label></td>
+						<td><input type="text" id="" name="dgiResolutionERes" onchange="changeDataFormResolutions()" class="form__field" value="{{company.dgiResolutionERes}}"  placeholder="" /></td>
+					</tr>
+					<tr>
+						<td><label>Resolución ERemito</label></td>
+						<td><input type="text" id="" name="dgiResolutionERem" onchange="changeDataFormResolutions()" class="form__field" value="{{company.dgiResolutionERem}}" placeholder="" /></td>
+					</tr>
+					<tr>
+						<td><label>Resolución EFactura Exportación</label></td>
+						<td><input type="text" id="" name="dgiResolutionEFacExp" onchange="changeDataFormResolutions()" class="form__field" value="{{company.dgiResolutionEFacExp}}"  placeholder="" /></td>
+					</tr>
+					<tr>
+						<td><label>Resolución EFactura Cuenta Ajena</label></td>
+						<td><input type="text" id="" name="dgiResolutionCtaAjena" onchange="changeDataFormResolutions()" class="form__field" value="{{company.dgiResolutionCtaAjena}}" placeholder="" /></td>
+					</tr>
+					<tr>
+						<td><label>Resolución EBoleta de Entrada</label></td>
+						<td><input type="text" id="" name="dgiResolutionEBolEntrada" onchange="changeDataFormResolutions()" class="form__field" placeholder="" value="{{company.dgiResolutionEBolEntrada}}" /></td>
+					</tr>
+
+				</tbody>
+			</table>
+			<div class="d-flex flex-row-reverse">
+				<button id="buttonFormLoadResolutions" class="btn btn-success" disabled >Guardar</button>
+			</div>
+		</form>
     </div>
-</div>
-
-
-
-
-<div class="modal fade" id="modalLoadResolutions" tabindex="-1" role="dialog"  aria-labelledby="" aria-hidden="true" >
-	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<span class="modal-title">Cargar resoluciones</span>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<form method="POST" id="idFormLoadResolutions" >
-
-					<div class="row mb-1">
-    					<div class="form__group field w-100 d-flex" style="margin: auto;">
-    						<label class="mt-2 col-4">Fecha de emisión</label>
-							<input type="date" id="emitterDate" name="emitterDate" class="form__field" placeholder="" />
-						</div>
-					</div>
-
-					<div class="row mb-1">
-    					<div class="form__group field w-100 d-flex" style="margin: auto;">
-    						<label class="mt-2 col-4">Resolución EFactura</label>
-							<input type="text" id="dgiResolutionEFact" name="dgiResolutionEFact" class="form__field" placeholder="" />
-						</div>
-					</div>
-					<div class="row mb-1">
-    					<div class="form__group field w-100 d-flex" style="margin: auto;">
-    						<label class="mt-2 col-4">Resolución EResguardo</label>
-							<input type="text" id="dgiResolutionERes" name="dgiResolutionERes" class="form__field" placeholder="" />
-						</div>
-					</div>
-					<div class="row mb-1">
-    					<div class="form__group field w-100 d-flex" style="margin: auto;">
-    						<label class="mt-2 col-4">Resolución ERemito</label>
-							<input type="text" id="dgiResolutionERem" name="dgiResolutionERem" class="form__field" placeholder="" />
-						</div>
-					</div>
-					<div class="row mb-1">
-    					<div class="form__group field w-100 d-flex" style="margin: auto;">
-    						<label class="mt-2 col-4">Resolución EFactura Exportación</label>
-							<input type="text" id="dgiResolutionEFacExp" name="dgiResolutionEFacExp" class="form__field" placeholder="" />
-						</div>
-					</div>
-					<div class="row mb-1">
-    					<div class="form__group field w-100 d-flex" style="margin: auto;">
-    						<label class="mt-2 col-4">Resolución EFactura Cuenta Ajena</label>
-							<input type="text" id="dgiResolutionCtaAjena" name="dgiResolutionCtaAjena" class="form__field" placeholder="" />
-						</div>
-					</div>
-					<div class="row mb-1">
-    					<div class="form__group field w-100 d-flex" style="margin: auto;">
-    						<label class="mt-2 col-4">Resolución EBoleta de Entrada</label>
-							<input type="text" id="dgiResolutionEBolEntrada" name="dgiResolutionEBolEntrada" class="form__field" placeholder="" />
-						</div>
-					</div>
-
-					<div class="row d-flex flex-row-reverse">
-						<button class="btn btn-success">Guardar</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
 </div>

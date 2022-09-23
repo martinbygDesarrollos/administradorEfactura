@@ -206,7 +206,7 @@ function loadCaesDetailsCompanies( rut ){
 	sendAsyncPost("getCaesByCompanie", {companie:rut})
 	.then((response)=>{
 		if ( response.result == 2 ){
-			console.log(response);
+			//console.log(response);
 			for (var i = 0; i < response.listResult.length; i++) {
 				row = createRowsToCaesTableInfo(response.listResult[i]);
 				$("#tbodyCompaniesCaesData").append(row);
