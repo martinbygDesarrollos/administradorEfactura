@@ -147,14 +147,43 @@ return function (App $app){
 
             $data = $request->getParams();
             $lastid = $data['lastid'];
+            $namecompanie = $data['name'];
+            $namecompanieup = strtoupper($data['name']);
+            $companies = array();
+
+            if ( isset($namecompanie) && $namecompanie != "" ){
+
+                foreach ( $_SESSION['companiesList'] as $key => $value) {
+                   $pos = strpos($value->razonSocial, $namecompanie);
+                   $pos1 = strpos($value->razonSocial, $namecompanieup);
+                   $pos2 = strpos($value->rut, $namecompanie);
 
 
-            $response->companiesList = array_slice($_SESSION['companiesList'],$lastid,15);
+                    if ($pos !== false || $pos1 !== false || $pos2 !== false) {
 
-            if ($lastid + 15 > count($_SESSION['companiesList'])){
-                $lastid = count($_SESSION['companiesList']);
-            } else
-                $lastid = $lastid + 15;
+                        array_push($companies, $value);
+                    }
+                }
+
+                $response->companiesList = array_slice($companies,$lastid,15);
+
+
+                if ($lastid + 15 > count($companies)){
+                    $lastid = count($companies);
+                } else
+                    $lastid = $lastid + 15;
+            }
+            else{
+                $response->companiesList = array_slice($_SESSION['companiesList'],$lastid,15);
+
+                if ($lastid + 15 > count($_SESSION['companiesList'])){
+                    $lastid = count($_SESSION['companiesList']);
+                } else
+                    $lastid = $lastid + 15;
+            }
+
+
+
 
 
 
@@ -167,6 +196,40 @@ return function (App $app){
 
 
     $app->post('/loadCompaniesByName', function ($request, $response, $args) use ($container, $companiesController){
+
+        if ( $_SESSION['mailUserLogued'] ){
+            $response = new \stdClass();
+            $response->result = 2;
+
+            $companies = array();
+
+            $data = $request->getParams();
+            $namecompanie = $data['name'];
+            $namecompanieup = strtoupper($data['name']);
+
+            if ( isset($namecompanie) && $namecompanie != "" ){
+
+                foreach ( $_SESSION['companiesList'] as $key => $value) {
+                   $pos = strpos($value->razonSocial, $namecompanie);
+                   $pos1 = strpos($value->razonSocial, $namecompanieup);
+                   $pos2 = strpos($value->rut, $namecompanie);
+
+
+                    if ($pos !== false || $pos1 !== false || $pos2 !== false) {
+                        array_push($companies, $value);
+                    }
+                }
+            }
+
+
+            $response->companiesList = $companies;
+            return json_encode($response);
+        }else json_encode(["result"=>0]);
+    });
+
+
+
+    $app->post('/loadCompaniesByStatus', function ($request, $response, $args) use ($container, $companiesController){
 
         if ( $_SESSION['mailUserLogued'] ){
             $response = new \stdClass();
