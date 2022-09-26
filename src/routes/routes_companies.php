@@ -160,7 +160,7 @@ return function (App $app){
 
             $response->lastid = $lastid;
             return json_encode($response);
-        }else json_encode(["result"=>0]);
+        }else return json_encode(["result"=>2]);
     });
 
 
