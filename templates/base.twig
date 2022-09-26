@@ -16,6 +16,7 @@
 	<link rel="stylesheet" type="text/css" href="{{ path_for('Start')}}styles/stylesDefault/containerTable.css{{ version }}">
 	<link rel="stylesheet" type="text/css" href="{{ path_for('Start')}}styles/inputsForm.css{{ version }}">
 	<link rel="stylesheet" type="text/css" href="{{ path_for('Start')}}styles/simpleMessage.css{{ version }}">
+	<link rel="stylesheet" type="text/css" href="{{ path_for('Start')}}styles/buttonUp.css{{ version }}">
 	<title>{% block title %}Administrador{% endblock %}</title>
 </head>
 <body class="d-flex flex-column" style="background-image: url('{{ path_for('Start')}}img/backGround.png'); background-repeat: no-repeat; background-attachment: fixed; background-size: cover;">
@@ -43,6 +44,9 @@
 	</div>
 	{% include("slider.twig") %}
 	{% include("footer.twig")%}
+	<div>
+		<button class="btn btn-sm shadow-lg buttonUp" id="buttonUp" onclick="backInit()" title="Ir al inicio"><i class="fas fa-arrow-up"></i></button>
+	</div>
 	<div id="snackbar" class="fade">
 		<button type="button" class="close" accesskey="x" aria-label="Close" id="snackbarButton">
 			<span aria-hidden="true">&times;</span>

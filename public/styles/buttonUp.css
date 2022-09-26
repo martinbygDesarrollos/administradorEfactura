@@ -1,6 +1,21 @@
+.buttonUp i{
+    color: white;
+}
+
 .buttonUp{
+    background-color: var(--color-primario);
     margin: 1%;
-    position: sticky;
-    left: 100%;
-    font-size:1.5rem;
+    position: fixed;
+    left: 95%;
+    font-size: 1rem;
+    padding: 0.2rem;
+    z-index: 1020;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 1rem;
+    bottom: 1vw;
+}
+
+.buttonUp:hover{
+    background-color: black;
 }

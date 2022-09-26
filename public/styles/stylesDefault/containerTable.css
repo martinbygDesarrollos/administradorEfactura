@@ -31,8 +31,8 @@
 }
 
 .containerTable::-webkit-scrollbar-thumb {
-  background-color: #37A398;
-  border: 2px solid #1D635D;
+  background-color: var(--color-primario);
+  border: 2px solid var(--color-primario);
 }
 
 .containerTable::-webkit-scrollbar-track {
@@ -43,39 +43,17 @@
   table-layout: fixed;
 }
 
-
-/*las tablas con la clase table2 son las tablas que al hacer clic en una fila sucede una accion*/
-.table2 tbody tr:hover{
-  background-color:#F5F3F3;
-  cursor: pointer;
-}
-
-/*cuando el cursor pasa encima de el elemento que tiene esta clase se cambia el cursor*/
-.pointerToHover:hover{
-  cursor: pointer;
-}
-
-.removedElement{
-  display:none;
-}
-
 @media (max-width: 1200px) {
   .table{
     table-layout: auto;
   }
-  .notShow{
-    display:none;
-  }
+
   .card-body{
     padding:0.5rem;
   }
 }
 
 @media (max-width: 768px) {
-
-  .notShowInPhone{
-    display:none;
-  }
 
   .containerTable::-webkit-scrollbar {
     display:none;

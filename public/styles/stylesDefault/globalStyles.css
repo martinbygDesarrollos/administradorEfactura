@@ -1,5 +1,10 @@
 :root {
-  --containertable-height: 75vh;
+    --containertable-height: 75vh;
+
+    --color-secundario:#37A398; /*verde celeste*/
+    --color-secundario-opacidad:#37A39899;
+
+    --color-primario:#1D635D; /*verde azul color principal*/
 }
 
 html,
@@ -14,62 +19,24 @@ body {
     flex-shrink: none;
 }
 
-.border-template{
-    border: 0.5px solid #bdc3c7;
-    border-radius: 2px;
-}
-
 /* color principal de fondo  */
 .background-template-color{
-    background-color: #37A398;
-}
-
-/* color secundario de fondo */
-.background-template-color2{
-    background-color: #63BBB2;
-}
-
-/* color de fondo segun el texto  */
-.background-template-text{
-    background-color: #1D635D;
+    background-color: var(--color-secundario);
 }
 
 /* color de texto segun el fondo */
 .text-template-background{
-    color: #1D635D;
+    color: var(--color-primario);
 }
 
 /* color de texto principal */
 .text-template-color{
-    color:  #F5F3F3;
-}
-
-.progressBar{
-  animation-name: loadProgress;
-  animation-duration: 2s;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
-  animation-direction: alternate;
+    color:  white;
 }
 
 a[aria-selected="true"]{
-    background-color: #37A398;
-}
-
-@keyframes loadProgress{
-  from {
-    width: 0%;
-}
-to {
-    width: 100%;
-}
-}
-
-.turnI{
-    animation-name: rotation;
-    animation-duration: 3s;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
+    background-color: var(--color-secundario);
+    color: white;
 }
 
 #v-pills-tab a{
