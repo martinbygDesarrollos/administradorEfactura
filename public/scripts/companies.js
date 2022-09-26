@@ -4,6 +4,8 @@ var companiesList = null;
 var lastid = 0;
 var textToSearch = null;
 
+var statusFilter = null;
+
 
 $(document).ready(()=>{
 	$('#containerCompanies').on('scroll', function() {
@@ -88,7 +90,7 @@ function selectCompanie( companieRut, companieName ){
 
 function loadCompanies(){
 
-	sendAsyncPost("loadCompanies", {lastid:lastid})
+	sendAsyncPost("loadCompanies", {lastid:lastid, name:textToSearch})
 	.then((response)=>{
 		if ( response.result == 2 ){
 			companiesList = response.companiesList;
@@ -269,7 +271,10 @@ function changeColorpickerSec (value){
 function searchCompaniesFromList(text){
 	if ( text.length >= 3 ){
 		$("#tbodyCompaniesList").empty();
-		sendAsyncPost("loadCompaniesByName", {name:text})
+		lastid = 0;
+		textToSearch = text
+		loadCompanies();
+		/*sendAsyncPost("loadCompaniesByName", {name:text})
 		.then((response)=>{
 			if ( response.result == 2 ){
 				companiesList = response.companiesList;
@@ -283,10 +288,58 @@ function searchCompaniesFromList(text){
 			}else if ( response.result == 0 ){
 				window.location.href = getSiteURL() + "cerrar-session";
 			}
-		})
+		})*/
 	}else{
+		textToSearch = "";
 		$("#tbodyCompaniesList").empty();
 		lastid = 0;
 		loadCompanies();
 	}
+}
+
+
+function loadCompaniesByStatus(){
+
+}
+
+
+
+function selectAllOpFilter (idForm){
+
+	event.stopPropagation();
+	$('#'+idForm+' div input').each(function(index, element) {
+		element.checked = true;
+   	})
+
+}
+
+
+function unselectOpFilter(idForm){
+
+	event.stopPropagation();
+	$('#'+idForm+' div input').each(function(index, element) {
+		element.checked = false;
+   	})
+
+}
+
+
+function formFilter(idForm){
+
+	statusFilter = "";
+
+	$('#'+idForm+' div input').each(function(index, element) {
+		if (element.checked){
+			statusFilter += element.value + ", ";
+		}
+   	})
+
+	statusFilter = statusFilter.substr( 0, statusFilter.length -2);
+	if ( statusFilter.length > 0 ){
+		lastid = 0;
+		$('#tbodyCompaniesList').empty();
+		loadCompaniesByStatus();
+
+	}else $('#tbodyCompaniesList').empty();
+
 }

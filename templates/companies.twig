@@ -19,70 +19,74 @@
 				</div>
 				<tr>
 					<th>Razón social</th>
-					<th scope="col">
+					<th>
 						<div class="dropdown" id="dopdownClientFilter" >
 
 
-					        <button type="button" class="buttonNoStyle dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="dropdownMenu">
+					        <button type="button" class="buttonNoStyle dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="dropdownStatusFilter">
 					        	Estado
 					        	<span class="material-icons fa-sm">filter_list</span>
 					        </button>
 
 
-					        <div id="idOrderBudgetClientFilter" class="dropdown-menu" aria-labelledby="dropdownMenu">
+					        <div id="idOrderBudgetClientFilter" class="dropdown-menu" aria-labelledby="dropdownStatusFilter">
 
-					          <div class="text-center">
+								<div class="text-center d-flex">
 
-					            <div class="subtexto divAsAnchor" onclick="selectAllOpBudgetListClientFilter()">
-					            	Seleccionar todo
-					            </div>
+									<div class="subtexto divAsAnchor" onclick="selectAllOpFilter('idFormBudgetListClientFilter')">
+										Seleccionar todo
+									</div>
 
-					            <p class="subtexto" style="color: #007bff;text-decoration: none;display:inline-block;">-</p>
+									<p class="subtexto" style="color: #007bff;text-decoration: none;display:inline-block;">-</p>
 
-					            <div class="subtexto divAsAnchor" onclick="unselectOpBudgetListClientFilter()">
-					            	Borrar
-					            </div>
-					          </div>
+									<div class="subtexto divAsAnchor" onclick="unselectOpFilter('idFormBudgetListClientFilter')">
+									Borrar
+									</div>
+								</div>
 
 
-					        <form id="idFormBudgetListClientFilter" >
-					        	<div class="overflow-auto" style="height:20vh;">
-					            	<div class="dropdown-item">
-					            		<label >Pendiente usuario</label>
-					            	</div>
-						            <div class="dropdown-item">
-						            	<label>Pendiente postulación</label>
+						        <form id="idFormBudgetListClientFilter" >
+						        	<div class="overflow-auto" style="height:20vh;">
+						            	<div class="dropdown-item">
+						            		<input type="checkbox" checked name="" value="">
+						            		<label >Pendiente usuario</label>
+						            	</div>
+							            <div class="dropdown-item">
+							            	<input type="checkbox" checked name="" value="">
+							            	<label>Pendiente postulación</label>
+							            </div>
+							            <div class="dropdown-item">
+							            	<input type="checkbox" checked name="" value="">
+							            	<label>Pendiente aprobación</label>
+							            </div>
+							            <div class="dropdown-item">
+							            	<input type="checkbox" checked name="" value="">
+							            	<label>Pendiente certificación</label>
+							            </div>
+							            <div class="dropdown-item">
+							            	<input type="checkbox" checked name="" value="">
+							            	<label>Pendiente resolución</label>
+							            </div>
+							            <div class="dropdown-item">
+							            	<input type="checkbox" checked name="" value="">
+							            	<label>Emisor habilitado</label>
+							            </div>
+							            <div class="dropdown-item">
+							            	<input type="checkbox" checked name="" value="">
+							            	<label>Emisor no habilitado</label>
+							            </div>
+							            <div class="dropdown-item">
+							            	<input type="checkbox" checked name="" value="">
+							            	<label>En espera para comenzar</label>
+							            </div>
+						        	</div>
+						            <div class="d-flex float-right mr-4">
+						            	<button type="button" name="" class="btn btn-light"onclick="$('#dropdownStatusFilter').dropdown('hide')">Cancelar</button>
+						            	<button type="button" name="" class="btn btn-success" onclick="formFilter('idFormBudgetListClientFilter')">Aceptar</button>
 						            </div>
-						            <div class="dropdown-item">
-						            	<label>Pendiente aprobación</label>
-						            </div>
-						            <div class="dropdown-item">
-						            	<label>Pendiente certificación</label>
-						            </div>
-						            <div class="dropdown-item">
-						            	<label>Pendiente resolución</label>
-						            </div>
-						            <div class="dropdown-item">
-						            	<label>Emisor habilitado</label>
-						            </div>
-						            <div class="dropdown-item">
-						            	<label>Emisor no habilitado</label>
-						            </div>
-						            <div class="dropdown-item">
-						            	<label>En espera para comenzar</label>
-						            </div>
-					        	</div>
-					            <div class="d-flex float-right mr-4">
-					              <button type="button" name="" class="btn btn-light"onclick="$('#dropdownMenu').dropdown('hide')">Cancelar</button>
-					              <button type="button" name="" class="btn btn-success" onclick="formBudgetListClientFilter()">Aceptar</button>
-					            </div>
-
-
-					    	</form>
-
-
-				        </div>
-				      </div>
+						    	</form>
+					    	</div>
+				      	</div>
 			    	</th>
 					<th>Vencimientos</th>
 					<th>CAEs disponibles</th>
