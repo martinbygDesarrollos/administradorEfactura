@@ -196,6 +196,19 @@ class ctr_companies{
 		return $responseCompanies;
 
 	}
+
+
+
+
+	public function loadImage( $rut, $data ){
+
+		$restController = new ctr_rest();
+		$responseCompanies = $restController->loadImage($rut, $data);
+		return $responseCompanies;
+
+	}
+
+
 }
 
 

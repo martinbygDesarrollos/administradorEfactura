@@ -83,6 +83,13 @@ class sendPetition{
 	}
 
 
+
+	public function cargarLogo ($rut, $token, $data){
+		$thisClass = new sendPetition();
+		return $thisClass->prepareAndSendCurl("PUT", "company/".$rut."/logo", $token, $data);
+	}
+
+
 	public function prepareAndSendCurl($typeMethod, $method, $token, $data){
 		$thisClass = new sendPetition();
 		$curlPetition = curl_init(URL_REST . $method);
