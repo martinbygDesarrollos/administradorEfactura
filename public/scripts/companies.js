@@ -90,7 +90,9 @@ function selectCompanie( companieRut, companieName ){
 
 function loadCompanies(){
 
-	sendAsyncPost("loadCompanies", {lastid:lastid, name:textToSearch})
+	filter = [textToSearch,statusFilter];
+
+	sendAsyncPost("loadCompanies", {lastid:lastid, filter:filter})
 	.then((response)=>{
 		if ( response.result == 2 ){
 			companiesList = response.companiesList;
@@ -298,11 +300,6 @@ function searchCompaniesFromList(text){
 }
 
 
-function loadCompaniesByStatus(){
-
-}
-
-
 
 function selectAllOpFilter (idForm){
 
@@ -325,7 +322,6 @@ function unselectOpFilter(idForm){
 
 
 function formFilter(idForm){
-
 	statusFilter = "";
 
 	$('#'+idForm+' div input').each(function(index, element) {
@@ -338,7 +334,7 @@ function formFilter(idForm){
 	if ( statusFilter.length > 0 ){
 		lastid = 0;
 		$('#tbodyCompaniesList').empty();
-		loadCompaniesByStatus();
+		loadCompanies();
 
 	}else $('#tbodyCompaniesList').empty();
 

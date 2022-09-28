@@ -1,0 +1,25 @@
+.dropdown{
+  display: inline-block;
+}
+
+.dropdown-toggle::after{
+  display:none;
+}
+
+.buttonNoStyle{
+  all: unset;
+  cursor: pointer;
+}
+
+.divAsAnchor{
+  color: #007bff;
+  text-decoration: none;
+  background-color: transparent;
+  cursor:pointer;
+  display:inline-block;
+}
+
+.divAsAnchor:hover{
+  color: #15c;
+  text-decoration: underline;
+}

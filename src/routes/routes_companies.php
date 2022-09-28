@@ -147,8 +147,17 @@ return function (App $app){
 
             $data = $request->getParams();
             $lastid = $data['lastid'];
-            $namecompanie = $data['name'];
-            $namecompanieup = strtoupper($data['name']);
+
+            $filter = $data['filter'];
+            $namecompanie = $filter[0];
+            $namecompanieup = strtoupper($filter[0]);
+
+            $status = $filter[1];$arrayStatus = array();
+            if ( isset($status) && $status != "" ){
+                $arrayStatus = explode(", ", $status);
+            }
+
+
             $companies = array();
 
             if ( isset($namecompanie) && $namecompanie != "" ){
@@ -161,7 +170,17 @@ return function (App $app){
 
                     if ($pos !== false || $pos1 !== false || $pos2 !== false) {
 
-                        array_push($companies, $value);
+                        if ( isset($status) && $status != "" ){
+                            $posStatus = strpos($value->estado, $status);
+
+                            if ($posStatus !== false){
+                                array_push($companies, $value);
+
+                            }
+
+                        }else{
+                            array_push($companies, $value);
+                        }
                     }
                 }
 
@@ -172,6 +191,30 @@ return function (App $app){
                     $lastid = count($companies);
                 } else
                     $lastid = $lastid + 15;
+            }
+            else if ( isset($arrayStatus) && count($arrayStatus) >0 ){
+
+                foreach ( $_SESSION['companiesList'] as $key => $value) {
+                    foreach ($arrayStatus as $valStatus) {
+                        $posStatus = strpos($value->estado, $valStatus);
+
+                        if ($posStatus !== false){
+                            array_push($companies, $value);
+
+                        }
+                    }
+
+
+                }
+
+                $response->companiesList = array_slice($companies,$lastid,15);
+
+
+                if ($lastid + 15 > count($companies)){
+                    $lastid = count($companies);
+                } else
+                    $lastid = $lastid + 15;
+
             }
             else{
                 $response->companiesList = array_slice($_SESSION['companiesList'],$lastid,15);
