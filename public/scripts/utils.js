@@ -179,3 +179,14 @@ function getCurrentDate(){
 	date = year+'-'+month+'-'+day;
 	return date;
 }
+
+
+
+function backInit(){
+
+	$('.containerTable').scrollTop(0);
+	$('.tableCustomScroll').scrollTop(0);
+	document.body.scrollTop = 0;
+  	document.documentElement.scrollTop = 0;
+
+}
