@@ -46,6 +46,8 @@ $("#formCompanieDetails").submit((e)=>{
 
 
 	formData.append("rut", rutSelected);
+	formData.append("codDgi", $("#selectBranchCompanieDetails").val());
+
 
 	sendAsyncPostForm("changeCompanieData", formData)
 	.then(( response )=>{
@@ -61,6 +63,29 @@ $("#formCompanieDetails").submit((e)=>{
 
 
 
+$("#formCompanieColors").submit((e)=>{
+
+	e.preventDefault();
+
+	var formData = new FormData(document.getElementById("formCompanieColors"));
+	let rutSelected = $("#textRutCompanieSelected").text();
+
+
+	formData.append("rut", rutSelected);
+	formData.append("codDgi", $("#selectBranchCompanieDetails").val());
+
+
+	sendAsyncPostForm("changeCompanieColor", formData)
+	.then(( response )=>{
+		console.log(response);
+		if (response.result == 2){
+			window.location.reload();
+		}else if ( response.result == 0 ){
+			window.location.href = getSiteURL() + "cerrar-session";
+		}
+	})
+
+});
 
 
 
@@ -252,9 +277,14 @@ function datachanged(){
 	$("#buttonSubmitCompanieDetails").removeAttr("disabled");
 }
 
+function datachangedColors(){
+	dataIsChanged = true;
+	$("#buttonSubmitCompanieColors").removeAttr("disabled");
+}
+
 function changeColorpickerPrincipal (value){
 
-	datachanged();
+	datachangedColors();
 
 	$("#tdBranchDataColorpicker").val(value);
 	$("#tdBranchDataColor").val(value);
@@ -263,7 +293,7 @@ function changeColorpickerPrincipal (value){
 
 function changeColorpickerSec (value){
 
-	datachanged();
+	datachangedColors();
 
 	$("#tdBranchDataColorpicker2").val(value);
 	$("#tdBranchDataColor2").val(value);

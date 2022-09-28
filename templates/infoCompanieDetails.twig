@@ -1,4 +1,4 @@
-<div class="tab-pane fade active show" id="branch-data" role="tabpanel">
+<div class="tab-pane active show" id="branch-data" role="tabpanel">
 	<div class="containerTable">
 		<form method="POST" id="formCompanieDetails">
 	    	<table class="table">
@@ -48,17 +48,11 @@
 			<br><br>
 
 			<table class="table">
-	    		<tbody id="tbodyCompaniesPrincipalData">
+	    		<tbody id="">
 
 					<tr>
 						<div class="form__group field">
 							<input type="text" id="tdBranchDataNombre" name="nombre" class="form__field" onchange="datachanged()" placeholder="Nombre comercial" />
-						</div>
-					</tr>
-					<tr>
-						<div class="form__group field">
-							<div class="pl-5 pb-1" id="tdBranchDataLogo"></div>
-							<input type="file" onchange="datachanged()" name="logo" placeholder="Logo" />
 						</div>
 					</tr>
 					<tr>
@@ -94,18 +88,6 @@
 					<tr>
 						<div class="form__group field">
 							<input type="text" id="tdBranchDataWeb" name="sitio" class="form__field" onchange="datachanged()" placeholder="Sitio web" />
-						</div>
-					</tr>
-					<tr>
-						<div class="form__group field d-flex">
-							<input type="color" id="tdBranchDataColorpicker" name="color1" onchange="changeColorpickerPrincipal(this.value)" class="form__field_colorpicker m-2">
-							<input type="text" id="tdBranchDataColor" name="color1" class="form__field" onchange="changeColorpickerPrincipal(this.value)" placeholder="Color principal" />
-						</div>
-					</tr>
-					<tr>
-						<div class="form__group field d-flex">
-							<input type="color" id="tdBranchDataColorpicker2" onchange="changeColorpickerSec(this.value)"  class="form__field_colorpicker m-2" name="color2">
-							<input type="text" id="tdBranchDataColor2" name="color2" class="form__field" onchange="changeColorpickerSec(this.value)"  placeholder="Color secundario" />
 						</div>
 					</tr>
 	    		</tbody>

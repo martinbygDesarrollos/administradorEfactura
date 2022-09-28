@@ -374,6 +374,19 @@ return function (App $app){
 
 
 
+    $app->post('/changeCompanieColor', function ($request, $response, $args) use ($container, $companiesController){
+
+        if ( $_SESSION['mailUserLogued'] ){
+            $response = new \stdClass();
+
+            $data = $request->getParams();
+            $response = $companiesController->changeCompanieColors($data);
+            return json_encode($response);
+
+        }else return json_encode(["result"=>0]);
+    });
+
+
     //cambiar estado de la empresa
     $app->post('/changeStatusCompanie', function ($request, $response, $args) use ($container, $companiesController){
 

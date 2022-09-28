@@ -129,6 +129,16 @@ class ctr_companies{
 	}
 
 
+	public function changeCompanieColors( $data ){
+
+		$restController = new ctr_rest();
+
+		$responseCompanies = $restController->changeCompanieColors($data);
+		return $responseCompanies;
+
+	}
+
+
 	public function changeStatusCompanie($newStatus, $rut){
 
 		$companieController = new ctr_companies();
