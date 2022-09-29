@@ -144,7 +144,7 @@ function statusDescription( valueStatus ){
 function getButtonByStatus( valueStatus ){
 
 	switch (valueStatus) {
-		case 1:
+		case 1: return '<span class="badge">Pendiente usuario</span>';
 		case 2: return '<span class="badge" style="background-color: #F44336">Pendiente postulación</span>';
 		case 3: return '<span class="badge" style="background-color: #FF9800">Pendiente aprobación</span>'; //ff9800
 		case 4: return '<span class="badge" style="background-color: #4CAF50">Pendiente certificación</span>'; //4CAF50 4CAF50
