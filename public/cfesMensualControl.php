@@ -9,7 +9,7 @@ $connection = new mysqli(DB_HOST, DB_USR, DB_PASS, DB_DB) or die("No se puede co
 $connection->set_charset("utf8");
 if($connection){
 	echo nl2br("Conexión base de datos\n");
-	$query = $connection->prepare("SELECT tokenRest FROM `usuarios` WHERE correo = 'desarrollo@byg.uy'");
+	$query = $connection->prepare("SELECT tokenRest FROM `usuarios` WHERE correo = 'guillermo@gargano.com.uy'");
 	$query->execute();
 	$result = $query->get_result();
 	$tokenRest = $result->fetch_object()->tokenRest;
@@ -142,8 +142,9 @@ foreach ($arrayCompanies as $companie) {
 			"otros" => $otros
 		);
 
+
 		$vouchersJson = json_encode($arrayCountVouchers);
-		$sql = "INSERT INTO `uso_cfes` (`rut`, `datos`, `periodo`) VALUES (".$companie['rut'].", '".$vouchersJson."', '202209')";
+		$sql = "INSERT INTO `uso_cfes` (`rut`, `datos`, `periodo`) VALUES (".$companie['rut'].", '".$vouchersJson."', ".substr($from,0,-2).")";
 		$query = $connection->prepare($sql);
 		$query->execute();
 		$result = $query->get_result();
