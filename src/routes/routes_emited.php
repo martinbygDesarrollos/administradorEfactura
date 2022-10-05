@@ -41,6 +41,22 @@ return function (App $app){
         }else return json_encode(["result"=>0]);
 
     });
+
+
+
+
+    $app->post('/getReportsByCompanie', function ($request, $response, $args) use ($container, $emitedController){
+
+        if ( $_SESSION['mailUserLogued'] ){
+
+            $_SESSION['rutUserLogued'];
+
+            $response = $emitedController->getReportsByCompanie($rut);
+            return json_encode($response);
+
+        }else return json_encode(["result"=>0]);
+
+    });
 }
 
 ?>

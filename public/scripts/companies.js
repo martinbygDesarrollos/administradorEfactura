@@ -19,10 +19,11 @@ $(document).ready(()=>{
 
 	getDateLastCfeReceipt();
 
+	getReportsByCompanie();
 })
 
 
-function getDateLastCfeReceipt(){
+async function getDateLastCfeReceipt(){
 
 	sendAsyncPost("getDateLastCfeReceipt")
 	.then((response)=>{
@@ -368,4 +369,16 @@ function formFilter(idForm){
 
 	}else $('#tbodyCompaniesList').empty();
 
+}
+
+
+
+
+async function getReportsByCompanie(){
+
+	sendAsyncPost("getReportsByCompanie")
+	.then((response)=>{
+		console.log(response);
+
+	})
 }

@@ -44,6 +44,16 @@ class ctr_emited{
 		}
 
 	}
+
+	public function getReportsByCompanie($rut){
+		$vouchersClass = new vouchers();
+
+		var_dump("procesar datos del uso de los comprobantes");
+
+		$responseCompany = $vouchersClass->getReportsByCompanie( $rut );
+		return $responseCompany;
+
+	}
 }
 
 

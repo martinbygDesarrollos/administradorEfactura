@@ -9,12 +9,16 @@
 				<a class="btn" data-toggle="pill" href="#caes-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">CAES</a>
 				<a class="btn " data-toggle="pill" href="#resoluciones-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Resoluciones</a>
 				<a class="btn " data-toggle="pill" href="#facturacion-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Facturación</a>
+				<a class="btn " data-toggle="pill" href="#estadisticas-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Estadísticas</a>
 			</div>
 		</div>
 		<div class="card-body">
 			<div class="tab-content">
 				<!-- EMPRESA -->
 				{% include("infoCompanieDetails.twig") %}
+
+				<!-- LOGO Y COLORES -->
+				{% include("otherInfoCompanie.twig") %}
 
 				<!-- COLORES -->
 				{% include("infoCompanieColors.twig") %}
@@ -41,6 +45,9 @@
 
 				<!-- FACTURACION -->
 				{% include("emited.twig") %}
+
+				<!-- ESTADÍSTICAS -->
+				{% include("infoCompanieReports.twig") %}
 			</div>
 		</div>
 	</div>
