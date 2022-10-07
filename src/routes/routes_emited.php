@@ -48,9 +48,9 @@ return function (App $app){
     $app->post('/getReportsByCompanie', function ($request, $response, $args) use ($container, $emitedController){
 
         if ( $_SESSION['mailUserLogued'] ){
-
-            $_SESSION['rutUserLogued'];
-
+            $data = $request->getParams();
+            $rut = $_SESSION['rutUserLogued'];
+            $periodo = $data['date'];
             $response = $emitedController->getReportsByCompanie($rut);
             return json_encode($response);
 

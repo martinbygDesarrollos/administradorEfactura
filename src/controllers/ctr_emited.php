@@ -1,6 +1,6 @@
 <?php
 
-//require_once '../src/class/utils.php';
+require_once '../src/class/vouchers.php';
 require_once 'ctr_rest.php';
 
 
@@ -48,7 +48,7 @@ class ctr_emited{
 	public function getReportsByCompanie($rut){
 		$vouchersClass = new vouchers();
 
-		var_dump("procesar datos del uso de los comprobantes");
+		//var_dump("procesar datos del uso de los comprobantes");
 
 		$responseCompany = $vouchersClass->getReportsByCompanie( $rut );
 		return $responseCompany;

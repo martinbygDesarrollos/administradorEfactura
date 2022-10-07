@@ -376,9 +376,20 @@ function formFilter(idForm){
 
 async function getReportsByCompanie(){
 
-	sendAsyncPost("getReportsByCompanie")
+	let periodo = $("idSelectDateReports");
+	sendAsyncPost("getReportsByCompanie", {date:periodo})
 	.then((response)=>{
 		console.log(response);
 
+		if (response.result == 2){
+
+
+			for (const [key, value] of Object.entries(response.objectResult)) {
+				$("#tbodyCompaniesReports").append("<tr><td>"+tableCfeType(key)+"</td><td>"+value+"</td></tr>");
+			}
+
+		}else{
+			$("#tbodyCompaniesReports").empty();
+		}
 	})
 }
