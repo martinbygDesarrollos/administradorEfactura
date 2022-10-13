@@ -64,13 +64,13 @@ function showMessage(result, message){
 		console.log("result 1");
 		x.className = "show";
 		x.style = "background-color: #FF9800DD;";
-		setTimeout(function(){ x.className = "fade" }, 5000);
+		setTimeout(function(){ x.className = "fade" }, 30000);
 	}
 	else if( result == 2 ){
 		console.log("result 2");
 		x.className = "show";
 		x.style = "background-color: #4CAF50DD;";
-		setTimeout(function(){ x.className = "fade"; x.style = ""; }, 2000);
+		setTimeout(function(){ x.className = "fade"; x.style = ""; }, 10000);
 	}
 
 
