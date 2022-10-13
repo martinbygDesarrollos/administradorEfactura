@@ -20,6 +20,15 @@ $(document).ready(()=>{
 	getDateLastCfeReceipt();
 
 	getReportsByCompanie();
+
+	horizontalnav = $("#idDivHorizontalNav").height();
+	footer = $("#sticky-footer").height();
+
+	contentHeight = $(document).height() - horizontalnav - footer;
+
+	$("#idDivcontentCompanie").css('height', contentHeight);
+	$("#idDivcontentCompanie").css('max-height', contentHeight);
+
 })
 
 
@@ -376,7 +385,7 @@ function formFilter(idForm){
 
 async function getReportsByCompanie(){
 
-	let periodo = $("idSelectDateReports");
+	/*let periodo = $("idSelectDateReports");
 	sendAsyncPost("getReportsByCompanie", {date:periodo})
 	.then((response)=>{
 		console.log(response);
@@ -391,5 +400,5 @@ async function getReportsByCompanie(){
 		}else{
 			$("#tbodyCompaniesReports").empty();
 		}
-	})
+	})*/
 }
