@@ -1,6 +1,7 @@
 .htaccess
 index.php
 public/.htaccess
+public/files/
 src/config.php
 *.txt
 *tmp*

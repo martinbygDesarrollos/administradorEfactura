@@ -77,6 +77,12 @@ class ctr_emited{
 						array_push($comprobantes, $imported);
 
 					}
+					else if ($value == "application/x-zip-compressed"){
+
+						$imported = $emitedControler->importXmlEmitedZip($files['nameFileCfeXml']["name"][$index], file_get_contents($files['nameFileCfeXml']["tmp_name"][$index]));
+						array_push($comprobantes, $imported);
+
+					}
 				}else{
 					array_push($arrayErrors, "Archivo ".$files['nameFileCfeXml']["name"][$index]." error ".$files['nameFileCfeXml']["error"][$index]);
 				}
@@ -91,9 +97,18 @@ class ctr_emited{
 			return $response;
 		}
 
-		$arrayData = array("comprobantes" => $comprobantes);
+		if ( count($comprobantes) > 0 ){
+			$arrayData = array("comprobantes" => $comprobantes);
+			$response = $restController->importCfeEmitedXml($arrayData);
 
-		$response = $restController->importCfeEmitedXml($arrayData);
+		}else{
+
+			array_push($arrayErrors, "No se encontraron archivos.");
+			$response->result = 1;
+			$response->message = $arrayErrors;
+			return $response;
+		}
+
 		return $response;
 
 	}
@@ -109,6 +124,63 @@ class ctr_emited{
 
 		return $comp;
 	}
+
+
+
+	public function importXmlEmitedZip($name, $content){
+		var_dump($name, substr($name, 0, -4));exit;
+
+		$response = new stdClass();
+		$emitedControler = new ctr_emited();
+		$folderPath = dirname(dirname(__DIR__)) . "/public/files/";
+
+
+		if ( strpos($name, ".zip") !== false ){
+
+			$zip = new ZipArchive();
+			$descompressFile = $zip->open($content);
+			if($descompressFile === TRUE){
+				$zip->extractTo($folderPath.DIRECTORY_SEPARATOR.substr($name, 0, -4));
+				$zip->close();
+			}
+
+			$listDir = array_diff(scandir($folderPath.DIRECTORY_SEPARATOR.substr($name, 0, -4)), array('..', '.'));
+			if(sizeof($listDir) > 0){
+				var_dump($listDir);exit;
+				foreach ($listDir as $item) {
+
+					if ( $item == "CfeEmitidos"){
+						$auxRespuesta = $emitedControler->importXmlEmitedZip($name, $content);
+						var_dump($auxRespuesta);
+					}
+			    }
+			}
+
+		}else if ( strpos($name, ".xml") !== false ){
+
+			$comp = array(
+				"idEnvio" => 1,
+				"xml" => $content
+			);
+
+			$response->result = 2;
+			$response->objectResult = $comp;
+			return $response;
+
+		}
+
+
+
+
+		unlink(dirname(dirname(__DIR__)) . "/public/files/");
+		mkdir(dirname(dirname(__DIR__)) . "/public/files/");
+		array_push($arrayErrors, "Aún no proceso archivos zip");
+
+
+	}
+
+
+
 }
 
 
