@@ -57,6 +57,20 @@ return function (App $app){
         }else return json_encode(["result"=>0]);
 
     });
+
+
+
+
+    $app->post('/importCfeEmitedXml', function ($request, $response, $args) use ($container, $emitedController){
+
+        if ( $_SESSION['mailUserLogued'] ){
+
+            $responseImport = $emitedController->importCfeEmitedXml($_FILES);
+            return json_encode( $responseImport );
+
+        }else return json_encode(["result"=>0]);
+
+    });
 }
 
 ?>

@@ -54,6 +54,61 @@ class ctr_emited{
 		return $responseCompany;
 
 	}
+
+
+
+
+	public function importCfeEmitedXml($files){  //$files puede ser un archivo solo o multiple .zip o .xml
+		$emitedControler = new ctr_emited();
+		$restController = new ctr_rest();
+		$response = new \stdClass();
+		$arrayErrors = array();
+
+		$comprobantes = array();
+		if (strlen($files['nameFileCfeXml']["name"][0]) > 0){
+
+			foreach ($files['nameFileCfeXml']["type"] as $index => $value) {
+
+
+				if ( $files['nameFileCfeXml']["error"][$index] == 0 ){
+					if ($value == "text/xml"){
+
+						$imported = $emitedControler->importXmlEmited( $files['nameFileCfeXml']["tmp_name"][$index] );
+						array_push($comprobantes, $imported);
+
+					}
+				}else{
+					array_push($arrayErrors, "Archivo ".$files['nameFileCfeXml']["name"][$index]." error ".$files['nameFileCfeXml']["error"][$index]);
+				}
+
+			}
+
+		}else{
+
+			array_push($arrayErrors, "No se encontraron archivos.");
+			$response->result = 1;
+			$response->message = $arrayErrors;
+			return $response;
+		}
+
+		$arrayData = array("comprobantes" => $comprobantes);
+
+		$response = $restController->importCfeEmitedXml($arrayData);
+		return $response;
+
+	}
+
+
+
+	public function importXmlEmited( $pathFile ){
+
+		$comp = array(
+			"idEnvio" => 1,
+			"xml" => file_get_contents($pathFile)
+		);
+
+		return $comp;
+	}
 }
 
 

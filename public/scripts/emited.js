@@ -50,12 +50,3 @@ function addRowToInsertCfeData(){
 	$("#rowsToInsertCfeData").append(newRow);
 
 }
-
-
-
-
-function clearXmlForm(){
-
-
-
-}

@@ -1,6 +1,6 @@
 {% extends "base.twig" %}
 {% block content %}
-<div class="w-100 row justify-between-content " style="max-height: var(--containertable-height);">
+<div class="w-100 row justify-between-content " id="idDivcontentCompanie">
 	<div class="card w-75" >
 		<div class="card-header bg-light">
 			<div class="nav d-flex nav-pills bordered" id="v-pills-tab" role="tablist" aria-orientation="horizontal">
@@ -10,6 +10,7 @@
 				<a class="btn " data-toggle="pill" href="#resoluciones-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Resoluciones</a>
 				<a class="btn " data-toggle="pill" href="#facturacion-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Facturación</a>
 				<a class="btn " data-toggle="pill" href="#estadisticas-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Estadísticas</a>
+				<a class="btn " data-toggle="pill" href="#importar-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Importación</a>
 			</div>
 		</div>
 		<div class="card-body">
@@ -48,6 +49,9 @@
 
 				<!-- ESTADÍSTICAS -->
 				{% include("infoCompanieReports.twig") %}
+
+				<!-- IMPORTAR XML -->
+				{% include("importCfeEmited.twig") %}
 			</div>
 		</div>
 	</div>
@@ -58,6 +62,7 @@
 <script type="text/javascript" src="{{ path_for('Start') }}scripts/statusCompanies.js{{ version }}"></script>
 <script type="text/javascript" src="{{ path_for('Start') }}scripts/resolutions.js{{ version }}"></script>
 <script type="text/javascript" src="{{ path_for('Start') }}scripts/emited.js{{ version }}"></script>
+<script type="text/javascript" src="{{ path_for('Start') }}scripts/importCfeEmited.js{{ version }}"></script>
 
 <script type="text/javascript">
 	$(document).ready(()=>{
