@@ -78,9 +78,11 @@ class ctr_emited{
 
 					}
 					else if ($value == "application/x-zip-compressed"){
+						$imported = $emitedControler->importXmlEmitedZip($files['nameFileCfeXml']["name"][$index], $files['nameFileCfeXml']["tmp_name"][$index]);
 
-						$imported = $emitedControler->importXmlEmitedZip($files['nameFileCfeXml']["name"][$index], file_get_contents($files['nameFileCfeXml']["tmp_name"][$index]));
-						array_push($comprobantes, $imported);
+						$comprobantes = array_merge($comprobantes, $imported);
+						$emitedControler->clearFolderPath(['public', 'files']);
+						mkdir(dirname(dirname(__DIR__)) . "/public/files/");
 
 					}
 				}else{
@@ -96,6 +98,7 @@ class ctr_emited{
 			$response->message = $arrayErrors;
 			return $response;
 		}
+
 
 		if ( count($comprobantes) > 0 ){
 			$arrayData = array("comprobantes" => $comprobantes);
@@ -117,9 +120,20 @@ class ctr_emited{
 
 	public function importXmlEmited( $pathFile ){
 
+		$data = file_get_contents($pathFile);
+		$data = str_replace('<?xml version="1.0" encoding="utf-8"?>', '', $data);
+
+		if ( strpos($data, "<?xml") !== false){
+			$response = new stdClass();
+			$response->result = 1;
+			$response->message = $pathFile.' contiente etiqueta xml distinta a <?xml version="1.0" encoding="utf-8"?>';
+			return $response;
+		}
+
+
 		$comp = array(
 			"idEnvio" => 1,
-			"xml" => file_get_contents($pathFile)
+			"xml" => $data
 		);
 
 		return $comp;
@@ -128,10 +142,12 @@ class ctr_emited{
 
 
 	public function importXmlEmitedZip($name, $content){
-		var_dump($name, substr($name, 0, -4));exit;
 
 		$response = new stdClass();
 		$emitedControler = new ctr_emited();
+
+
+		$arrayRespuesta = array();
 		$folderPath = dirname(dirname(__DIR__)) . "/public/files/";
 
 
@@ -140,46 +156,104 @@ class ctr_emited{
 			$zip = new ZipArchive();
 			$descompressFile = $zip->open($content);
 			if($descompressFile === TRUE){
-				$zip->extractTo($folderPath.DIRECTORY_SEPARATOR.substr($name, 0, -4));
+				$zip->extractTo($folderPath.substr($name, 0, -4).DIRECTORY_SEPARATOR);
 				$zip->close();
 			}
 
 			$listDir = array_diff(scandir($folderPath.DIRECTORY_SEPARATOR.substr($name, 0, -4)), array('..', '.'));
 			if(sizeof($listDir) > 0){
-				var_dump($listDir);exit;
 				foreach ($listDir as $item) {
 
-					if ( $item == "CfeEmitidos"){
-						$auxRespuesta = $emitedControler->importXmlEmitedZip($name, $content);
-						var_dump($auxRespuesta);
-					}
+					if ( $item == "CfeEmitidos" || ( strpos($item, ".xml") !== false ) ){
+						$newContent = $folderPath.substr($name, 0, -4).DIRECTORY_SEPARATOR.$item;
+						$auxRespuesta = $emitedControler->importXmlEmitedZip($item, $newContent);
+						$arrayRespuesta = array_merge($arrayRespuesta, $auxRespuesta);
+					}/*else{
+						var_dump("no es cfe emitidos ", $item);
+					}*/
 			    }
+				return $arrayRespuesta;
+
 			}
 
 		}else if ( strpos($name, ".xml") !== false ){
+			//var_dump("un archivo", $name);
+
+			$data = file_get_contents($pathFile);
+			$data = str_replace('<?xml version="1.0" encoding="utf-8"?>', '', $data);
+
 
 			$comp = array(
 				"idEnvio" => 1,
-				"xml" => $content
+				"xml" => $data
 			);
 
-			$response->result = 2;
-			$response->objectResult = $comp;
-			return $response;
+			array_push($arrayRespuesta, $comp);
+			//var_dump("archivo xml", $arrayRespuesta);exit;
+			return $arrayRespuesta;
 
+		}else{
+
+			$listDir = array_diff(scandir($content), array('..', '.'));
+			//var_dump("en una carpeta ", $listDir);
+			if(sizeof($listDir) > 0){
+				foreach ($listDir as $item) {
+
+					if ( $item == "CfeEmitidos" || ( strpos($item, ".xml") !== false ) ){
+						$newContent = $content . DIRECTORY_SEPARATOR . $item;
+						$auxRespuesta = $emitedControler->importXmlEmitedZip($item, $newContent);
+						//var_dump("retornando contenido de carpeta cfeemitidos");
+						$arrayRespuesta = array_merge($arrayRespuesta, $auxRespuesta);
+					}
+			    }
+				return $arrayRespuesta;
+
+			}else{
+				//var_dump("no es una carpeta ni zip ni xml ", $name);
+				return $arrayRespuesta;
+			}
 		}
-
-
-
-
-		unlink(dirname(dirname(__DIR__)) . "/public/files/");
-		mkdir(dirname(dirname(__DIR__)) . "/public/files/");
-		array_push($arrayErrors, "Aún no proceso archivos zip");
-
-
 	}
 
 
+
+
+
+	//FUNCION QUE BORRA TODO EL CONTENIDO DE UNA CARPETA QUE SE PASA POR PARAMETRO EN FORMATO DE ARRAY
+	//EJ ['public', 'files', 'contratos']
+	public function clearFolderPath($path){
+
+		$emitedControler = new ctr_emited();
+
+		$dir = dirname(dirname(__DIR__)); // "C:\xampp\htdocs\administradorEfactura"
+		foreach ($path as $value) {
+			$dir .= DIRECTORY_SEPARATOR . $value;
+		}
+
+		if (!file_exists($dir)) {
+	        return true;
+	    }
+
+	    if (!is_dir($dir)) {
+	        return unlink($dir);
+	    }
+
+	    foreach (scandir($dir) as $item) {
+	        if ($item == '.' || $item == '..') {
+	            continue;
+	        }
+
+	        array_push($path, $item);
+	        //var_dump($path);
+	        if (!$emitedControler->clearFolderPath($path)) {
+	            return false;
+	        }else {
+	        	array_pop($path);
+	    		//var_dump("pop",$path);
+	        }
+	    }
+	    return rmdir($dir);
+	}
 
 }
 
