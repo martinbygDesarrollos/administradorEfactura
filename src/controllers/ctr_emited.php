@@ -179,7 +179,7 @@ class ctr_emited{
 		}else if ( strpos($name, ".xml") !== false ){
 			//var_dump("un archivo", $name);
 
-			$data = file_get_contents($pathFile);
+			$data = file_get_contents($content);
 			$data = str_replace('<?xml version="1.0" encoding="utf-8"?>', '', $data);
 
 
