@@ -119,8 +119,18 @@ class ctr_emited{
 
 
 	public function importXmlEmited( $pathFile ){
+		$emitedControler = new ctr_emited();
 
 		$data = file_get_contents($pathFile);
+
+		$xml=simplexml_load_string($data) or die(false);
+		if ( $xml ){
+			$tipoCFE = (int)$xml->CFE->eFact->Encabezado->IdDoc->TipoCFE;
+			$serieCFE = (string)$xml->CFE->eFact->Encabezado->IdDoc->Serie;
+			$numeroCFE = (int)$xml->CFE->eFact->Encabezado->IdDoc->Nro;
+		}
+
+		$idEnvio = $emitedControler->calcIdEnvioCfeXml( $serieCFE, $tipoCFE, $numeroCFE);
 		$data = str_replace('<?xml version="1.0" encoding="utf-8"?>', '', $data);
 
 		if ( strpos($data, "<?xml") !== false){
@@ -132,7 +142,7 @@ class ctr_emited{
 
 
 		$comp = array(
-			"idEnvio" => 1,
+			"idEnvio" => $idEnvio,
 			"xml" => $data
 		);
 
@@ -178,15 +188,7 @@ class ctr_emited{
 
 		}else if ( strpos($name, ".xml") !== false ){
 			//var_dump("un archivo", $name);
-
-			$data = file_get_contents($content);
-			$data = str_replace('<?xml version="1.0" encoding="utf-8"?>', '', $data);
-
-
-			$comp = array(
-				"idEnvio" => 1,
-				"xml" => $data
-			);
+			$comp = $emitedControler->importXmlEmited($content);
 
 			array_push($arrayRespuesta, $comp);
 			//var_dump("archivo xml", $arrayRespuesta);exit;
@@ -253,6 +255,24 @@ class ctr_emited{
 	        }
 	    }
 	    return rmdir($dir);
+	}
+
+
+
+
+	public function calcIdEnvioCfeXml( $serieCFE, $tipoCFE, $numeroCFE){
+
+		$serieCharacters = str_split($serieCFE, 1);
+		$idEnvio = "";
+		foreach ($serieCharacters as $character) {
+			$idEnvio .= (int)"".ord($serieCFE);
+		}
+
+
+		$idEnvio .= (int) $tipoCFE;
+		$idEnvio .= (int) $numeroCFE;
+
+		return $idEnvio;
 	}
 
 }
