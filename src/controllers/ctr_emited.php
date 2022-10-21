@@ -117,17 +117,26 @@ class ctr_emited{
 	}
 
 
-
+	//funcion para procesar archivo xml y obtener contenido para enviar por rest a ormen
 	public function importXmlEmited( $pathFile ){
 		$emitedControler = new ctr_emited();
-
+		$tipoCFE = "";
+		$serieCFE = "";
+		$numeroCFE = "";
 		$data = file_get_contents($pathFile);
 
-		$xml=simplexml_load_string($data) or die(false);
-		if ( $xml ){
-			$tipoCFE = (int)$xml->CFE->eFact->Encabezado->IdDoc->TipoCFE;
-			$serieCFE = (string)$xml->CFE->eFact->Encabezado->IdDoc->Serie;
-			$numeroCFE = (int)$xml->CFE->eFact->Encabezado->IdDoc->Nro;
+		$xml = simplexml_load_string($data, "SimpleXMLElement", LIBXML_NOCDATA);
+		$json = json_encode($xml);
+		$array = json_decode($json,TRUE);
+
+		foreach ($array['CFE'] as $value) {
+			if ( isset($value["Encabezado"]) ){
+				$tipoCFE = $value["Encabezado"]['IdDoc']['TipoCFE'];
+				$serieCFE = $value["Encabezado"]['IdDoc']['Serie'];
+				$numeroCFE = $value["Encabezado"]['IdDoc']['Nro'];
+
+				error_log("obtener xml de ".$tipoCFE." ".$serieCFE."-".$numeroCFE);
+			}
 		}
 
 		$idEnvio = $emitedControler->calcIdEnvioCfeXml( $serieCFE, $tipoCFE, $numeroCFE);
@@ -150,7 +159,7 @@ class ctr_emited{
 	}
 
 
-
+	//funcion recursiva que procesa un zip y todos los archivos xml que esten en el zip o en carpeta "CfeEmitidos"
 	public function importXmlEmitedZip($name, $content){
 
 		$response = new stdClass();
@@ -259,20 +268,58 @@ class ctr_emited{
 
 
 
+	//para importar cfe se necesita enviar un idEnvio que identifique al comprobante
+	public function calcIdEnvioCfeXml( $serieCFE, $tipoCFE, $numeroCFE ){
 
-	public function calcIdEnvioCfeXml( $serieCFE, $tipoCFE, $numeroCFE){
+//		<TipoCFE>101</TipoCFE><Serie>A</Serie><Nro>3781</Nro>
+
+
+		$emitedControler = new ctr_emited();
 
 		$serieCharacters = str_split($serieCFE, 1);
 		$idEnvio = "";
+		$serie = "";
+		$numero = "";
+
+
 		foreach ($serieCharacters as $character) {
-			$idEnvio .= (int)"".ord($serieCFE);
+			$serieChar = (string) ord($serieCFE);
+
+			if( (3 - strlen($serieChar)) > 0){
+				$serieChar = $emitedControler->addCeroToString( $serieChar, (3 - strlen($serieChar)));
+			}
+			$serie .= $serieChar;
 		}
 
+		if( (6 - strlen($serie)) > 0){
+			$serie = $emitedControler->addCeroToString( $serie, (6 - strlen($serie)));
+		}
 
-		$idEnvio .= (int) $tipoCFE;
-		$idEnvio .= (int) $numeroCFE;
+		$idEnvio .= $serie;
+		$idEnvio .= (string) $tipoCFE;
+
+
+
+		if( (7 - strlen($numeroCFE)) > 0){
+			$numero = $emitedControler->addCeroToString( $numeroCFE, (7 - strlen($numeroCFE)));
+		}
+		$idEnvio .= (string) $numero;
+
 
 		return $idEnvio;
+	}
+
+
+	/*el ORD de cada letra de la serie con pad de 3 ceros a la izquierda
+	pad de 7 u 8 ceros del numero*/
+	public function addCeroToString( $string, $countCeros){
+		$newString = "";
+		for ($i=0; $i < $countCeros; $i++) {
+			$newString .= (string)"0";
+		}
+
+		$newString .= $string;
+		return $newString;
 	}
 
 }
