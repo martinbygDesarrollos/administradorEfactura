@@ -74,8 +74,9 @@ class ctr_emited{
 					if ($value == "text/xml"){
 
 						$imported = $emitedControler->importXmlEmited( $files['nameFileCfeXml']["tmp_name"][$index] );
-						array_push($comprobantes, $imported);
-
+						if ( $imported ){
+							array_push($comprobantes, $imported);
+						}
 					}
 					else if ($value == "application/x-zip-compressed"){
 						$imported = $emitedControler->importXmlEmitedZip($files['nameFileCfeXml']["name"][$index], $files['nameFileCfeXml']["tmp_name"][$index]);
@@ -99,7 +100,7 @@ class ctr_emited{
 			return $response;
 		}
 
-
+//var_dump($comprobantes);exit;
 		if ( count($comprobantes) > 0 ){
 			$arrayData = array("comprobantes" => $comprobantes);
 			$response = $restController->importCfeEmitedXml($arrayData);
@@ -129,33 +130,47 @@ class ctr_emited{
 		$json = json_encode($xml);
 		$array = json_decode($json,TRUE);
 
-		foreach ($array['CFE'] as $value) {
-			if ( isset($value["Encabezado"]) ){
-				$tipoCFE = $value["Encabezado"]['IdDoc']['TipoCFE'];
-				$serieCFE = $value["Encabezado"]['IdDoc']['Serie'];
-				$numeroCFE = $value["Encabezado"]['IdDoc']['Nro'];
+		if ( isset($array['CFE']) ){
+			//var_dump("si tengo cfe");
+			foreach ($array['CFE'] as $value) {
+				if ( isset($value["Encabezado"]) ){
+					$tipoCFE = $value["Encabezado"]['IdDoc']['TipoCFE'];
+					$serieCFE = $value["Encabezado"]['IdDoc']['Serie'];
+					$numeroCFE = $value["Encabezado"]['IdDoc']['Nro'];
 
-				error_log("obtener xml de ".$tipoCFE." ".$serieCFE."-".$numeroCFE);
+					$ruc = $value["Encabezado"]['Emisor']['RUCEmisor'];
+					if ( $ruc != $_SESSION['rutUserLogued'] ){
+						//var_dump("pero no es el emisor");
+
+						return null;
+					}
+
+					error_log("obtener xml de ".$tipoCFE." ".$serieCFE."-".$numeroCFE);
+				}
 			}
+
+			$idEnvio = $emitedControler->calcIdEnvioCfeXml( $serieCFE, $tipoCFE, $numeroCFE);
+			$data = str_replace('<?xml version="1.0" encoding="utf-8"?>', '', $data);
+
+			if ( strpos($data, "<?xml") !== false){
+				$response = new stdClass();
+				$response->result = 1;
+				$response->message = $pathFile.' contiente etiqueta xml distinta a <?xml version="1.0" encoding="utf-8"?>';
+				return $response;
+			}
+
+
+			$comp = array(
+				"idEnvio" => $idEnvio,
+				"xml" => $data
+			);
+			//var_dump("y devuelvo comprobante");
+			return $comp;
+
+
+		}else{
+			return null;
 		}
-
-		$idEnvio = $emitedControler->calcIdEnvioCfeXml( $serieCFE, $tipoCFE, $numeroCFE);
-		$data = str_replace('<?xml version="1.0" encoding="utf-8"?>', '', $data);
-
-		if ( strpos($data, "<?xml") !== false){
-			$response = new stdClass();
-			$response->result = 1;
-			$response->message = $pathFile.' contiente etiqueta xml distinta a <?xml version="1.0" encoding="utf-8"?>';
-			return $response;
-		}
-
-
-		$comp = array(
-			"idEnvio" => $idEnvio,
-			"xml" => $data
-		);
-
-		return $comp;
 	}
 
 
@@ -183,11 +198,13 @@ class ctr_emited{
 			if(sizeof($listDir) > 0){
 				foreach ($listDir as $item) {
 
-					if ( $item == "CfeEmitidos" || ( strpos($item, ".xml") !== false ) ){
+					//if ( $item == "CfeEmitidos" || ( strpos($item, ".xml") !== false ) ){
 						$newContent = $folderPath.substr($name, 0, -4).DIRECTORY_SEPARATOR.$item;
 						$auxRespuesta = $emitedControler->importXmlEmitedZip($item, $newContent);
-						$arrayRespuesta = array_merge($arrayRespuesta, $auxRespuesta);
-					}/*else{
+						if ( isset($auxRespuesta) ){
+							$arrayRespuesta = array_merge($arrayRespuesta, $auxRespuesta);
+						}
+					/*}else{
 						var_dump("no es cfe emitidos ", $item);
 					}*/
 			    }
@@ -198,30 +215,38 @@ class ctr_emited{
 		}else if ( strpos($name, ".xml") !== false ){
 			//var_dump("un archivo", $name);
 			$comp = $emitedControler->importXmlEmited($content);
-
-			array_push($arrayRespuesta, $comp);
+			if ( isset($comp) ){
+				array_push($arrayRespuesta, $comp);
+			}
 			//var_dump("archivo xml", $arrayRespuesta);exit;
 			return $arrayRespuesta;
 
 		}else{
 
-			$listDir = array_diff(scandir($content), array('..', '.'));
-			//var_dump("en una carpeta ", $listDir);
-			if(sizeof($listDir) > 0){
-				foreach ($listDir as $item) {
+			if( is_dir($content)){
+				$listDir = array_diff(scandir($content), array('..', '.'));
+				//var_dump("en una carpeta ", $listDir);
+				if(sizeof($listDir) > 0){
+					foreach ($listDir as $item) {
 
-					if ( $item == "CfeEmitidos" || ( strpos($item, ".xml") !== false ) ){
-						$newContent = $content . DIRECTORY_SEPARATOR . $item;
-						$auxRespuesta = $emitedControler->importXmlEmitedZip($item, $newContent);
-						//var_dump("retornando contenido de carpeta cfeemitidos");
-						$arrayRespuesta = array_merge($arrayRespuesta, $auxRespuesta);
-					}
-			    }
-				return $arrayRespuesta;
+						//if ( $item == "CfeEmitidos" || ( strpos($item, ".xml") !== false ) ){
+							$newContent = $content . DIRECTORY_SEPARATOR . $item;
+							$auxRespuesta = $emitedControler->importXmlEmitedZip($item, $newContent);
+							//var_dump("retornando contenido de carpeta cfeemitidos");
+							if ( isset($auxRespuesta) ){
 
+								$arrayRespuesta = array_merge($arrayRespuesta, $auxRespuesta);
+							}
+						//}
+				    }
+					return $arrayRespuesta;
+
+				}else{
+					//var_dump("no es una carpeta ni zip ni xml ", $name);
+					return $arrayRespuesta;
+				}
 			}else{
-				//var_dump("no es una carpeta ni zip ni xml ", $name);
-				return $arrayRespuesta;
+				return null;
 			}
 		}
 	}

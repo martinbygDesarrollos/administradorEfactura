@@ -303,22 +303,26 @@ class ctr_rest{
 		if ( $token->result == 2 ){
 			$tokenRest = $token->objectResult->tokenRest;
 			$petitionResponse = $petitionClass->importCfeEmitedXml($_SESSION['rutUserLogued'], $tokenRest, $data);
-			$petitionResponse = json_decode($petitionResponse);
+			if ( isset($petitionResponse) && $petitionResponse != "" ){
+				$petitionResponse = json_decode($petitionResponse);
+				if ( $petitionResponse->resultado->codigo == 200 ){
 
-			if ( $petitionResponse->resultado->codigo == 200 ){
+					$response->result = 2;
+					$response->message = $petitionResponse->resultado->error;
 
-				$response->result = 2;
-				$response->message = $petitionResponse->resultado->error;
-
-				foreach ($petitionResponse->resultadosImportacion as $result) {
-					if ($result->ok == 0){
-						$response->result = 1;
-						$response->message .= "\n".$result->error;
+					foreach ($petitionResponse->resultadosImportacion as $result) {
+						if ($result->ok == 0){
+							$response->result = 1;
+							$response->message .= "\n".$result->error;
+						}
 					}
+				}else{
+					$response->result = 1;
+					$response->message = $petitionResponse->resultado->error;
 				}
 			}else{
 				$response->result = 1;
-				$response->message = $petitionResponse->resultado->error;
+				$response->message = "No se obtuvo respuesta desde EFactura.";
 			}
 		}else return $token;
 
