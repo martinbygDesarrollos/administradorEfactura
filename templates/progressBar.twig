@@ -1,0 +1,34 @@
+<div class="modal fade" id="progressbar" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="progress">
+          <div class="progress-bar progress-bar progress-bar-striped bg-info" id="progressbarLine" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  function loadPrograssBar(){
+    //console.log("loadPrograssBar")
+    var width = 0;
+    var progressId = setInterval(() => {
+      if(width < 100){
+        //console.log("loadPrograssBar setInterval")
+        width++;
+        document.getElementById("progressbarLine").style.width = width + "%";
+      }else if(width == 100){
+        width = 0;
+      }
+    }, 20);
+
+    return progressId;
+  }
+
+  function stopPrograssBar(progressBarIdProcess){
+    //console.log("stopPrograssBar");
+    clearInterval(progressBarIdProcess);
+  }
+
+</script>
