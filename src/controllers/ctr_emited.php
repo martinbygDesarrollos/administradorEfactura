@@ -126,9 +126,7 @@ class ctr_emited{
 		$numeroCFE = "";
 		$data = file_get_contents($pathFile);
 
-		$xml = simplexml_load_string($data, "SimpleXMLElement", LIBXML_NOCDATA);
-		$json = json_encode($xml);
-		$array = json_decode($json,TRUE);
+		$array = $emitedControler->processDataXml($data);
 
 		if ( isset($array['CFE']) ){
 			//var_dump("si tengo cfe");
@@ -138,8 +136,9 @@ class ctr_emited{
 					$serieCFE = $value["Encabezado"]['IdDoc']['Serie'];
 					$numeroCFE = $value["Encabezado"]['IdDoc']['Nro'];
 
-					$ruc = $value["Encabezado"]['Emisor']['RUCEmisor'];
-					if ( $ruc != $_SESSION['rutUserLogued'] ){
+					$ruc = $value["Encabezado"]['Receptor']['DocRecep'];
+					//$_SESSION['rutUserLogued']
+					if ( $ruc != "211361090011" ){
 						//var_dump("pero no es el emisor");
 
 						return null;
@@ -169,6 +168,7 @@ class ctr_emited{
 
 
 		}else{
+			//var_dump($pathFile, $data, $array);
 			return null;
 		}
 	}
@@ -345,6 +345,63 @@ class ctr_emited{
 
 		$newString .= $string;
 		return $newString;
+	}
+
+
+
+	//llega un contenido de un comprobante que tenga la etiqueta CFE, que sería un xml pero puede tener un prefijo (namespace) o no y lo convierto en array
+	function processDataXml( $data ){
+		$xml_simple = simplexml_load_string($data, "SimpleXMLElement", LIBXML_NOCDATA);
+		$json = json_encode($xml_simple);
+		$array = json_decode($json,TRUE);
+
+		if ( isset($array["CFE"]) ){
+			return $array;
+		}else{
+			$xml_nsad = new SimpleXMLElement($data, LIBXML_NOERROR, false, 'nsAd', true);
+			$json_nsad = json_encode($xml_nsad);
+			$array = json_decode($json_nsad,TRUE);
+
+			if ( isset($array["CFE"]) ){
+				return $array;
+			}else{
+
+				$xml_ns0 = new SimpleXMLElement($data, LIBXML_NOERROR, false, 'ns0', true);
+				$json_ns0 = json_encode($xml_ns0);
+				$array = json_decode($json_ns0,TRUE);
+
+				if ( isset($array["CFE"]) ){
+					return $array;
+				}else{
+
+					$xml_uycfe = new SimpleXMLElement($data, LIBXML_NOERROR, false, 'uycfe', true);
+					$json_uycfe = json_encode($xml_uycfe);
+					$array = json_decode($json_uycfe,TRUE);
+
+					if ( isset($array["CFE"]) ){
+						return $array;
+					}else{
+						$xml_xsd = new SimpleXMLElement($data, LIBXML_NOERROR, false, 'xsd', true);
+						$json_xsd = json_encode($xml_xsd);
+						$array = json_decode($json_xsd,TRUE);
+
+						if ( isset($array["CFE"]) ){
+							return $array;
+						}else{
+							$xml_ds = new SimpleXMLElement($data, LIBXML_NOERROR, false, 'ds', true);
+							$json_ds = json_encode($xml_ds);
+							$array = json_decode($json_ds,TRUE);
+
+							if ( isset($array["CFE"]) ){
+								return $array;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return array();
 	}
 
 }

@@ -91,8 +91,9 @@ class sendPetition{
 
 
 	public function importCfeEmitedXml($rut, $token, $data){
+		//var_dump("en el send petition", $data);exit;
 		$thisClass = new sendPetition();
-		return $thisClass->prepareAndSendCurl("POST", "company/".$rut."/cfe/import/xml", $token, $data);
+		return $thisClass->prepareAndSendCurl("POST", "company/".$rut."/cfe/import/xml?cfesrecibidos=1", $token, $data);
 	}
 
 
