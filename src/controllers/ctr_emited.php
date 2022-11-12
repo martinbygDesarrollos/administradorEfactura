@@ -138,7 +138,7 @@ class ctr_emited{
 
 					$ruc = $value["Encabezado"]['Receptor']['DocRecep'];
 					//$_SESSION['rutUserLogued']
-					if ( $ruc != "211361090011" ){
+					if ( $ruc != $_SESSION['rutUserLogued'] ){
 						//var_dump("pero no es el emisor");
 
 						return null;
