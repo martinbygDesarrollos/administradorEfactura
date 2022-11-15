@@ -330,6 +330,47 @@ class ctr_rest{
 
 	}
 
+
+
+	public function importCfeReceiptXml( $data ){
+
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+
+		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
+		if ( $token->result == 2 ){
+			$tokenRest = $token->objectResult->tokenRest;
+			$petitionResponse = $petitionClass->importCfeReceiptXml($_SESSION['rutUserLogued'], $tokenRest, $data);
+			if ( isset($petitionResponse) && $petitionResponse != "" ){
+				$petitionResponse = json_decode($petitionResponse);
+				if ( $petitionResponse->resultado->codigo == 200 ){
+
+					$response->result = 2;
+					$response->message = $petitionResponse->resultado->error;
+
+					foreach ($petitionResponse->resultadosImportacion as $result) {
+						if ($result->ok == 0){
+							$response->result = 1;
+							$response->message .= "\n".$result->error;
+						}
+					}
+				}else{
+					$response->result = 1;
+					$response->message = $petitionResponse->resultado->error;
+				}
+			}else{
+				$response->result = 1;
+				$response->message = "No se obtuvo respuesta desde EFactura.";
+			}
+		}else return $token;
+
+		return $response;
+
+	}
+
 }
 
 

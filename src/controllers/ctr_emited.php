@@ -64,7 +64,8 @@ class ctr_emited{
 		$response = new \stdClass();
 		$arrayErrors = array();
 
-		$comprobantes = array();
+		$comprobantesEmitidos = array();
+		$comprobantesRecibidos = array();
 		if (strlen($files['nameFileCfeXml']["name"][0]) > 0){
 
 			foreach ($files['nameFileCfeXml']["type"] as $index => $value) {
@@ -74,14 +75,22 @@ class ctr_emited{
 					if ($value == "text/xml"){
 
 						$imported = $emitedControler->importXmlEmited( $files['nameFileCfeXml']["tmp_name"][$index] );
-						if ( $imported ){
-							array_push($comprobantes, $imported);
+						if ( isset($imported) ){
+							//array_push($comprobantesEmitidos, $imported->emitidos);
+							//array_push($comprobantesRecibidos, $imported->recibidos);
+
+							$comprobantesEmitidos = array_merge($comprobantesEmitidos, $imported->emitidos);
+							$comprobantesRecibidos = array_merge($comprobantesRecibidos, $imported->recibidos);
 						}
 					}
 					else if ($value == "application/x-zip-compressed"){
 						$imported = $emitedControler->importXmlEmitedZip($files['nameFileCfeXml']["name"][$index], $files['nameFileCfeXml']["tmp_name"][$index]);
 
-						$comprobantes = array_merge($comprobantes, $imported);
+						if ( isset($imported) ){
+							$comprobantesEmitidos = array_merge($comprobantesEmitidos, $imported->emitidos);
+							$comprobantesRecibidos = array_merge($comprobantesRecibidos, $imported->recibidos);
+						}
+
 						$emitedControler->clearFolderPath(['public', 'files']);
 						mkdir(dirname(dirname(__DIR__)) . "/public/files/");
 
@@ -100,12 +109,19 @@ class ctr_emited{
 			return $response;
 		}
 
-//var_dump($comprobantes);exit;
-		if ( count($comprobantes) > 0 ){
-			$arrayData = array("comprobantes" => $comprobantes);
+		//var_dump($comprobantesEmitidos, $comprobantesRecibidos);exit;
+		if ( count($comprobantesEmitidos) > 0 ){
+			$arrayData = array("comprobantes" => $comprobantesEmitidos);
 			$response = $restController->importCfeEmitedXml($arrayData);
+		}
 
-		}else{
+
+		if( count($comprobantesRecibidos) > 0 ){
+			$arrayData = array("comprobantes" => $comprobantesRecibidos);
+			$response = $restController->importCfeReceiptXml($arrayData);
+		}
+
+		if ( count($comprobantesEmitidos) < 0 && count($comprobantesRecibidos) < 0 ){
 
 			array_push($arrayErrors, "No se encontraron archivos.");
 			$response->result = 1;
@@ -120,6 +136,10 @@ class ctr_emited{
 
 	//funcion para procesar archivo xml y obtener contenido para enviar por rest a ormen
 	public function importXmlEmited( $pathFile ){
+		$response = new stdClass();
+		$response->emitidos = array();
+		$response->recibidos = array();
+
 		$emitedControler = new ctr_emited();
 		$tipoCFE = "";
 		$serieCFE = "";
@@ -127,6 +147,9 @@ class ctr_emited{
 		$data = file_get_contents($pathFile);
 
 		$array = $emitedControler->processDataXml($data);
+
+		$emisor = false;
+		$receptor = false;
 
 		if ( isset($array['CFE']) ){
 			//var_dump("si tengo cfe");
@@ -136,13 +159,13 @@ class ctr_emited{
 					$serieCFE = $value["Encabezado"]['IdDoc']['Serie'];
 					$numeroCFE = $value["Encabezado"]['IdDoc']['Nro'];
 
-					$ruc = $value["Encabezado"]['Receptor']['DocRecep'];
+					$rucemisor = $value["Encabezado"]['Emisor']['RUCEmisor'];
+					$rucreceptor = $value["Encabezado"]['Receptor']['DocRecep'];
 					//$_SESSION['rutUserLogued']
-					if ( $ruc != $_SESSION['rutUserLogued'] ){
-						//var_dump("pero no es el emisor");
-
-						return null;
-					}
+					//"211361090011"
+					if ( $rucemisor == $_SESSION['rutUserLogued'] ){ $emisor = true; }
+					else if ( $rucreceptor == $_SESSION['rutUserLogued'] ){ $receptor = true; }
+					else return $response;
 
 					error_log("obtener xml de ".$tipoCFE." ".$serieCFE."-".$numeroCFE);
 				}
@@ -152,9 +175,9 @@ class ctr_emited{
 			$data = str_replace('<?xml version="1.0" encoding="utf-8"?>', '', $data);
 
 			if ( strpos($data, "<?xml") !== false){
-				$response = new stdClass();
+				/*$response = new stdClass();
 				$response->result = 1;
-				$response->message = $pathFile.' contiente etiqueta xml distinta a <?xml version="1.0" encoding="utf-8"?>';
+				$response->message = $pathFile.' contiente etiqueta xml distinta a <xml version="1.0" encoding="utf-8">';*/
 				return $response;
 			}
 
@@ -164,7 +187,17 @@ class ctr_emited{
 				"xml" => $data
 			);
 			//var_dump("y devuelvo comprobante");
-			return $comp;
+			//return $comp;
+
+			if ( $emisor ){
+				array_push($response->emitidos, $comp);
+				return $response;
+			}
+			else if ( $receptor ){
+				array_push($response->recibidos, $comp);
+				return $response;
+			}
+			else return null;
 
 
 		}else{
@@ -178,6 +211,9 @@ class ctr_emited{
 	public function importXmlEmitedZip($name, $content){
 
 		$response = new stdClass();
+		$response->emitidos = array();
+		$response->recibidos = array();
+
 		$emitedControler = new ctr_emited();
 
 
@@ -202,13 +238,14 @@ class ctr_emited{
 						$newContent = $folderPath.substr($name, 0, -4).DIRECTORY_SEPARATOR.$item;
 						$auxRespuesta = $emitedControler->importXmlEmitedZip($item, $newContent);
 						if ( isset($auxRespuesta) ){
-							$arrayRespuesta = array_merge($arrayRespuesta, $auxRespuesta);
+							$response->emitidos = array_merge($response->emitidos, $auxRespuesta->emitidos);
+							$response->recibidos = array_merge($response->recibidos, $auxRespuesta->recibidos);
 						}
 					/*}else{
 						var_dump("no es cfe emitidos ", $item);
 					}*/
 			    }
-				return $arrayRespuesta;
+				return $response;
 
 			}
 
@@ -216,10 +253,13 @@ class ctr_emited{
 			//var_dump("un archivo", $name);
 			$comp = $emitedControler->importXmlEmited($content);
 			if ( isset($comp) ){
-				array_push($arrayRespuesta, $comp);
+				//array_push($arrayRespuesta, $comp);
+				$response->emitidos = array_merge($response->emitidos, $comp->emitidos);
+				$response->recibidos = array_merge($response->recibidos, $comp->recibidos);
 			}
 			//var_dump("archivo xml", $arrayRespuesta);exit;
-			return $arrayRespuesta;
+			//return $arrayRespuesta;
+			return $response;
 
 		}else{
 
@@ -235,15 +275,17 @@ class ctr_emited{
 							//var_dump("retornando contenido de carpeta cfeemitidos");
 							if ( isset($auxRespuesta) ){
 
-								$arrayRespuesta = array_merge($arrayRespuesta, $auxRespuesta);
+								//$arrayRespuesta = array_merge($arrayRespuesta, $auxRespuesta);
+								$response->emitidos = array_merge($response->emitidos, $auxRespuesta->emitidos);
+								$response->recibidos = array_merge($response->recibidos, $auxRespuesta->recibidos);
 							}
 						//}
 				    }
-					return $arrayRespuesta;
+					return $response;
 
 				}else{
 					//var_dump("no es una carpeta ni zip ni xml ", $name);
-					return $arrayRespuesta;
+					return $response;
 				}
 			}else{
 				return null;
@@ -327,7 +369,7 @@ class ctr_emited{
 
 		if( (7 - strlen($numeroCFE)) > 0){
 			$numero = $emitedControler->addCeroToString( $numeroCFE, (7 - strlen($numeroCFE)));
-		}
+		}else $numero = $numeroCFE;
 		$idEnvio .= (string) $numero;
 
 
