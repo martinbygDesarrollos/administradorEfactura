@@ -7,6 +7,7 @@ require_once 'ctr_rest.php';
 class ctr_users{
 
 	public function login( $mail, $password ){
+		$time_start = microtime(true);
 		$restController = new ctr_rest();
 		$usersClass = new users();
 		$response = new \stdClass();
@@ -32,6 +33,11 @@ class ctr_users{
 			$_SESSION['mailUserLogued'] = null;
 		}
 
+
+
+		$time_end = microtime(true);
+		$time = sprintf("%01.3f",$time_end - $time_start);
+		error_log("login tiempo: ".$time);
 		return $response;
 	}
 
