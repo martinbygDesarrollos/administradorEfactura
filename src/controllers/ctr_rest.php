@@ -307,8 +307,10 @@ class ctr_rest{
 				$petitionResponse = json_decode($petitionResponse);
 				if ( $petitionResponse->resultado->codigo == 200 ){
 
+					//agregar ["idEnvio"]=>int(651110001890) en la respuesta
 					$response->result = 2;
 					$response->message = $petitionResponse->resultado->error;
+					$response->resultadosImportacion = $petitionResponse->resultadosImportacion;
 
 					foreach ($petitionResponse->resultadosImportacion as $result) {
 						if ($result->ok == 0){
@@ -350,6 +352,7 @@ class ctr_rest{
 
 					$response->result = 2;
 					$response->message = $petitionResponse->resultado->error;
+					$response->resultadosImportacion = $petitionResponse->resultadosImportacion;
 
 					foreach ($petitionResponse->resultadosImportacion as $result) {
 						if ($result->ok == 0){

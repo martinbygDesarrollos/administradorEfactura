@@ -101,6 +101,12 @@ return function (App $app){
             $company = $companiesController->getCompaniesData($args['rut'])->objectResult;
             $args["company"] = $company;
 
+            $args['files'] = false;
+            if (count(scandir(dirname(dirname(__DIR__)) . "/public/files/")) > 2) {
+                $args['files'] = true;
+            }
+
+
             return $this->view->render($response, "companyDetail.twig", $args);
         }else return $response->withRedirect($request->getUri()->getBaseUrl());
     });

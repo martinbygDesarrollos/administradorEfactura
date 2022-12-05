@@ -109,17 +109,46 @@ class ctr_emited{
 			return $response;
 		}
 
-		//var_dump($comprobantesEmitidos, $comprobantesRecibidos);exit;
 		if ( count($comprobantesEmitidos) > 0 ){
 			$arrayData = array("comprobantes" => $comprobantesEmitidos);
-			$response = $restController->importCfeEmitedXml($arrayData);
+			$responseEmited = $restController->importCfeEmitedXml($arrayData);
 		}
 
 
 		if( count($comprobantesRecibidos) > 0 ){
 			$arrayData = array("comprobantes" => $comprobantesRecibidos);
-			$response = $restController->importCfeReceiptXml($arrayData);
+			$responseReceipt = $restController->importCfeReceiptXml($arrayData);
 		}
+
+		if ( isset($responseEmited) || isset($responseReceipt) ){
+
+			foreach ($responseEmited->resultadosImportacion as $key => $value) {
+				if ($value->ok != 0){
+
+					$fileName = $emitedControler->addCeroToString( $value->idEnvio, (16 - strlen($value->idEnvio)));
+
+					$file = dirname(dirname(__DIR__)).DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR.$fileName.".xml";
+
+					unlink($file);
+				}
+
+			}
+
+			foreach ($responseReceipt->resultadosImportacion as $key => $value) {
+				if ($value->ok != 0){
+
+					$fileName = $emitedControler->addCeroToString( $value->idEnvio, (16 - strlen($value->idEnvio)));
+
+					$file = dirname(dirname(__DIR__)).DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR.$fileName.".xml";
+
+					unlink($file);
+				}
+
+			}
+		}
+
+
+
 
 		if ( count($comprobantesEmitidos) < 0 && count($comprobantesRecibidos) < 0 ){
 
@@ -151,6 +180,7 @@ class ctr_emited{
 		$emisor = false;
 		$receptor = false;
 
+
 		if ( isset($array['CFE']) ){
 			//var_dump("si tengo cfe");
 			foreach ($array['CFE'] as $value) {
@@ -163,8 +193,8 @@ class ctr_emited{
 					$rucreceptor = $value["Encabezado"]['Receptor']['DocRecep'];
 					//$_SESSION['rutUserLogued']
 					//"211361090011"
-					if ( $rucemisor == $_SESSION['rutUserLogued'] ){ $emisor = true; }
-					else if ( $rucreceptor == $_SESSION['rutUserLogued'] ){ $receptor = true; }
+					if ( $rucemisor == "211361090011" ){ $emisor = true; }
+					else if ( $rucreceptor == "211361090011" ){ $receptor = true; }
 					else return $response;
 
 					error_log("obtener xml de ".$tipoCFE." ".$serieCFE."-".$numeroCFE);
@@ -186,8 +216,9 @@ class ctr_emited{
 				"idEnvio" => $idEnvio,
 				"xml" => $data
 			);
-			//var_dump("y devuelvo comprobante");
-			//return $comp;
+
+			//crear archivo y guardarlo en public temp
+			$resultCreate = $emitedControler->createTempFile($idEnvio.".xml", $data);
 
 			if ( $emisor ){
 				array_push($response->emitidos, $comp);
@@ -444,6 +475,16 @@ class ctr_emited{
 		}
 
 		return array();
+	}
+
+
+
+
+	function createTempFile($name, $data){
+
+
+		file_put_contents(dirname(dirname(__DIR__)) . "/public/temp/".$name, $data);
+
 	}
 
 }

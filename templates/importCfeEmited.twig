@@ -2,7 +2,15 @@
 	<form method="POST" id="idFormLoadCfeXml">
 		<div class="d-flex justify-content-between">
 			<input type="file" name="nameFileCfeXml[]" multiple accept=".zip,.xml">
-			<input type="submit" name="" class="btn btn-success" value="Importar">
+			<div>
+				{% if files %}
+				<input type="submit" name="" class="btn btn-success" value="Importar" disabled>
+				<button type="submit" name="" class="btn btn-success"><i class="fas fa-sync-alt"></i></button>
+				{% else %}
+				<input type="submit" name="" class="btn btn-success" value="Importar">
+				<button type="submit" name="" class="btn btn-success" disabled><i class="fas fa-sync-alt"></i></button>
+				{% endif %}
+			</div>
 		</div>
 	</form>
 </div>
