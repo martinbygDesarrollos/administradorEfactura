@@ -4,17 +4,21 @@ $(document).ready(()=>{
 
 
 function signIn(){
-	console.log("comunicar a ormen para el login");
+	document.getElementById("buttonConfirm").disabled = true;
 	let correo = $("#inputUser").val();
 	let contra = $("#inputPassword").val();
 
 	sendAsyncPost("login", {correo:correo, contra:contra})
 	.then(( response )=>{
-		console.log("respuesta del login", response);
 		if(response.result == 2){
+			document.getElementById("buttonConfirm").disabled = false;
 			window.location.href = getSiteURL();
 		}else if ( response.result == 0 ){
+			document.getElementById("buttonConfirm").disabled = false;
 			window.location.href = getSiteURL() + "cerrar-session";
+		}else{
+			document.getElementById("buttonConfirm").disabled = false;
+			showMessage(response.result, response.message);
 		}
 	})
 }
