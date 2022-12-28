@@ -112,12 +112,17 @@ class ctr_emited{
 		if ( count($comprobantesEmitidos) > 0 ){
 			$arrayData = array("comprobantes" => $comprobantesEmitidos);
 			$responseEmited = $restController->importCfeEmitedXml($arrayData);
+			$response->result = 2;
+			array_push($arrayErrors, "Comprobantes EMITIDOS procesados.");
 		}
 
 
 		if( count($comprobantesRecibidos) > 0 ){
 			$arrayData = array("comprobantes" => $comprobantesRecibidos);
 			$responseReceipt = $restController->importCfeReceiptXml($arrayData);
+			$response->result = 2;
+			array_push($arrayErrors, "Comprobantes RECIBIDOS procesados.");
+
 		}
 
 		if ( isset($responseEmited) || isset($responseReceipt) ){
@@ -130,6 +135,10 @@ class ctr_emited{
 					$file = dirname(dirname(__DIR__)).DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR.$fileName.".xml";
 
 					unlink($file);
+				}else{
+					$response->result = 1;
+					array_push($arrayErrors, $value->error);
+
 				}
 
 			}
@@ -142,15 +151,21 @@ class ctr_emited{
 					$file = dirname(dirname(__DIR__)).DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR.$fileName.".xml";
 
 					unlink($file);
+				}else{
+					$response->result = 1;
+					array_push($arrayErrors, $value->error);
+
 				}
 
 			}
+
+			$response->message = $arrayErrors;
 		}
 
 
 
 
-		if ( count($comprobantesEmitidos) < 0 && count($comprobantesRecibidos) < 0 ){
+		if ( count($comprobantesEmitidos) <= 0 && count($comprobantesRecibidos) <= 0 ){
 
 			array_push($arrayErrors, "No se encontraron archivos.");
 			$response->result = 1;
@@ -193,8 +208,8 @@ class ctr_emited{
 					$rucreceptor = $value["Encabezado"]['Receptor']['DocRecep'];
 					//$_SESSION['rutUserLogued']
 					//"211361090011"
-					if ( $rucemisor == $_SESSION['rutUserLogued'] ){ $emisor = true; }
-					else if ( $rucreceptor == $_SESSION['rutUserLogued'] ){ $receptor = true; }
+					if ( $rucemisor == "120068560010" ){ $emisor = true; }
+					else if ( $rucreceptor == "120068560010" ){ $receptor = true; }
 					else return $response;
 
 					error_log("obtener xml de ".$tipoCFE." ".$serieCFE."-".$numeroCFE);
@@ -424,6 +439,20 @@ class ctr_emited{
 
 	//llega un contenido de un comprobante que tenga la etiqueta CFE, que sería un xml pero puede tener un prefijo (namespace) o no y lo convierto en array
 	function processDataXml( $data ){
+
+
+
+		$xml=simplexml_load_string($data) or die(false);
+		if ( $xml ){
+
+
+			$json = json_encode($xml);
+			$array = json_decode($json,TRUE);
+			$array['CFE'] = $array;
+			return $array;
+		}
+
+
 		$xml_simple = simplexml_load_string($data, "SimpleXMLElement", LIBXML_NOCDATA);
 		$json = json_encode($xml_simple);
 		$array = json_decode($json,TRUE);
