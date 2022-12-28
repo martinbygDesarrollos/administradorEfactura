@@ -208,8 +208,8 @@ class ctr_emited{
 					$rucreceptor = $value["Encabezado"]['Receptor']['DocRecep'];
 					//$_SESSION['rutUserLogued']
 					//"211361090011"
-					if ( $rucemisor == "120068560010" ){ $emisor = true; }
-					else if ( $rucreceptor == "120068560010" ){ $receptor = true; }
+					if ( $rucemisor == $_SESSION['rutUserLogued'] ){ $emisor = true; }
+					else if ( $rucreceptor == $_SESSION['rutUserLogued']){ $receptor = true; }
 					else return $response;
 
 					error_log("obtener xml de ".$tipoCFE." ".$serieCFE."-".$numeroCFE);
