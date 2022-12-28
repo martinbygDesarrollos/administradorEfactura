@@ -109,6 +109,9 @@ class ctr_emited{
 			return $response;
 		}
 
+		$responseEmited = null;
+		$responseReceipt = null;
+
 		if ( count($comprobantesEmitidos) > 0 ){
 			$arrayData = array("comprobantes" => $comprobantesEmitidos);
 			$responseEmited = $restController->importCfeEmitedXml($arrayData);
@@ -130,11 +133,11 @@ class ctr_emited{
 			foreach ($responseEmited->resultadosImportacion as $key => $value) {
 				if ($value->ok != 0){
 
-					$fileName = $emitedControler->addCeroToString( $value->idEnvio, (16 - strlen($value->idEnvio)));
+					/*$fileName = $emitedControler->addCeroToString( $value->idEnvio, (16 - strlen($value->idEnvio)));
 
 					$file = dirname(dirname(__DIR__)).DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR.$fileName.".xml";
 
-					unlink($file);
+					unlink($file);*/
 				}else{
 					$response->result = 1;
 					array_push($arrayErrors, $value->error);
@@ -146,11 +149,11 @@ class ctr_emited{
 			foreach ($responseReceipt->resultadosImportacion as $key => $value) {
 				if ($value->ok != 0){
 
-					$fileName = $emitedControler->addCeroToString( $value->idEnvio, (16 - strlen($value->idEnvio)));
+					/*$fileName = $emitedControler->addCeroToString( $value->idEnvio, (16 - strlen($value->idEnvio)));
 
 					$file = dirname(dirname(__DIR__)).DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR.$fileName.".xml";
 
-					unlink($file);
+					unlink($file);*/
 				}else{
 					$response->result = 1;
 					array_push($arrayErrors, $value->error);
