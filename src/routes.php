@@ -12,10 +12,15 @@ return function (App $app) {
     $routesUsers = require_once __DIR__ . "/../src/routes/routes_users.php";
     $routesCompanies = require_once __DIR__ . "/../src/routes/routes_companies.php";
     $routesEmited = require_once __DIR__ . "/../src/routes/routes_emited.php";
+    $routesReceipt = require_once __DIR__ . "/../src/routes/routes_receipt.php";
+    $routesUsersCompanie = require_once __DIR__ . "/../src/routes/routes_users_companie.php";
 
     $routesUsers($app);
     $routesCompanies($app);
     $routesEmited($app);
+    $routesReceipt($app);
+    $routesUsersCompanie($app);
+
 
     //ruta de inicio
     $app->get('/', function ($request, $response, $args) use ($container, $companiesController) {
@@ -27,10 +32,10 @@ return function (App $app) {
             if( isset($_SESSION['companiesList'] ) ){
                 //aca cargar companies
                 $_SESSION['lastID'] = 0;
-                $args['companiesList'] = $_SESSION['companiesList'];
+                //$args['companiesList'] = $_SESSION['companiesList'];
 
                 if ( !isset($_SESSION['companieUserLogued']) && !isset($_SESSION['rutUserLogued'])){
-                    $objFirstCompanie = array_pop(array_reverse($args['companiesList']));
+                    $objFirstCompanie = array_pop(array_reverse($_SESSION['companiesList']));
 
                     $_SESSION['companieUserLogued'] = $objFirstCompanie->razonSocial;
                     $_SESSION['rutUserLogued'] = $objFirstCompanie->rut;
@@ -60,10 +65,10 @@ return function (App $app) {
                 //aca cargar companies
                 $_SESSION['companiesList'] = $companiesController->getCompanies()->listResult;
                 $_SESSION['lastID'] = 0;
-                $args['companiesList'] = $_SESSION['companiesList'];
+                //$args['companiesList'] = $_SESSION['companiesList'];
 
                 if ( !isset($_SESSION['companieUserLogued']) && !isset($_SESSION['rutUserLogued'])){
-                    $objFirstCompanie = array_pop(array_reverse($args['companiesList']));
+                    $objFirstCompanie = array_pop(array_reverse($_SESSION['companiesList']));
 
                     $_SESSION['companieUserLogued'] = $objFirstCompanie->razonSocial;
                     $_SESSION['rutUserLogued'] = $objFirstCompanie->rut;

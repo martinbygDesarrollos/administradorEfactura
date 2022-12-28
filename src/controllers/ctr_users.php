@@ -29,8 +29,10 @@ class ctr_users{
 
 		if ( $response->result == 2 ){
 			$_SESSION['mailUserLogued'] = $mail;
+			$_SESSION['permissionsUserLogued'] = $usersClass->getPermissionsByMail($mail);
 		}else{
 			$_SESSION['mailUserLogued'] = null;
+			$_SESSION['permissionsUserLogued'] = null;
 		}
 
 

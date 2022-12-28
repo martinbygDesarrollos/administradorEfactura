@@ -52,3 +52,19 @@ function addRowToInsertCfeData(){
 	$("#rowsToInsertCfeData").append(newRow);
 
 }
+
+
+
+
+function loadCompanyEmitidos(){
+
+//https://{{ef_host}}/efactura/company/{{ef_rut}}/cfe/emitidos?PageSize=30
+
+	/*sendAsyncPost("loadCompanyEmitidos", {lastid:lastid, page:pagenumber})
+	.then((response)=>{
+		console.log(response);
+	})*/
+
+
+
+}

@@ -10,92 +10,12 @@ return function (App $app){
     $container = $app->getContainer();
     $companiesController = new ctr_companies();
 
-
-	$app->get('/empresas', function ($request, $response, $args) use ($container, $companiesController){
-		$args['version'] = FECHA_ULTIMO_PUSH;
-
-		if ( isset($_SESSION['mailUserLogued']) ){
-            $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
-
-
-            if ( isset($_SESSION['companiesList']) ){
-                $_SESSION['lastID'] = 0;
-                $args['companiesList'] = $_SESSION['companiesList'];
-
-                if ( !isset($_SESSION['companieUserLogued']) && !isset($_SESSION['rutUserLogued'])){
-                    $objFirstCompanie = array_pop(array_reverse($args['companiesList']));
-
-                    $_SESSION['companieUserLogued'] = $objFirstCompanie->razonSocial;
-                    $_SESSION['rutUserLogued'] = $objFirstCompanie->rut;
-                }
-
-                if ( isset($_SESSION['companieUserLogued']) ){
-                    $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
-                }else{
-                    $_SESSION['companieUserLogued'] = null;
-                    $args['companieUserLogued'] = null;
-                }
-
-
-
-                $args["company"] = null;
-
-                if ( isset($_SESSION['rutUserLogued']) ){
-                    $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
-
-                    $company = $companiesController->getCompaniesData($_SESSION['rutUserLogued'])->objectResult;
-                    $args["company"] = $company;
-
-                }else{
-                    $_SESSION['rutUserLogued'] = null;
-                    $args['rutUserLogued'] = null;
-                }
-            }
-            else{
-
-                //aca cargar companies
-                $_SESSION['companiesList'] = $companiesController->getCompanies()->listResult;
-                $_SESSION['lastID'] = 0;
-                $args['companiesList'] = $_SESSION['companiesList'];
-
-                if ( !isset($_SESSION['companieUserLogued']) && !isset($_SESSION['rutUserLogued'])){
-                    $objFirstCompanie = array_pop(array_reverse($args['companiesList']));
-
-                    $_SESSION['companieUserLogued'] = $objFirstCompanie->razonSocial;
-                    $_SESSION['rutUserLogued'] = $objFirstCompanie->rut;
-                }
-
-                if ( isset($_SESSION['companieUserLogued']) ){
-                    $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
-                }else{
-                    $_SESSION['companieUserLogued'] = null;
-                    $args['companieUserLogued'] = null;
-                }
-
-                $args["company"] = null;
-
-                if ( isset($_SESSION['rutUserLogued']) ){
-                    $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
-
-                    $company = $companiesController->getCompaniesData($_SESSION['rutUserLogued'])->objectResult;
-                    $args["company"] = $company;
-
-                }else{
-                    $_SESSION['rutUserLogued'] = null;
-                    $args['rutUserLogued'] = null;
-                }
-
-            }
-
-			return $this->view->render($response, "companies.twig", $args);
-		}else return $response->withRedirect($request->getUri()->getBaseUrl());
-	})->setName("Companies");
-
     //ver el perfil/info detallada de la empresa
     $app->get('/empresas/{rut}', function ($request, $response, $args) use ($container, $companiesController){
         $args['version'] = FECHA_ULTIMO_PUSH;
         $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
         $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
+        $args['permisos'] = $_SESSION['permissionsUserLogued'];
         if ( isset($_SESSION['mailUserLogued']) ){
 
             $company = $companiesController->getCompaniesData($args['rut'])->objectResult;
@@ -110,19 +30,6 @@ return function (App $app){
             return $this->view->render($response, "companyDetail.twig", $args);
         }else return $response->withRedirect($request->getUri()->getBaseUrl());
     });
-
-
-
-    //seccion de comprobantes enviados, por ahora funcionamiento de reenvio de sobres
-    $app->get('/facturacion', function ($request, $response, $args) use ($container, $companiesController){
-        $args['version'] = FECHA_ULTIMO_PUSH;
-        $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
-        $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
-        if ( isset($_SESSION['mailUserLogued']) ){
-            return $this->view->render($response, "emited.twig", $args);
-        }else return $response->withRedirect($request->getUri()->getBaseUrl());
-    })->setName("Emited");
-
 
 
     //cambiar los datos de sesion del usuario

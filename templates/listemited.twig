@@ -1,0 +1,12 @@
+{% extends "base.twig" %}
+{% block head %}
+{% endblock %}
+{% block content %}
+{% if mailUserLogued %}
+<div class="card w-100">
+</div>
+{% endif %}
+{% block script %}
+<script type="text/javascript" src="{{ path_for('Start') }}scripts/emited.js{{ version }}"></script>
+{% endblock %}
+{% endblock %}

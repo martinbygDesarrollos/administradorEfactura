@@ -13,7 +13,7 @@ class ctr_rest{
 
 		if ( $petitionResponse->resultado->codigo == 200 ){
 			$petitionResponse->result = 2;
-			$petitionResponse->message = OK;
+			$petitionResponse->message = "OK";
 		}else {
 			$petitionResponse->result = 1;
 			$petitionResponse->message = $petitionResponse->resultado->error;
@@ -52,17 +52,50 @@ class ctr_rest{
 		$usersController = new ctr_users();
 		$response = new \stdClass();
 
-		$response->result = 1;
-		$response->objectResult = new \stdClass();
 
-		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
-		if ( $token->result == 2 ){
-			$tokenRest = $token->objectResult->tokenRest;
-			$petitionResponse = $petitionClass->getCompanyData($tokenRest, $rut);
-			$petitionResponse = json_decode($petitionResponse);
-			$response->result = 2;
-			$response->objectResult = $petitionResponse;
-		}else return $token;
+		if ( isset($_SESSION['company']) ){
+			//echo "hay companie en la session";
+			if ( $rut != $_SESSION['company']->rut){
+				//echo "el companie de la sesion y el que quiero son distintos";
+				$response->result = 1;
+				$response->objectResult = new \stdClass();
+
+				$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
+				if ( $token->result == 2 ){
+					$tokenRest = $token->objectResult->tokenRest;
+					$petitionResponse = $petitionClass->getCompanyData($tokenRest, $rut);
+					$petitionResponse = json_decode($petitionResponse);
+					$response->result = 2;
+					$response->objectResult = $petitionResponse;
+
+
+					$_SESSION['company'] = $petitionResponse;
+				}else return $token;
+
+			}else{
+				//echo "el companie que quiero y el que tengo en session es el mismo entonces no lo busco";
+				$response->result = 2;
+				$response->objectResult = $_SESSION['company'];
+			}
+		}else{
+
+			//echo "no tengo companie en la session";
+			$response->result = 1;
+			$response->objectResult = new \stdClass();
+
+			$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
+			if ( $token->result == 2 ){
+				$tokenRest = $token->objectResult->tokenRest;
+				$petitionResponse = $petitionClass->getCompanyData($tokenRest, $rut);
+				$petitionResponse = json_decode($petitionResponse);
+				$response->result = 2;
+				$response->objectResult = $petitionResponse;
+
+
+				$_SESSION['company'] = $petitionResponse;
+			}else return $token;
+		}
+
 
 		return $response;
 

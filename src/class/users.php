@@ -32,4 +32,13 @@ class users{
 		$response = $dataBaseClass->sendQuery($sql, array('s', $mail), "OBJECT");
 		return $response;
 	}
+
+	function getPermissionsByMail(){
+		$dataBaseClass = new DataBase();
+		$sql = "SELECT permisos FROM `usuarios` WHERE correo = ?";
+		$response = $dataBaseClass->sendQuery($sql, array('s', $mail), "OBJECT");
+		if ($response->result == 2 ){
+			return $response->objectResult->permisos;
+		}else return null;
+	}
 }
