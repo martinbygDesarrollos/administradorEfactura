@@ -354,10 +354,13 @@ class ctr_rest{
 				}else{
 					$response->result = 1;
 					$response->message = $petitionResponse->resultado->error;
+					$response->resultadosImportacion = array();
 				}
 			}else{
 				$response->result = 1;
 				$response->message = "No se obtuvo respuesta desde EFactura.";
+				$response->resultadosImportacion = array();
+
 			}
 		}else return $token;
 
