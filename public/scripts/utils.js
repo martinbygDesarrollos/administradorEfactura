@@ -113,11 +113,17 @@ function showReplyMessage(typeColour, message, buttonsucces, buttoncancel){
 		$('#modalColourResponse').addClass('alert-warning');
 
 	if ( typeof message == "object"){
+
 		let newMessage = "";
 		message.forEach(element => {
-			newMessage += element + "<br>";
+
+			row = '<tr><td>'+element+'</td></tr>';
+			$("#modalTableMessageResponse tbody").append(row);
+
+
+			//newMessage += element + "<br>";
 		});
-		$('#modalMessageResponse').html(newMessage);
+		//$('#modalMessageResponse').html(newMessage);
 	}else $('#modalMessageResponse').html(message);
 
 	$("#modalResponse").modal();

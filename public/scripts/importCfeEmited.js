@@ -18,7 +18,11 @@ $("#idFormLoadCfeXml").submit((e)=>{
 
 		$("#idButtonSubmitLoadCfeXml").removeAttr("disabled");
 
-		showMessage(response.result, response.message);
+		if (response.result == 2){
+			showMessage(response.result, response.message);
+		}else{
+			showReplyMessage(response.result, response.message);
+		}
 	})
 
 
