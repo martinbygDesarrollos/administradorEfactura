@@ -128,7 +128,7 @@ class ctr_emited{
 
 		}
 
-		if ( isset($responseEmited) || isset($responseReceipt) ){
+		if ( isset($responseEmited) ){
 
 			foreach ($responseEmited->resultadosImportacion as $key => $value) {
 				if ($value->ok != 0){
@@ -145,6 +145,11 @@ class ctr_emited{
 				}
 
 			}
+
+			$response->message = $arrayErrors;
+
+		}
+		if (isset($responseReceipt)){
 
 			foreach ($responseReceipt->resultadosImportacion as $key => $value) {
 				if ($value->ok != 0){
@@ -236,7 +241,7 @@ class ctr_emited{
 			);
 
 			//crear archivo y guardarlo en public temp
-			$resultCreate = $emitedControler->createTempFile($idEnvio.".xml", $data);
+			//$resultCreate = $emitedControler->createTempFile($idEnvio.".xml", $data);
 
 			if ( $emisor ){
 				array_push($response->emitidos, $comp);
@@ -250,6 +255,7 @@ class ctr_emited{
 
 
 		}else{
+			error_log("no me proceso el xml");
 			//var_dump($pathFile, $data, $array);
 			return null;
 		}
@@ -515,7 +521,7 @@ class ctr_emited{
 	function createTempFile($name, $data){
 
 
-		file_put_contents(dirname(dirname(__DIR__)) . "/public/temp/".$name, $data);
+		//file_put_contents(dirname(dirname(__DIR__)) . "/public/temp/".$name, $data);
 
 	}
 
