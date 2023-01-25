@@ -512,6 +512,22 @@ class ctr_emited{
 			}
 		}
 
+		$xml_ds = new SimpleXMLElement($data, LIBXML_NOERROR, false, 'sobre', true);
+		$json_ds = json_encode($xml_ds);
+		$array = json_decode($json_ds,TRUE);
+
+		if ( isset($array["CFE"]) ){
+			return $array;
+		}
+
+		$xml_ds = new SimpleXMLElement($data, LIBXML_NOERROR, false, 'dgicfe', true);
+		$json_ds = json_encode($xml_ds);
+		$array = json_decode($json_ds,TRUE);
+
+		if ( isset($array["CFE"]) ){
+			return $array;
+		}
+
 		return array();
 	}
 
