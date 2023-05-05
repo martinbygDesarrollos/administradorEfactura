@@ -112,18 +112,19 @@ function showReplyMessage(typeColour, message, buttonsucces, buttoncancel){
 	else if(typeColour == 1)
 		$('#modalColourResponse').addClass('alert-warning');
 
+	message = message.substring(0, 250);
+	message += "...";
+	message = message.replaceAll("\n", "<br><br>");
+
+
 	if ( typeof message == "object"){
 
 		let newMessage = "";
 		message.forEach(element => {
 
-			row = '<tr><td>'+element+'</td></tr>';
-			$("#modalTableMessageResponse tbody").append(row);
-
-
-			//newMessage += element + "<br>";
+			newMessage += element+'<br>';
 		});
-		//$('#modalMessageResponse').html(newMessage);
+		$('#modalMessageResponse').html(newMessage);
 	}else $('#modalMessageResponse').html(message);
 
 	$("#modalResponse").modal();

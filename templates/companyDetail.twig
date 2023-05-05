@@ -11,6 +11,11 @@
 				<a class="btn " data-toggle="pill" href="#facturacion-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Facturación</a>
 				<!--a class="btn " data-toggle="pill" href="#estadisticas-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Estadísticas</a-->
 				<a class="btn " data-toggle="pill" href="#importar-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Importación</a>
+				<!-- "desarrollo@byg.uy" "martin@gargano.com.uy"  -->
+
+				{% if mailUserLogued == "martin@gargano.com.uy" %}
+				<a class="btn " data-toggle="pill" href="#importar-data-prueba" role="tab" aria-controls="v-pills-profile" aria-selected="false">Importación Prueba</a>
+				{% endif %}
 			</div>
 		</div>
 		<div class="card-body">
@@ -49,6 +54,10 @@
 
 				<!-- IMPORTAR XML -->
 				{% include("importCfeEmited.twig") %}
+
+
+				<!-- IMPORTAR XML -->
+				{% include("importCfeEmitedPrueba.twig") %}
 			</div>
 		</div>
 	</div>
