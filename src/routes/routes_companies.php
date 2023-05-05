@@ -32,6 +32,67 @@ return function (App $app){
     });
 
 
+    /*
+
+    //ver el perfil/info detallada de la empresa
+    $app->get('/empresas/{rut}', function ($request, $response, $args) use ($container, $companiesController){
+        $args['version'] = FECHA_ULTIMO_PUSH;
+        $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
+        $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
+        $args['permisos'] = $_SESSION['permissionsUserLogued'];
+        if ( isset($_SESSION['mailUserLogued']) ){
+
+            $company = $companiesController->getCompaniesData($args['rut'])->objectResult;
+            $args["company"] = $company;
+
+            $args['files'] = 0;
+            $archivosemitidos = scandir(dirname(dirname(__DIR__)) . "/public/temp/".$_SESSION["rutUserLogued"]."emit");
+            $cantArchivosemitidos = 0;
+
+            $archivosrecibidos = scandir(dirname(dirname(__DIR__)) . "/public/temp/".$_SESSION["rutUserLogued"]."receipt");
+            $cantArchivosrecibidos = 0;
+
+            if ( $archivosemitidos ){
+
+                if ( count($archivosemitidos) > 2 ) {
+                    $names_files = array();
+
+                    foreach ($archivosemitidos as $key => $value) {
+                        if ( !is_dir($value) ){
+                            array_push($names_files, $value);
+                        }
+                    }
+
+                    $args['names_files_emited'] = $names_files;
+                    $cantArchivosemitidos = count($archivosemitidos)-2;
+                }
+
+            }
+
+            if ( $archivosrecibidos ){
+                if ( count($archivosrecibidos) > 2 ) {
+                    $names_files = array();
+
+                    foreach ($archivosrecibidos as $key => $value) {
+                        if ( !is_dir($value) ){
+                            array_push($names_files, $value);
+                        }
+                    }
+
+                    $args['names_files_receipt'] = $names_files;
+                    $cantArchivosrecibidos = count($archivosrecibidos) -2;
+
+                }
+            }
+
+
+            $args['files'] = $cantArchivosemitidos + $cantArchivosrecibidos;
+            return $this->view->render($response, "companyDetail.twig", $args);
+        }else return $response->withRedirect($request->getUri()->getBaseUrl());
+    });
+
+    */
+
     //cambiar los datos de sesion del usuario
     $app->post('/companies', function ($request, $response, $args) use ($container, $companiesController){
 

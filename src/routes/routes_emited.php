@@ -115,4 +115,24 @@ return function (App $app){
 
 }
 
+/*
+
+$app->post('/sendImportCfeEmitedXml', function ($request) use ($emitedController){
+
+        if ( $_SESSION['mailUserLogued'] ){
+
+            $data = $request->getParams();
+            $folder = $_SESSION['rutUserLogued'].$data['folder'];
+            $file = $data['file'];
+            //$responseImport = $emitedController->importCfeEmitedXml($_FILES);
+            return json_encode( ["result"=>2] );
+
+        }else return json_encode(["result"=>0]);
+    });
+
+
+*/
+
+
+
 ?>

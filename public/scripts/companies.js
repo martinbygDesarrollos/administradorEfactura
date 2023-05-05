@@ -402,3 +402,38 @@ async function getReportsByCompanie(){
 		}
 	})*/
 }
+
+
+
+
+/*
+
+async function selectAllFilesXml(value){
+	$("#tbodyCfeFilesImported tr").map((index, tr)=>{
+		if (index <= 99){
+			tr.getElementsByTagName("input")[0].checked = value;
+		}
+	})
+}
+
+
+
+async function sendFilesXml(){
+
+	//poner la pantalla de carga
+
+	$("#tbodyCfeFilesImported tr").map((index, tr)=>{
+
+		if (tr.getElementsByTagName("input")[0].checked){
+
+			let trid = tr.id.split("_");
+			sendAsyncPost("sendImportCfeEmitedXml", {folder:trid[0], name:trid[1]})
+			.then((response)=>{
+				console.log(response);
+			})
+		}
+	})
+
+}
+
+*/

@@ -18,3 +18,47 @@
 		</div>
 	</form>
 </div>
+
+
+<!--
+
+<div class="tab-pane fade" id="importar-data" role="tabpanel">
+	<form method="POST" id="idFormLoadCfeXml">
+		<div class="d-flex justify-content-between">
+			<input type="file" name="nameFileCfeXml[]" multiple accept=".zip,.xml">
+			<div>
+		        <input type="submit" name="" class="btn btn-success" value="Cargar archivos">
+			</div>
+		</div>
+	</form>
+	<br><br>
+	<div class="containerTable" >
+		<div class="d-flex justify-content-between" >
+			<h5>Archivos pendientes: {{files}}</h5>
+			<button type="button" class="btn btn-success" onclick="sendFilesXml()">Importar</button>
+		</div>
+		<table class="table table-hovered">
+			<thead><tr><th class="col-1" ><input type="checkbox" onchange="selectAllFilesXml(this.checked)" checked></th><th class="col-9">Archivo</th><th>Enviar</th></tr></thead>
+			<tbody id="tbodyCfeFilesImported">
+				{% if files %}
+					{% for name in names_files_emited %}
+					<tr id="emited_{{name}}" ><td><input type="checkbox" checked></td><td>{{name}}</td><td><button class="btn btn-light">enviar</button></td></tr>
+
+					{%endfor%}
+					{% for name in names_files_receipt %}
+					<tr id="receipt_{{name}}" ><td><input type="checkbox" checked></td><td>{{name}}</td><td><button class="btn btn-light">enviar</button></td></tr>
+
+					{%endfor%}
+
+				{% else %}
+				<tr><td>No hay archivos pendientes.</td></tr>
+
+				{% endif %}
+
+			</tbody>
+		</table>
+	</div>
+
+</div>
+
+ -->
