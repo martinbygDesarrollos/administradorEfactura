@@ -3,7 +3,7 @@ console.log("vista de facturacion")
 $("#idFormLoadCfeXml").submit((e)=>{
 
 	e.preventDefault();
-	$("#idButtonSubmitLoadCfeXml").attr("disabled", true);
+	$("#idButtonSubmitLoadCfeXml").prop("disabled", true);
 
 	progressBarIdProcess = loadPrograssBar();
 	$("#progressbar").modal("show");
@@ -16,7 +16,7 @@ $("#idFormLoadCfeXml").submit((e)=>{
 		stopPrograssBar(progressBarIdProcess);
 		$('#progressbar').modal("hide");
 
-		$("#idButtonSubmitLoadCfeXml").removeAttr("disabled");
+		$("#idButtonSubmitLoadCfeXml").prop("disabled", false);
 		showReplyMessage(response.result, response.message);
 		if ( response.resultadosImportacion ){
 			if ( response.resultadosImportacion.length >0 ){

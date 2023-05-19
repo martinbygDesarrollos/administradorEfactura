@@ -10,7 +10,8 @@
 				<a class="btn " data-toggle="pill" href="#resoluciones-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Resoluciones</a>
 				<a class="btn " data-toggle="pill" href="#facturacion-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Facturación</a>
 				<!--a class="btn " data-toggle="pill" href="#estadisticas-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Estadísticas</a-->
-				<a class="btn " data-toggle="pill" href="#importar-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Importación</a>
+				<a class="btn " data-toggle="pill" href="#importar-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Importación emitidos</a>
+				<a class="btn " data-toggle="pill" href="#importar-receipt" role="tab" aria-controls="v-pills-profile" aria-selected="false">Importación recibidos</a>
 			</div>
 		</div>
 		<div class="card-body">
@@ -48,8 +49,12 @@
 				{% include("infoCompanieReports.twig") %}
 
 
-				<!-- IMPORTAR XML -->
+				<!-- IMPORTAR XML EMITIDOS-->
 				{% include("importCfeEmited.twig") %}
+
+
+				<!-- IMPORTAR XML RECIBIDOS-->
+				{% include("importCfeReceipt.twig") %}
 			</div>
 		</div>
 	</div>
@@ -61,6 +66,7 @@
 <script type="text/javascript" src="{{ path_for('Start') }}scripts/resolutions.js{{ version }}"></script>
 <script type="text/javascript" src="{{ path_for('Start') }}scripts/emited.js{{ version }}"></script>
 <script type="text/javascript" src="{{ path_for('Start') }}scripts/importCfeEmited.js{{ version }}"></script>
+<script type="text/javascript" src="{{ path_for('Start') }}scripts/importCfeReceipt.js{{ version }}"></script>
 
 <script type="text/javascript">
 	$(document).ready(()=>{

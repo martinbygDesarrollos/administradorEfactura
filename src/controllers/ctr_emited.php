@@ -56,6 +56,47 @@ class ctr_emited{
 	}
 
 
+	public function procesarComprobantesXml($files){
+
+		$emitedControler = new ctr_emited();
+		$comprobantes = array();
+
+		foreach ($files['nameFileCfeXml']["type"] as $index => $value) {
+
+			if ( $files['nameFileCfeXml']["error"][$index] == 0 ){ //que el archivo que se cargó no dió error
+
+				//verifico si es zip o ya es el xml
+				if ($value == "text/xml"){
+
+					$imported = $emitedControler->importXmlEmited( $files['nameFileCfeXml']["tmp_name"][$index] );
+					if ( isset($imported) ){
+
+						$comprobantes = array_merge($comprobantes, $imported->emitidos);
+					}
+				}
+				else if ($value == "application/x-zip-compressed"){
+					$imported = $emitedControler->importXmlEmitedZip($files['nameFileCfeXml']["name"][$index], $files['nameFileCfeXml']["tmp_name"][$index]);
+
+					if ( isset($imported) ){
+						$comprobantes = array_merge($comprobantes, $imported->emitidos);
+					}
+
+					$emitedControler->clearFolderPath(['public', 'files']);
+					mkdir(dirname(dirname(__DIR__)) . "/public/files/");
+
+				}
+			}else{
+				//ocurrió un error al cargar el archivo
+				array_push($arrayErrors, "Archivo ".$files['nameFileCfeXml']["name"][$index]." error ".$files['nameFileCfeXml']["error"][$index]);
+			}
+
+		}
+
+		return $comprobantes;
+
+	}
+
+
 
 
 	public function importCfeEmitedXml($files){  //$files puede ser un archivo solo o multiple .zip o .xml
@@ -64,46 +105,8 @@ class ctr_emited{
 		$response = new \stdClass();
 		$arrayErrors = array();
 
-		$comprobantesEmitidos = array();
-		$comprobantesRecibidos = array();
 		if (strlen($files['nameFileCfeXml']["name"][0]) > 0){ //no se cargaron archivos
-
-			foreach ($files['nameFileCfeXml']["type"] as $index => $value) {
-
-
-				if ( $files['nameFileCfeXml']["error"][$index] == 0 ){ //que el archivo que se cargó no dió error
-
-					//verifico si es zip o ya es el xml
-					if ($value == "text/xml"){
-
-						$imported = $emitedControler->importXmlEmited( $files['nameFileCfeXml']["tmp_name"][$index] );
-						if ( isset($imported) ){
-							//array_push($comprobantesEmitidos, $imported->emitidos);
-							//array_push($comprobantesRecibidos, $imported->recibidos);
-
-							$comprobantesEmitidos = array_merge($comprobantesEmitidos, $imported->emitidos);
-							//$comprobantesRecibidos = array_merge($comprobantesRecibidos, $imported->recibidos);
-						}
-					}
-					else if ($value == "application/x-zip-compressed"){
-						$imported = $emitedControler->importXmlEmitedZip($files['nameFileCfeXml']["name"][$index], $files['nameFileCfeXml']["tmp_name"][$index]);
-
-						if ( isset($imported) ){
-							$comprobantesEmitidos = array_merge($comprobantesEmitidos, $imported->emitidos);
-							//$comprobantesRecibidos = array_merge($comprobantesRecibidos, $imported->recibidos);
-						}
-
-						$emitedControler->clearFolderPath(['public', 'files']);
-						mkdir(dirname(dirname(__DIR__)) . "/public/files/");
-
-					}
-				}else{
-					//ocurrió un error al cargar el archivo
-					array_push($arrayErrors, "Archivo ".$files['nameFileCfeXml']["name"][$index]." error ".$files['nameFileCfeXml']["error"][$index]);
-				}
-
-			}
-
+			$comprobantesEmitidos = $emitedControler->procesarComprobantesXml($files);
 		}else{
 
 			array_push($arrayErrors, "No se encontraron archivos.");
