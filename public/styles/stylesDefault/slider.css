@@ -44,6 +44,16 @@
     background-color: var(--color-secundario-opacidad);
 }
 
+
+@media (max-width: 1400px) {
+
+    .w-75{
+        width: 100%!important;
+    }
+
+}
+
+
 @media (max-width: 1200px) {
 
     .wrapper {
