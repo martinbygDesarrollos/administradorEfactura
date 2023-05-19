@@ -10,20 +10,39 @@ $("#idFormLoadCfeXml").submit((e)=>{
 
 
 	formData = new FormData(document.getElementById("idFormLoadCfeXml"));
-
+	$("#tbodyImportCfeEmitedResponse").empty();
 	sendAsyncPostForm("importCfeEmitedXml", formData)
 	.then((response)=>{
 		stopPrograssBar(progressBarIdProcess);
 		$('#progressbar').modal("hide");
 
 		$("#idButtonSubmitLoadCfeXml").removeAttr("disabled");
+		showReplyMessage(response.result, response.message);
+		if ( response.resultadosImportacion ){
+			if ( response.resultadosImportacion.length >0 ){
 
-		if (response.result == 2){
-			showMessage(response.result, response.message);
-		}else{
-			showReplyMessage(response.result, response.message);
+				response.resultadosImportacion.map((element)=>{
+					let row = createRowResponseImport(element);
+
+					$("#tbodyImportCfeEmitedResponse").append(row);
+				})
+
+			}
+
 		}
+
 	})
 
 
 });
+
+
+
+function createRowResponseImport( obj ){
+
+	let row = "<tr><td>"+obj.error+"</td></tr>";
+
+	return row;
+
+
+}
