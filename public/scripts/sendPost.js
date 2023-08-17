@@ -5,13 +5,15 @@ function sendAsyncPost(nombreFuncion, parametros){
 			url: getSiteURL() + nombreFuncion,
 			type: "POST",
 			data: parametros,
+			timeout: 120000, //miliseconds
 			success: function (response) {
 				response = response.trim();
 				var response = jQuery.parseJSON(response);
 				resolve(response);
 			},
-			error: function (response) {
-				result = "error"
+			error: function ( jqXHR, textStatus, errorThrown) {
+				var response = {result:0, message:errorThrown}
+				resolve(response);
 			},
 		});
 	});
@@ -26,13 +28,15 @@ function sendAsyncPostForm(nombreFuncion, formData){
 			url: getSiteURL() + nombreFuncion,
 			type: "POST",
 			data: formData,
+			timeout: 120000, //miliseconds
 			success: function (response) {
 				response = response.trim();
 				var response = jQuery.parseJSON(response);
 				resolve(response);
 			},
-			error: function (response) {
-				reject(response.status, response.statusText);
+			error: function ( jqXHR, textStatus, errorThrown) {
+				var response = {result:0, message:errorThrown}
+				resolve(response);
 			},
 			cache: false,
 	        contentType: false,

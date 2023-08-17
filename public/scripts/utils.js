@@ -112,8 +112,11 @@ function showReplyMessage(typeColour, message, buttonsucces, buttoncancel){
 	else if(typeColour == 1)
 		$('#modalColourResponse').addClass('alert-warning');
 
-	message = message.substring(0, 250);
-	message += "...";
+	if ( message.length > 250 ){
+		message = message.substring(0, 250);
+		message += "...";
+	}
+
 	message = message.replaceAll("\n", "<br><br>");
 
 
