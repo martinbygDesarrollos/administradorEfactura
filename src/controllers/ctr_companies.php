@@ -209,6 +209,15 @@ class ctr_companies{
 	}
 
 
+	public function getRepresentacionImpresa( $rut ){
+
+		$restController = new ctr_rest();
+		$data = $restController->getRepresentacionImpresa($rut);
+		return $data;
+
+	}
+
+
 }
 
 

@@ -1,35 +1,24 @@
 <div class="tab-pane fade" id="colors-data" role="tabpanel">
-	<div class="containerTable">
-			<!--table class="table">
-	    		<tbody id="">
-
-					<tr>
-						<div class="form__group field">
-							<div class="pl-5 pb-1" id="tdBranchDataLogo"></div>
-							<input type="file"  name="logo" placeholder="Logo" />
-						</div>
-					</tr>
-				</tbody>
-			</table>
-	        <div class="d-flex flex-row-reverse p-1">
-				<button  id="" type="submit" class="btn btn-success" disabled>Cargar logo</button>
-			</div-->
-
+	<div class="container-fluid">
 			<table class="table">
 	    		<tbody id="">
 					<form method="POST" id="formCompanieColors">
-					<tr>
-						<div class="form__group field d-flex">
+					<tr class="row">
+						<td class="col-md-2 col-12">
 							<input type="color" id="tdBranchDataColorpicker" name="color1" onchange="changeColorpickerPrincipal(this.value)" class="form__field_colorpicker m-2">
+						</td>
+						<td class="col-md-10 col-12">
 							<input type="text" id="tdBranchDataColor" name="color1" class="form__field" onchange="changeColorpickerPrincipal(this.value)" placeholder="Color principal" />
-						</div>
+						</td>
 					</tr>
-					<!--tr>
-						<div class="form__group field d-flex">
-							<input type="color" id="tdBranchDataColorpicker2" onchange="changeColorpickerSec(this.value)"  class="form__field_colorpicker m-2" name="color2">
-							<input type="text" id="tdBranchDataColor2" name="color2" class="form__field" onchange="changeColorpickerSec(this.value)"  placeholder="Color secundario" />
-						</div>
-					</tr-->
+					<tr class="row">
+						<td class="col-md-2 col-12">
+							<input type="color" id="inputColorColumnEven" name="colorColumnEven" onchange="changeColorpickerPrincipal(this.value)" class="form__field_colorpicker m-2">
+						</td>
+						<td class="col-md-10 col-12">
+							<input type="text" id="" name="colorColumnEven" class="form__field" onchange="changeColorpickerPrincipal(this.value)" placeholder="Color principal" />
+						</td>
+					</tr>
 	    		</tbody>
 	    	</table>
 

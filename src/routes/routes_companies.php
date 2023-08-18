@@ -395,6 +395,19 @@ return function (App $app){
         }else return json_encode(["result"=>0]);
     });
 
+
+    $app->post('/representacionimpresa', function ($request, $response, $args) use ($companiesController){
+
+        if ( $_SESSION['mailUserLogued'] ){
+            $response = new \stdClass();
+            $rut = $_SESSION['rutUserLogued'];
+
+            $response = $companiesController->getRepresentacionImpresa($rut);
+            return json_encode($response);
+
+        }else return json_encode(["result"=>0]);
+    });
+
 }
 
 ?>

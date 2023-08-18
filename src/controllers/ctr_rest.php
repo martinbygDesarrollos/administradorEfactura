@@ -410,6 +410,36 @@ class ctr_rest{
 
 	}
 
+
+
+	public function getRepresentacionImpresa($rut){
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+		$response->message = "No se pudo obtener respuesta.";
+
+		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
+		if ( $token->result == 2 ){
+			$tokenRest = $token->objectResult->tokenRest;
+			$petitionResponse = $petitionClass->getRepresentacionImpresa($_SESSION['rutUserLogued'], $tokenRest);
+			$result = json_decode($petitionResponse);
+			if ($result->resultado->codigo === 200 ){
+				$response->result = 2;
+				$response->message = "ok";
+				$response->objectResult = $result;
+				return $response;
+			}else{
+				error_log("Error al procesar getRepresentacionImpresa " . $rut . ": " .$result->resultado->error);
+				$response->result = 1;
+				$response->message = "Error al consultar los datos.";
+				return $response;
+			}
+		}
+		return $response;
+	}
+
 }
 
 

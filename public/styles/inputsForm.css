@@ -64,10 +64,25 @@
 
 
 .form__field_colorpicker { /* input color */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  width: 60px;
+  height: 60px;
+  border: none;
   cursor: pointer;
-  width: 2rem;
-  height: 2rem;
 }
+
+.form__field_colorpicker::-webkit-color-swatch {
+  border-radius: 50%;
+  border: 7px solid #000000;
+}
+.form__field_colorpicker::-moz-color-swatch {
+  border-radius: 50%;
+  border: 7px solid #000000;
+}
+
 
 .form__field_color { /*input color*/
   width: 100%;

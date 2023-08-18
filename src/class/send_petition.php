@@ -101,6 +101,12 @@ class sendPetition{
 	}
 
 
+	public function getRepresentacionImpresa( $rut, $token ){
+		$thisClass = new sendPetition();
+		return $thisClass->prepareAndSendCurl("GET", "company/".$rut."/representacionimpresa", $token, null);
+	}
+
+
 	public function prepareAndSendCurl($typeMethod, $method, $token, $data){
 		$thisClass = new sendPetition();
 		$curlPetition = curl_init(URL_REST . $method);
