@@ -1,31 +1,43 @@
 <div class="tab-pane fade" id="colors-data" role="tabpanel">
 	<div class="container-fluid">
-			<table class="table">
-	    		<tbody id="">
-					<form method="POST" id="formCompanieColors">
-					<tr class="row">
-						<td class="col-md-2 col-12">
-							<input type="color" id="tdBranchDataColorpicker" name="color1" onchange="changeColorpickerPrincipal(this.value)" class="form__field_colorpicker m-2">
-						</td>
-						<td class="col-md-10 col-12">
-							<input type="text" id="tdBranchDataColor" name="color1" class="form__field" onchange="changeColorpickerPrincipal(this.value)" placeholder="Color principal" />
-						</td>
-					</tr>
-					<tr class="row">
-						<td class="col-md-2 col-12">
-							<input type="color" id="inputColorColumnEven" name="colorColumnEven" onchange="changeColorpickerPrincipal(this.value)" class="form__field_colorpicker m-2">
-						</td>
-						<td class="col-md-10 col-12">
-							<input type="text" id="" name="colorColumnEven" class="form__field" onchange="changeColorpickerPrincipal(this.value)" placeholder="Color principal" />
-						</td>
-					</tr>
-	    		</tbody>
-	    	</table>
+		<div class="float-end">
+			<button class="btn btn-info" data-toggle="modal" data-target="#modalPreviewVoucher" >vista previa</button>
+		</div>
+		<table class="table">
+    		<tbody id="">
+				<form method="POST" id="formCompanieColors">
+				<tr class="row">
+					<td class="col-md-2 col-12">
+						<input type="color" id="tdBranchDataColorpicker" name="color1" onchange="changeColorpickerPrincipal(this.value)" class="form__field_colorpicker m-2">
+					</td>
+					<td class="col-md-10 col-12">
+						<input type="text" id="tdBranchDataColor" name="color1" class="form__field" onchange="changeColorpickerPrincipal(this.value)" placeholder="Color columnas 'descripción' y 'cantidad'" />
+					</td>
+				</tr>
+				<tr class="row">
+					<td class="col-md-2 col-12">
+						<input type="color" id="tdBranchDataColorpicker" name="color1" onchange="changeColorpickerPrincipal(this.value)" class="form__field_colorpicker m-2">
+					</td>
+					<td class="col-md-10 col-12">
+						<input type="text" id="tdBranchDataColor" name="color1" class="form__field" onchange="changeColorpickerPrincipal(this.value)" placeholder="Color principal" />
+					</td>
+				</tr>
+				<tr class="row">
+					<td class="col-md-2 col-12">
+						<input type="color" id="tdBranchDataColorpicker" name="color1" onchange="changeColorpickerPrincipal(this.value)" class="form__field_colorpicker m-2">
+					</td>
+					<td class="col-md-10 col-12">
+						<input type="text" id="tdBranchDataColor" name="color1" class="form__field" onchange="changeColorpickerPrincipal(this.value)" placeholder="Color principal" />
+					</td>
+				</tr>
+    		</tbody>
+    	</table>
 
 
-	        <div class="d-flex flex-row-reverse p-1">
-				<button  id="buttonSubmitCompanieColors" type="submit" class="btn btn-success" disabled>Guardar cambios</button>
-	        </div>
+        <div class="d-flex flex-row-reverse p-1">
+			<button  id="buttonSubmitCompanieColors" type="submit" class="btn btn-success" disabled>Guardar cambios</button>
+        </div>
 	    </form>
 	</div>
 </div>
+{% include("modalPreviewVoucher.twig") %}

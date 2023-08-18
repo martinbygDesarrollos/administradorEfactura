@@ -109,3 +109,7 @@ a[aria-selected="true"]{
         left:0.5rem;
     }
 }
+
+.float-end{
+    float: right!important;
+}
