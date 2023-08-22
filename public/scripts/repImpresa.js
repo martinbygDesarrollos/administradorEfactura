@@ -1,7 +1,6 @@
 function getColorsInfo(){
 	sendAsyncPost("representacionimpresa")
 	.then( response =>{
-		$('#progressbar').modal("hide");
 		if(response.result === 2){
 			loadDataStyles(response.objectResult);
 		}else if(response.result === 1){
@@ -38,41 +37,32 @@ function companieColorsDefault(){
 }
 
 
-function saveCompanieColors(){
+function saveCompanieColors( data ){
 
-	$("#inputCompColorTamEmisor").val(obj.emitterNameSize);
-	$("#inputCompColorDescription").val(obj.colorColumnOdd);
-	$("#inputCompColorPrecio").val(obj.colorColumnEven);
-	$("#inputCompColorTextoTotal").val(obj.textColorColumnPrimary);
+	if ( !data ){
+		let sizeEmitterName = $("#inputCompColorTamEmisor").val();
+		let colorDesc = $("#inputCompColorDescription").val();
+		let colorPrecio = $("#inputCompColorPrecio").val();
+		let colorTotal = $("#inputCompColorTextoTotal").val();
 
-	$("#inputCompColorDetailLineStyle").val(obj.detailLineStyle);
-	$("#inputCompColorDetailLineWidth").val(obj.detailLineWidth);
-	$("#inputCompColorDetailLineColor").val(obj.detailLineColor);
+		let linesStyle = $("#inputCompColorDetailLineStyle").val();
+		let linesWidth = $("#inputCompColorDetailLineWidth").val();
+		let linesColor = $("#inputCompColorDetailLineColor").val();
 
-	let data = {
-	    "colorColumnOdd": colorDesc,
-	    "colorColumnEven": colorPrecio,
-	    "detailLineWidth": linesWidth
-	    "detailLineColor": null, //color de la linea que separa las filas de detalle
-	    "detailLineStyle": "dashed", //diseño de la linea que separa las filas de detalle ej solid, dashed
-	    "textColorColumnPrimary": null, //color del texto de la columna total y #
-	    "emitterNameSize": "1.1em", //tamaño del nombre de quien emite
-	    "hideDueDate": "",
-	    "hideExchangeRate": "0",
-	    "showIdHeaders": "0",
-	    "language": "es"
+		let data = {
+		    "colorColumnOdd": colorDesc,
+		    "colorColumnEven": colorPrecio,
+		    "detailLineWidth": linesWidth,
+		    "detailLineColor": linesColor,
+		    "detailLineStyle": linesStyle,
+		    "textColorColumnPrimary": colorTotal,
+		    "emitterNameSize": sizeEmitterName
+		}
 	}
+
 	sendAsyncPut("representacionimpresa", {data:data})
 	.then( response =>{
-		$('#progressbar').modal("hide");
-		if(response.result === 2){
-			loadDataStyles(response.objectResult);
-		}else if(response.result === 1){
-			showMessage(response.result, "No se encontraron datos.")
-		}
-		else{
-			window.location.href = getSiteURL() + "cerrar-session";
-		}
+		console.log(response);
 	})
 
 }
