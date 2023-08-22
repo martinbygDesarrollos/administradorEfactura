@@ -44,3 +44,25 @@ function sendAsyncPostForm(nombreFuncion, formData){
 		});
 	});
 }
+
+
+function sendAsyncPut(nombreFuncion, parametros){
+	return new Promise( function(resolve, reject){
+		$.ajax({
+			async: true,
+			url: getSiteURL() + nombreFuncion,
+			type: "PUT",
+			data: parametros,
+			timeout: 120000, //miliseconds
+			success: function (response) {
+				response = response.trim();
+				var response = jQuery.parseJSON(response);
+				resolve(response);
+			},
+			error: function ( jqXHR, textStatus, errorThrown) {
+				var response = {result:0, message:errorThrown}
+				resolve(response);
+			},
+		});
+	});
+}

@@ -401,6 +401,22 @@ return function (App $app){
         if ( $_SESSION['mailUserLogued'] ){
             $response = new \stdClass();
             $rut = $_SESSION['rutUserLogued'];
+            var_dump("este es el post");
+
+            $response = $companiesController->getRepresentacionImpresa($rut);
+            return json_encode($response);
+
+        }else return json_encode(["result"=>0]);
+    });
+
+
+    $app->put('/representacionimpresa', function ($request, $response, $args) use ($companiesController){
+
+        if ( $_SESSION['mailUserLogued'] ){
+            $response = new \stdClass();
+            $rut = $_SESSION['rutUserLogued'];
+
+            var_dump("este es el put");
 
             $response = $companiesController->getRepresentacionImpresa($rut);
             return json_encode($response);
