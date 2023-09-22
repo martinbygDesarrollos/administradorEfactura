@@ -52,49 +52,20 @@ class ctr_rest{
 		$usersController = new ctr_users();
 		$response = new \stdClass();
 
+		$response->result = 1;
+		$response->objectResult = new \stdClass();
 
-		if ( isset($_SESSION['company']) ){
-			//echo "hay companie en la session";
-			if ( $rut != $_SESSION['company']->rut){
-				//echo "el companie de la sesion y el que quiero son distintos";
-				$response->result = 1;
-				$response->objectResult = new \stdClass();
-
-				$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
-				if ( $token->result == 2 ){
-					$tokenRest = $token->objectResult->tokenRest;
-					$petitionResponse = $petitionClass->getCompanyData($tokenRest, $rut);
-					$petitionResponse = json_decode($petitionResponse);
-					$response->result = 2;
-					$response->objectResult = $petitionResponse;
+		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
+		if ( $token->result == 2 ){
+			$tokenRest = $token->objectResult->tokenRest;
+			$petitionResponse = $petitionClass->getCompanyData($tokenRest, $rut);
+			$petitionResponse = json_decode($petitionResponse);
+			$response->result = 2;
+			$response->objectResult = $petitionResponse;
 
 
-					$_SESSION['company'] = $petitionResponse;
-				}else return $token;
-
-			}else{
-				//echo "el companie que quiero y el que tengo en session es el mismo entonces no lo busco";
-				$response->result = 2;
-				$response->objectResult = $_SESSION['company'];
-			}
-		}else{
-
-			//echo "no tengo companie en la session";
-			$response->result = 1;
-			$response->objectResult = new \stdClass();
-
-			$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
-			if ( $token->result == 2 ){
-				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->getCompanyData($tokenRest, $rut);
-				$petitionResponse = json_decode($petitionResponse);
-				$response->result = 2;
-				$response->objectResult = $petitionResponse;
-
-
-				$_SESSION['company'] = $petitionResponse;
-			}else return $token;
-		}
+			$_SESSION['company'] = $petitionResponse;
+		}else return $token;
 
 
 		return $response;
@@ -438,6 +409,39 @@ class ctr_rest{
 			}
 		}
 		return $response;
+	}
+
+
+	public function enabledDisabledCompanie($value){
+
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+		$response->message = "No se pudo obtener respuesta.";
+
+		$data = new \stdClass();
+		$data->suspender = $value;
+
+		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
+		if ( $token->result == 2 ){
+			$tokenRest = $token->objectResult->tokenRest;
+			$petitionResponse = $petitionClass->enabledDisabledCompanie($_SESSION['rutUserLogued'], $data, $tokenRest);
+			$result = json_decode($petitionResponse);
+			if ($result->resultado->codigo === 200 ){
+				$response->result = 2;
+				$response->message = "ok";
+				return $response;
+			}else{
+				error_log("Error al suspender o activar una empresa, función enabledDisabledCompanie " . $_SESSION['rutUserLogued'] . ", valor enviado $value, error: " .$result->resultado->error);
+				$response->result = 1;
+				$response->message = $result->resultado->error;
+				return $response;
+			}
+		}
+		return $response;
+
 	}
 
 }

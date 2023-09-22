@@ -107,6 +107,12 @@ class sendPetition{
 	}
 
 
+	public function enabledDisabledCompanie($rut, $data, $token){
+		$thisClass = new sendPetition();
+		return $thisClass->prepareAndSendCurl("POST", "company/".$rut."/suspend", $token, $data);
+	}
+
+
 	public function prepareAndSendCurl($typeMethod, $method, $token, $data){
 		$thisClass = new sendPetition();
 		$curlPetition = curl_init(URL_REST . $method);

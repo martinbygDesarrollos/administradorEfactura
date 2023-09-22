@@ -424,6 +424,24 @@ return function (App $app){
         }else return json_encode(["result"=>0]);
     });
 
+
+
+    $app->post('/enabledDisabledCompanie', function ($request, $response, $args) use ($companiesController){
+
+        if ( $_SESSION['mailUserLogued'] ){
+            $response = new \stdClass();
+
+            $value = $request->getParams()['value'];
+            $response = $companiesController->enabledDisabledCompanie($value);
+
+            $company = $companiesController->getCompaniesData($_SESSION['rutUserLogued'])->objectResult;
+            $args["company"] = $company;
+            //return $this->view->render($response, "companyDetail.twig", $args);
+            return json_encode($response);
+
+        }else return json_encode(["result"=>0]);
+    });
+
 }
 
 ?>

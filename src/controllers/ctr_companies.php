@@ -218,6 +218,13 @@ class ctr_companies{
 	}
 
 
+	public function enabledDisabledCompanie($value){
+		$restController = new ctr_rest();
+		$data = $restController->enabledDisabledCompanie($value);
+		return $data;
+	}
+
+
 }
 
 

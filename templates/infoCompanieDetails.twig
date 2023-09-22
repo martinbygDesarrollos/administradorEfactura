@@ -5,7 +5,13 @@
 	    		<tbody id="">
 					{% if company.sucursales %}
 					<div class="d-flex flex-row-reverse">
-						<select  id="selectBranchCompanieDetails" class="custom-select custom-select-sm shadow-sm w-25" onchange="loadBranchCompanieData(this.value, {{company.rut}})">
+						{% if company.suspendida == 0 %}
+	    				<button type="button" class="btn btn-warning col-6 col-sm-6 col-md-2 m-1" style="height: 2.5rem;overflow: hidden;" onclick="suspenderActivarEmpresa(1)"  title="La empresa está activada, presiona para suspender">Suspender empresa</button>
+	    				{%endif%}
+						{% if company.suspendida == 1 %}
+	    				<button type="button" class="btn btn-info col-6 col-sm-6 col-md-2 m-1" onclick="suspenderActivarEmpresa(0)" title="La empresa está suspendida, presiona para activar">Activar empresa</button>
+						{% endif %}
+						<select  id="selectBranchCompanieDetails" class="custom-select custom-select-sm shadow-sm col-6 col-sm-6 col-md-4 m-1" style="height: 2.5rem;" onchange="loadBranchCompanieData(this.value, {{company.rut}})">
 							{% for suc in company.sucursales %}
 								{% if suc.isPrincipal %}
 								<option value="{{suc.codDGI}}">{{suc.codDGI}} - PRINCIPAL</option>

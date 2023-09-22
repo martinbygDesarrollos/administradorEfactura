@@ -25,3 +25,18 @@ function changestatusCompanie( newStatus, currentStatus ){
 	});
 
 }
+
+
+function suspenderActivarEmpresa(value){
+
+	console.log("suspenderActivarEmpresa", value);
+	sendAsyncPost("enabledDisabledCompanie",{value:value})
+	.then((response)=>{
+		showMessage(response.result, response.message);
+		setTimeout(() => {
+			window.location.reload();
+		}, 500);
+
+	})
+
+}
