@@ -1,6 +1,3 @@
-console.log("statusCompanies");
-
-
 function changestatusCompanie( newStatus, currentStatus ){
 
 	newStatus = parseInt(newStatus);

@@ -36,8 +36,6 @@ async function getDateLastCfeReceipt(){
 
 	sendAsyncPost("getDateLastCfeReceipt")
 	.then((response)=>{
-		console.log(response);
-
 		$("#dateLastCfeReceipt").text(response);
 	})
 }
@@ -282,31 +280,11 @@ function createRowsToCaesTableInfo(objCae){
 
 }
 
+
+//habilita el botón del formulario que está en principal
 function datachanged(){
 	dataIsChanged = true;
 	$("#buttonSubmitCompanieDetails").removeAttr("disabled");
-}
-
-function datachangedColors(){
-	dataIsChanged = true;
-	$("#buttonSubmitCompanieColors").removeAttr("disabled");
-}
-
-function changeColorpickerPrincipal (value){
-
-	datachangedColors();
-
-	$("#tdBranchDataColorpicker").val(value);
-	$("#tdBranchDataColor").val(value);
-}
-
-
-function changeColorpickerSec (value){
-
-	datachangedColors();
-
-	$("#tdBranchDataColorpicker2").val(value);
-	$("#tdBranchDataColor2").val(value);
 }
 
 

@@ -1,5 +1,3 @@
-console.log("importar comprobantes recibidos")
-
 $("#idFormLoadCfeXmlReceipt").submit((e)=>{
 
 	e.preventDefault();

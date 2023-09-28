@@ -1,5 +1,3 @@
-console.log("vista de facturacion")
-
 $("#idFormEmited").submit((e)=>{
 
 	e.preventDefault();

@@ -1,5 +1,3 @@
-console.log("vista de facturacion")
-
 $("#idFormLoadCfeXml").submit((e)=>{
 
 	e.preventDefault();
