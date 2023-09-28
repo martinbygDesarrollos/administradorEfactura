@@ -16,15 +16,26 @@ function getColorsInfo(){
 
 function loadDataStyles(obj){
 
-	console.log(obj);
-	$("#inputCompColorTamEmisor").val(obj.emitterNameSize);
-	$("#inputCompColorDescription").val(obj.colorColumnOdd);
-	$("#inputCompColorPrecio").val(obj.colorColumnEven);
-	$("#inputCompColorTextoTotal").val(obj.textColorColumnPrimary);
+	if (obj.emitterNameSize)
+		$("#inputCompColorTamEmisor").val(obj.emitterNameSize);
 
-	$("#inputCompColorDetailLineStyle").val(obj.detailLineStyle);
-	$("#inputCompColorDetailLineWidth").val(obj.detailLineWidth);
-	$("#inputCompColorDetailLineColor").val(obj.detailLineColor);
+	if(obj.colorColumnOdd)
+		$("#inputCompColorDescription").val(obj.colorColumnOdd);
+
+	if (obj.colorColumnEven)
+		$("#inputCompColorPrecio").val(obj.colorColumnEven);
+
+	if (obj.textColorColumnPrimary)
+		$("#inputCompColorTextoTotal").val(obj.textColorColumnPrimary);
+
+	if(obj.detailLineStyle)
+		$("#inputCompColorDetailLineStyle").val(obj.detailLineStyle);
+
+	if(obj.detailLineWidth)
+		$("#inputCompColorDetailLineWidth").val(obj.detailLineWidth);
+
+	if(obj.detailLineColor)
+		$("#inputCompColorDetailLineColor").val(obj.detailLineColor);
 
 }
 
@@ -65,4 +76,18 @@ function saveCompanieColors( data ){
 		console.log(response);
 	})
 
+}
+
+function assignColor(value, idInput){
+
+	$(idInput).val(value);
+	datachangedRepImpresa();
+}
+
+
+
+//habilita el botón del formulario de representacion impresa
+function datachangedRepImpresa(){
+	dataIsChanged = true;
+	$("#buttonSubmitCompanieColors").removeAttr("disabled");
 }

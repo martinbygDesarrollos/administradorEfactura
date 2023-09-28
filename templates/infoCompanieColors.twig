@@ -10,18 +10,18 @@
     		<tbody id="">
 				<tr class="row">
 					<td class="col-md-2 col-12">
-						<input type="color" id="inputCompColorDescColor" name="color1" onchange="changeColorpickerPrincipal(this.value)" class="form__field_colorpicker m-2">
+						<input type="color" id="inputCompColorDescColor" name="color1" onchange="assignColor(this.value, inputCompColorDescription)" class="form__field_colorpicker m-2">
 					</td>
 					<td class="col-md-10 col-12">
-						<input type="text" id="inputCompColorDescription" name="color1" class="form__field" onchange="changeColorpickerPrincipal(this.value)" placeholder="Color columnas 'Descripción' y 'Cantidad'" />
+						<input type="text" id="inputCompColorDescription" name="color1" onchange="assignColor(this.value, inputCompColorDescColor)" class="form__field" placeholder="Color columnas 'Descripción' y 'Cantidad'" />
 					</td>
 				</tr>
 				<tr class="row">
 					<td class="col-md-2 col-12">
-						<input type="color" id="inputCompColorPrecioColor" name="" class="form__field_colorpicker m-2">
+						<input type="color" id="inputCompColorPrecioColor" name="" class="form__field_colorpicker m-2" onchange="assignColor(this.value, inputCompColorPrecio)">
 					</td>
 					<td class="col-md-10 col-12">
-						<input type="text" id="inputCompColorPrecio" name="" class="form__field" placeholder="Color columna 'P. Unitario'" />
+						<input type="text" id="inputCompColorPrecio" name="" class="form__field" onchange="assignColor(this.value, inputCompColorPrecioColor)" placeholder="Color columna 'P. Unitario'" />
 					</td>
 				</tr>
     		</tbody>
@@ -31,19 +31,19 @@
     		<tbody id="">
     			<tr class="row">
 					<td class="col-md-2 col-12">
-						<input type="color" id="inputCompColorTextoTotalColor" name="" class="form__field_colorpicker m-2">
+						<input type="color" id="inputCompColorTextoTotalColor" name="" class="form__field_colorpicker m-2" onchange="assignColor(this.value, inputCompColorTextoTotal)">
 					</td>
 					<td class="col-md-10 col-12">
-						<input type="text" id="inputCompColorTextoTotal" name="" class="form__field" placeholder="Color del texto de las columna '#' y Total'" />
+						<input type="text" id="inputCompColorTextoTotal" name="" class="form__field" onchange="assignColor(this.value, inputCompColorTextoTotalColor)" placeholder="Color del texto de las columna '#' y Total'" />
 					</td>
 				</tr>
 				<tr class="row">
 					<td class="col-md-2 col-12"></td>
 					<td class="col-md-5 col-12">
-						<input type="text" id="inputCompColorTamEmisor" name="color1" class="form__field" onchange="changeColorpickerPrincipal(this.value)" placeholder="Tamaño del nombre de la empresa emisora" />
+						<input type="text" id="inputCompColorTamEmisor" name="color1" class="form__field" placeholder="Tamaño del nombre de la empresa emisora" />
 					</td>
 					<td class="col-md-5 col-12">
-						<select class="form__field" onchange="changestatusCompanie(this.value, {{company.estado}})">
+						<select class="form__field" >
 							<option value="em" selected>em</option>
 							<option value="rem">rem</option>
 							<option value="px">px</option>
@@ -57,16 +57,16 @@
     		<tbody id="">
     			<tr class="row">
 					<td class="col-md-2 col-12">
-						<input type="color" id="inputCompColorDetailLineColor" name="" class="form__field_colorpicker m-2">
+						<input type="color" id="inputCompColorDetailLineColor" name="" class="form__field_colorpicker m-2" onchange="assignColor(this.value, inputCompColorDetailLine)">
 					</td>
 					<td class="col-md-10 col-12">
-						<input type="text" id="inputCompColorDetailLine" name="" class="form__field" placeholder="Color de las líneas que dividen las filas de detalle" />
+						<input type="text" id="inputCompColorDetailLine" name="" class="form__field" onchange="assignColor(this.value, inputCompColorDetailLineColor)" placeholder="Color de las líneas que dividen las filas de detalle" />
 					</td>
 				</tr>
 				<tr class="row">
 					<td class="col-md-2 col-12"></td>
 					<td class="col-md-10 col-12">
-						<select class="form__field" onchange="changestatusCompanie(this.value, {{company.estado}})">
+						<select class="form__field" >
 							<option value="solid" selected>Solida</option>
 							<option value="dashed" >Punteada</option>
 						</select>
@@ -75,10 +75,10 @@
 				<tr class="row">
 					<td class="col-md-2 col-12"></td>
 					<td class="col-md-5 col-12">
-						<input type="text" id="inputCompColorDetailLineWidth" name="color1" class="form__field" onchange="changeColorpickerPrincipal(this.value)" placeholder="Tamaño del ancho las líneas que dividen las filas de detalle" />
+						<input type="text" id="inputCompColorDetailLineWidth" name="color1" class="form__field" placeholder="Tamaño del ancho las líneas que dividen las filas de detalle" />
 					</td>
 					<td class="col-md-5 col-12">
-						<select class="form__field" onchange="changestatusCompanie(this.value, {{company.estado}})">
+						<select class="form__field" >
 							<option value="em" selected>em</option>
 							<option value="rem">rem</option>
 							<option value="px">px</option>
