@@ -1,3 +1,15 @@
+//funciones sin nombre
+$("#formUpdateRepImpresa").on( "submit", function( event ) {
+	event.preventDefault();
+	console.log("toda accion del submit cancelado");
+	saveCompanieColors( null )
+	.then((response)=>{
+		showMessage(response.result, response.message);
+	})
+});
+
+
+//obtener valores de la representacion impresa de la empresa
 function getColorsInfo(){
 	sendAsyncPost("representacionimpresa")
 	.then( response =>{
@@ -13,20 +25,32 @@ function getColorsInfo(){
 
 }
 
-
+//cargar los valores de la representación impresa actual en los inputs y colorpicker
 function loadDataStyles(obj){
 
-	if (obj.emitterNameSize)
-		$("#inputCompColorTamEmisor").val(obj.emitterNameSize);
+	if (obj.emitterNameSize){
+		let emitterNameSize = obj.emitterNameSize
+		let onlyNumber = emitterNameSize.replace(/\D/g, "")
+		let onlyText = emitterNameSize.replace(/[0-9]/g, "")
+		console.log(onlyText);
+		$("#inputCompColorTamEmisor").val(onlyNumber);
+		$("#inputCompColorTamEmisorUnidadMedida").val(onlyText)
+	}
 
-	if(obj.colorColumnOdd)
+	if(obj.colorColumnOdd){
+		$("#inputCompColorDescColor").val(obj.colorColumnOdd);
 		$("#inputCompColorDescription").val(obj.colorColumnOdd);
+	}
 
-	if (obj.colorColumnEven)
+	if (obj.colorColumnEven){
+		$("#inputCompColorPrecioColor").val(obj.colorColumnEven);
 		$("#inputCompColorPrecio").val(obj.colorColumnEven);
+	}
 
-	if (obj.textColorColumnPrimary)
+	if (obj.textColorColumnPrimary){
+		$("#inputCompColorTextoTotalColor").val(obj.textColorColumnPrimary);
 		$("#inputCompColorTextoTotal").val(obj.textColorColumnPrimary);
+	}
 
 	if(obj.detailLineStyle)
 		$("#inputCompColorDetailLineStyle").val(obj.detailLineStyle);
@@ -34,8 +58,10 @@ function loadDataStyles(obj){
 	if(obj.detailLineWidth)
 		$("#inputCompColorDetailLineWidth").val(obj.detailLineWidth);
 
-	if(obj.detailLineColor)
+	if(obj.detailLineColor){
 		$("#inputCompColorDetailLineColor").val(obj.detailLineColor);
+		$("#inputCompColorDetailLine").val(obj.detailLineColor);
+	}
 
 }
 
@@ -43,37 +69,39 @@ function loadDataStyles(obj){
 //deshacer todos los cambios de colores
 function companieColorsDefault(){
 
+	$("#inputCompColorTamEmisor").val("");
+	$("#inputCompColorTamEmisorUnidadMedida").val("px")
+	$("#inputCompColorDescription").val("");
+	$("#inputCompColorDescColor").val("#000000");
+	$("#inputCompColorPrecio").val("");
+	$("#inputCompColorPrecioColor").val("#000000");
+	$("#inputCompColorTextoTotal").val("");
+	$("#inputCompColorTextoTotalColor").val("#000000");
+	$("#inputCompColorDetailLineStyle").val("");
+	$("#inputCompColorDetailLineWidth").val("");
+	$("#inputCompColorDetailLineWidthUnidadMedida").val("px")
+	$("#inputCompColorDetailLineColor").val("#000000");
+	$("#inputCompColorDetailLine").val("");
 
+	datachangedRepImpresa();
 
 }
 
 
+//si viene data puede ser que
 function saveCompanieColors( data ){
 
-	if ( !data ){
-		let sizeEmitterName = $("#inputCompColorTamEmisor").val();
-		let colorDesc = $("#inputCompColorDescription").val();
-		let colorPrecio = $("#inputCompColorPrecio").val();
-		let colorTotal = $("#inputCompColorTextoTotal").val();
+	return new Promise((resolve, reject)=>{
 
-		let linesStyle = $("#inputCompColorDetailLineStyle").val();
-		let linesWidth = $("#inputCompColorDetailLineWidth").val();
-		let linesColor = $("#inputCompColorDetailLineColor").val();
-
-		let data = {
-		    "colorColumnOdd": colorDesc,
-		    "colorColumnEven": colorPrecio,
-		    "detailLineWidth": linesWidth,
-		    "detailLineColor": linesColor,
-		    "detailLineStyle": linesStyle,
-		    "textColorColumnPrimary": colorTotal,
-		    "emitterNameSize": sizeEmitterName
+		if ( !data ){
+			data = getFormValues()
 		}
-	}
 
-	sendAsyncPut("representacionimpresa", {data:data})
-	.then( response =>{
-		console.log(response);
+		console.log(data);
+		sendAsyncPut("representacionimpresa", {data:data})
+		.then( response =>{
+			resolve(response)
+		})
 	})
 
 }
@@ -90,4 +118,36 @@ function assignColor(value, idInput){
 function datachangedRepImpresa(){
 	dataIsChanged = true;
 	$("#buttonSubmitCompanieColors").removeAttr("disabled");
+}
+
+
+function getFormValues(){
+	let sizeEmitterNameValue = $("#inputCompColorTamEmisor").val() > 0 ? $("#inputCompColorTamEmisor").val() : null;
+	if (sizeEmitterNameValue > 0){
+		sizeEmitterNameValue += $("#inputCompColorTamEmisorUnidadMedida").val() ? $("#inputCompColorTamEmisorUnidadMedida").val() : "px";
+	}
+
+	let colorDesc = $("#inputCompColorDescription").val() ? $("#inputCompColorDescription").val() : null;
+	let colorPrecio = $("#inputCompColorPrecio").val() ? $("#inputCompColorPrecio").val() : null;
+	let colorTotal = $("#inputCompColorTextoTotal").val() ? $("#inputCompColorTextoTotal").val() : null;
+
+	let linesStyle = $("#inputCompColorDetailLineStyle").val() ? $("#inputCompColorDetailLineStyle").val() : null;
+	let linesWidthValue = $("#inputCompColorDetailLineWidth").val() ? $("#inputCompColorDetailLineWidth").val() : null;
+	if (linesWidthValue > 0){
+		linesWidthValue += $("#inputCompColorDetailLineWidthUnidadMedida").val() ? $("#inputCompColorDetailLineWidthUnidadMedida").val() : "px";
+	}
+
+	let linesColor = $("#inputCompColorDetailLine").val() ? $("#inputCompColorDetailLine").val() : null;
+
+	data = {
+	    "colorColumnOdd": colorDesc,
+	    "colorColumnEven": colorPrecio,
+	    "detailLineWidth": linesWidthValue,
+	    "detailLineColor": linesColor,
+	    "detailLineStyle": linesStyle,
+	    "textColorColumnPrimary": colorTotal,
+	    "emitterNameSize": sizeEmitterNameValue
+	}
+
+	return data;
 }

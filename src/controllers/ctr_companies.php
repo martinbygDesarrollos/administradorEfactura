@@ -217,6 +217,14 @@ class ctr_companies{
 
 	}
 
+	public function updateRepresentacionImpresa( $rut, $data ){
+
+		$restController = new ctr_rest();
+		$data = $restController->updateRepresentacionImpresa($rut, $data);
+		return $data;
+
+	}
+
 
 	public function enabledDisabledCompanie($value){
 		$restController = new ctr_rest();

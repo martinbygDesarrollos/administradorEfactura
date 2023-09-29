@@ -411,6 +411,36 @@ class ctr_rest{
 		return $response;
 	}
 
+	public function updateRepresentacionImpresa($rut, $data){
+
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+		$response->message = "No se pudo obtener respuesta.";
+
+		$token = $usersController->getTokenUserLogued($rut);
+		if ( $token->result == 2 ){
+			$tokenRest = $token->objectResult->tokenRest;
+			$petitionResponse = $petitionClass->updateRepresentacionImpresa($rut, $tokenRest, $data);
+			$result = json_decode($petitionResponse);
+			if ($result->resultado->codigo === 200 ){
+				$response->result = 2;
+				$response->message = "ok";
+				$response->objectResult = $result;
+				return $response;
+			}else{
+				error_log("Error al procesar updateRepresentacionImpresa " . $rut . ": " .$result->resultado->error);
+				$response->result = 1;
+				$response->message = "Error al modificar los datos: ".$result->resultado->error;
+				return $response;
+			}
+		}
+		return $response;
+
+	}
+
 
 	public function enabledDisabledCompanie($value){
 

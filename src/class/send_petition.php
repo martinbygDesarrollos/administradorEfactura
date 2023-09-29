@@ -106,6 +106,11 @@ class sendPetition{
 		return $thisClass->prepareAndSendCurl("GET", "company/".$rut."/representacionimpresa", $token, null);
 	}
 
+	public function updateRepresentacionImpresa($rut, $tokenRest, $data){
+		$thisClass = new sendPetition();
+		return $thisClass->prepareAndSendCurl("PUT", "company/".$rut."/representacionimpresa", $tokenRest, $data);
+	}
+
 
 	public function enabledDisabledCompanie($rut, $data, $token){
 		$thisClass = new sendPetition();

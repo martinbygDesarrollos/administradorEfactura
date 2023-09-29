@@ -395,13 +395,12 @@ return function (App $app){
         }else return json_encode(["result"=>0]);
     });
 
-
+    //esta es para obtener los colores y demás que estan guardados actualmente
     $app->post('/representacionimpresa', function ($request, $response, $args) use ($companiesController){
 
         if ( $_SESSION['mailUserLogued'] ){
             $response = new \stdClass();
             $rut = $_SESSION['rutUserLogued'];
-            var_dump("este es el post");
 
             $response = $companiesController->getRepresentacionImpresa($rut);
             return json_encode($response);
@@ -409,16 +408,14 @@ return function (App $app){
         }else return json_encode(["result"=>0]);
     });
 
-
+    //esta es para MODIFICAR los colores y demás de la rep. impresa
     $app->put('/representacionimpresa', function ($request, $response, $args) use ($companiesController){
 
         if ( $_SESSION['mailUserLogued'] ){
             $response = new \stdClass();
             $rut = $_SESSION['rutUserLogued'];
-
-            var_dump("este es el put");
-
-            $response = $companiesController->getRepresentacionImpresa($rut);
+            $data = $request->getParams()["data"];
+            $response = $companiesController->updateRepresentacionImpresa($rut, $data);
             return json_encode($response);
 
         }else return json_encode(["result"=>0]);

@@ -4,7 +4,7 @@
 			<button class="btn btn-info" data-toggle="modal" data-target="#modalPreviewVoucher" >vista previa</button>
 			<button class="btn btn-info" title="Deshacer todo" onclick="companieColorsDefault()" ><i class="fas fa-undo"></i></button>
 		</div>
-		<form method="POST" id="formCompanieColors">
+		<form method="POST" id="formUpdateRepImpresa">
 		<h5 class="pt-3">Columnas</h5>
 		<table class="table">
     		<tbody id="">
@@ -40,13 +40,13 @@
 				<tr class="row">
 					<td class="col-md-2 col-12"></td>
 					<td class="col-md-5 col-12">
-						<input type="text" id="inputCompColorTamEmisor" name="color1" class="form__field" placeholder="Tamaño del nombre de la empresa emisora" />
+						<input type="text" id="inputCompColorTamEmisor" name="color1" class="form__field" onchange="datachangedRepImpresa()" placeholder="Tamaño del nombre de la empresa emisora" />
 					</td>
 					<td class="col-md-5 col-12">
-						<select class="form__field" >
-							<option value="em" selected>em</option>
+						<select class="form__field" onchange="datachangedRepImpresa()" id="inputCompColorTamEmisorUnidadMedida">
+							<option value="px" selected>px</option>
+							<option value="em">em</option>
 							<option value="rem">rem</option>
-							<option value="px">px</option>
 						</select>
 					</td>
 				</tr>
@@ -66,7 +66,7 @@
 				<tr class="row">
 					<td class="col-md-2 col-12"></td>
 					<td class="col-md-10 col-12">
-						<select class="form__field" >
+						<select class="form__field" onchange="datachangedRepImpresa()" id="inputCompColorDetailLineStyle">
 							<option value="solid" selected>Solida</option>
 							<option value="dashed" >Punteada</option>
 						</select>
@@ -75,13 +75,13 @@
 				<tr class="row">
 					<td class="col-md-2 col-12"></td>
 					<td class="col-md-5 col-12">
-						<input type="text" id="inputCompColorDetailLineWidth" name="color1" class="form__field" placeholder="Tamaño del ancho las líneas que dividen las filas de detalle" />
+						<input type="text" id="inputCompColorDetailLineWidth" name="color1" class="form__field" onchange="datachangedRepImpresa()" placeholder="Tamaño del ancho las líneas que dividen las filas de detalle" />
 					</td>
 					<td class="col-md-5 col-12">
-						<select class="form__field" >
-							<option value="em" selected>em</option>
+						<select class="form__field" onchange="datachangedRepImpresa()" id="inputCompColorDetailLineWidthUnidadMedida" >
+							<option value="px" selected>px</option>
+							<option value="em">em</option>
 							<option value="rem">rem</option>
-							<option value="px">px</option>
 						</select>
 					</td>
 				</tr>
