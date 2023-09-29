@@ -65,23 +65,33 @@ function loadDataStyles(obj){
 
 }
 
+//deshacer todos los cambios de colores
+function companieColorsUndo(){
+
+	getColorsInfo()
+	datachangedRepImpresa();
+
+	document.getElementById("btnComColorUndo").disabled = true;
+	document.getElementById("btnComColorUndo").hidden = true;
+
+}
 
 //deshacer todos los cambios de colores
 function companieColorsDefault(){
 
 	$("#inputCompColorTamEmisor").val("");
 	$("#inputCompColorTamEmisorUnidadMedida").val("px")
-	$("#inputCompColorDescription").val("");
-	$("#inputCompColorDescColor").val("#000000");
-	$("#inputCompColorPrecio").val("");
-	$("#inputCompColorPrecioColor").val("#000000");
-	$("#inputCompColorTextoTotal").val("");
-	$("#inputCompColorTextoTotalColor").val("#000000");
-	$("#inputCompColorDetailLineStyle").val("");
-	$("#inputCompColorDetailLineWidth").val("");
+	$("#inputCompColorDescription").val("#eeeeee");//#eeeeee
+	$("#inputCompColorDescColor").val("#eeeeee"); //#eeeeee
+	$("#inputCompColorPrecio").val("#dddddd");//#dddddd
+	$("#inputCompColorPrecioColor").val("#dddddd"); //#dddddd
+	$("#inputCompColorTextoTotal").val("#ffffff");//#ffffff
+	$("#inputCompColorTextoTotalColor").val("#ffffff");//#ffffff
+	$("#inputCompColorDetailLineStyle").val("solid"); //solid
+	$("#inputCompColorDetailLineWidth").val("1"); //1px
 	$("#inputCompColorDetailLineWidthUnidadMedida").val("px")
-	$("#inputCompColorDetailLineColor").val("#000000");
-	$("#inputCompColorDetailLine").val("");
+	$("#inputCompColorDetailLineColor").val("#ffffff");//#ffffff
+	$("#inputCompColorDetailLine").val("#ffffff");//#ffffff
 
 	datachangedRepImpresa();
 
@@ -118,6 +128,8 @@ function assignColor(value, idInput){
 function datachangedRepImpresa(){
 	dataIsChanged = true;
 	$("#buttonSubmitCompanieColors").removeAttr("disabled");
+	document.getElementById("btnComColorUndo").disabled = false;
+	document.getElementById("btnComColorUndo").hidden = false;
 }
 
 
