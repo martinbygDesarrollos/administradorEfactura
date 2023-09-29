@@ -77,11 +77,11 @@
 
 .form__field_colorpicker::-webkit-color-swatch {
   border-radius: 50%;
-  border: 7px solid #000000;
+  border: 1px solid #999999;
 }
 .form__field_colorpicker::-moz-color-swatch {
   border-radius: 50%;
-  border: 7px solid #000000;
+  border: 1px solid #999999;
 }
 
 
