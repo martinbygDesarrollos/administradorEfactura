@@ -118,6 +118,17 @@ class sendPetition{
 	}
 
 
+	public function deleteCompanieBranch($rut, $branch, $token){
+		$thisClass = new sendPetition();
+		return $thisClass->prepareAndSendCurl("DELETE", "company/".$rut."/sucursal/".$branch, $token, null);
+	}
+
+	public function setPrincipalCompanieBranch($rut, $data, $token){
+		$thisClass = new sendPetition();
+		return $thisClass->prepareAndSendCurl("PUT", "company/".$rut."/sucursalprincipal", $token, $data);
+	}
+
+
 	public function prepareAndSendCurl($typeMethod, $method, $token, $data){
 		$thisClass = new sendPetition();
 		$curlPetition = curl_init(URL_REST . $method);
@@ -133,6 +144,8 @@ class sendPetition{
 		}else if($typeMethod == "PATCH"){
 			curl_setopt($curlPetition, CURLOPT_CUSTOMREQUEST, "PATCH");
 			curl_setopt($curlPetition, CURLOPT_POSTFIELDS, json_encode($data));
+		} else if ($typeMethod == "DELETE") {
+			curl_setopt($curlPetition, CURLOPT_CUSTOMREQUEST, "DELETE");
 		}
 
 		curl_setopt($curlPetition, CURLOPT_RETURNTRANSFER, true);

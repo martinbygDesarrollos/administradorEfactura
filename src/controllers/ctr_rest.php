@@ -474,6 +474,66 @@ class ctr_rest{
 
 	}
 
+
+	public function deleteCompanieBranch($rut, $branch){
+
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+
+		$token = $usersController->getTokenUserLogued($rut);
+
+		if ( $token->result == 2 ){
+			$tokenRest = $token->objectResult->tokenRest;
+			$petitionResponse = $petitionClass->deleteCompanieBranch($rut, $branch, $tokenRest);
+			$result = json_decode($petitionResponse);
+			if ($result->resultado->codigo === 200 ){
+				$response->result = 2;
+				$response->message = "ok";
+				// return $response;
+			}else{
+				error_log("Error al eliminar una sucursal, función deleteCompanieBranch " . $_SESSION['rutUserLogued'] . ", valor enviado $branch, error: " .$result->resultado->error);
+				$response->result = 1;
+				$response->message = $result->resultado->error;
+				// return $response;
+			}
+			// $response->objectResult = $petitionResponse;
+		} else return $token;
+
+		return $response;
+
+	}
+
+	public function setPrincipalCompanieBranch($rut, $branch){
+
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$data = new \stdClass();
+		$data->sucursalPrincipal = $branch;
+
+		$token = $usersController->getTokenUserLogued($rut);
+		if ( $token->result == 2 ){
+			$tokenRest = $token->objectResult->tokenRest;
+			$petitionResponse = $petitionClass->setPrincipalCompanieBranch($rut, $data, $tokenRest);
+			// $petitionResponse = $petitionClass->enabledDisabledCompanie($_SESSION['rutUserLogued'], $data, $tokenRest);
+			$result = json_decode($petitionResponse);
+			if ($result->resultado->codigo === 200 ){
+				$response->result = 2;
+				$response->message = "ok";
+			}else{
+				error_log("Error al cambiar sucursal a principal, función setPrincipalCompanieBranch " . $_SESSION['rutUserLogued'] . ", valor enviado $data, error: " .$result->resultado->error);
+				$response->result = 1;
+				$response->message = $result->resultado->error;
+			}
+		}
+		return $response;
+
+	}
+
 }
 
 

@@ -232,6 +232,19 @@ class ctr_companies{
 		return $data;
 	}
 
+	public function deleteCompanieBranch($rut, $branch){
+		$restController = new ctr_rest();
+		$data = $restController->deleteCompanieBranch($rut, $branch);
+		return $data;
+	}
+
+
+	public function setPrincipalCompanieBranch($rut, $branch){
+		$restController = new ctr_rest();
+		$data = $restController->setPrincipalCompanieBranch($rut, $branch);
+		return $data;
+	}
+
 
 }
 

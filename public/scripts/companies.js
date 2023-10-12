@@ -213,12 +213,17 @@ function loadBranchCompanieData( value, rut  ){
 
 
 function createRowsToBranchTableInfo(branch){
-
-	if ( branch.isPrincipal )
+	if ( branch.isPrincipal ) {
+		console.log("principal");
 		$("#tdBranchDataPrincipal").prop('checked', true);
-	else
+		$("#buttonDeleteBranchCompanieDetails").attr("disabled", "disabled");
+		$("#buttonSetPrincipalBranchCompanieDetails").attr("disabled", "disabled");
+	} else {
+		console.log("sucursal");
 		$("#tdBranchDataPrincipal").prop('checked', false);
-
+		$("#buttonDeleteBranchCompanieDetails").removeAttr("disabled");
+		$("#buttonSetPrincipalBranchCompanieDetails").removeAttr("disabled");
+	}
 
 	$("#tdBranchDataCodDgi").val(branch.codDGI);
 	$("#tdBranchDataNombre").val(branch.nombreComercial);
@@ -358,7 +363,101 @@ function formFilter(idForm){
 
 }
 
+$('#buttonDeleteBranchCompanieDetails').click(function(){
+	branchSelected = $("#selectBranchCompanieDetails").val();
+	rutSelected = $("#textRutCompanieSelected").text();
+	// alert('Click en delete sucursal: ' + branchSelected + ' de la empresa con RUT: ' + rutSelected);
+	deleteBranchCompanie(branchSelected, rutSelected);
+});
 
+function deleteBranchCompanie( branch, rut  ){
+	sendAsyncPost("deleteBranch", {branch:branch, companie:rut})
+	.then((response)=>{
+		if ( response.result == 2 ){
+			alert("Sucursal eliminada con exito!");
+			window.location.reload();
+			// createRowsToBranchTableInfo(response.objectResult);
+		}else if ( response.result == 0 ){
+
+			alert("Error. no se pudo eliminar la Sucursal");
+
+			// window.location.href = getSiteURL() + "cerrar-session";
+		}
+	})
+}
+
+$('#buttonSetPrincipalBranchCompanieDetails').click(function(){
+	branchSelected = $("#selectBranchCompanieDetails").val();
+	rutSelected = $("#textRutCompanieSelected").text();
+	setPrincipalBranch(branchSelected, rutSelected);
+});
+
+function setPrincipalBranch( branch, rut  ){
+	sendAsyncPost("setPrincipalCompanieBranch", {branch:branch, companie:rut})
+	.then((response)=>{
+		if ( response.result == 2 ){
+			alert("Sucursal principal cambiada con exito!");
+			window.location.reload();
+			// createRowsToBranchTableInfo(response.objectResult);
+		}else if ( response.result == 0 ){
+			alert("Error. no se pudo cambiar la Sucursal principal");
+			// window.location.href = getSiteURL() + "cerrar-session";
+		}
+	})
+}
+
+function createNewSucursalModal(){
+	$('#modalNewSucursal').modal();
+	// previousMonth = new Date();
+	// previousMonth.setMonth(previousMonth.getMonth() - 1);
+	// document.getElementById("inputExportCobrosFechaProduccion").valueAsDate = previousMonth;
+	// document.getElementById("inputExportCobrosFechaVencimiento").valueAsDate = new Date();
+}
+$('#modalNewSucursal').on('shown.bs.modal', function() {
+	// $('#inputExportCobrosFechaProduccion').focus();
+})
+
+$('#buttonModalNewSucursal').click(function(){
+	// "nombreComercial": "Sucursal 106",
+	// "direccion": "25 de mayo 1410",
+	// "departamento": "Montevideo",
+	// "localidad": "Montevideo",
+	// "telephone1": "27100108",
+	// "telephone2": "27124560",
+	// "email": "contacto@ormen.com.uy",
+	// "website": "www.ormen.com.uy",
+	// "isTemplate": true
+
+	let nombre = $('#BranchDataNombreModal').val();
+	let direccion = $('#BranchDataDireccionModal').val();
+	let departamento = $('#BranchDataDeptoModal').val();
+	let localidad = $('#BranchDataLocalidadModal').val();
+	let telefono = $('#BranchDataTelModal').val();
+	let telefono2 = $('#BranchDataTel2Modal').val();
+	let correo = $('#BranchDataCorreoModal').val();
+	let sitio = $('#BranchDataWebModal').val();
+
+	let principal;
+	if ($('#option1').prop('checked')) { // Principal
+		principal = true; // Option 1 is selected
+	} else if ($('#option2').prop('checked')) { // Secundaria
+		principal = false; 
+	}
+
+	sendAsyncPost("newCompanieBranch", {isPrincipal: principal, nombre: nombre, direccion: direccion, departamento: departamento, localidad: localidad, telefono: telefono, telefono2: telefono2, correo: correo, sitio: sitio})
+	.then((response)=>{
+		if ( response.result == 2 ){
+			alert(response.message);
+			window.location.reload();
+			// createRowsToBranchTableInfo(response.objectResult);
+		}else if ( response.result == 0 ){
+
+			alert(response.message);
+
+			// window.location.href = getSiteURL() + "cerrar-session";
+		}
+	})
+});
 
 
 async function getReportsByCompanie(){

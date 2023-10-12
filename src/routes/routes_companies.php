@@ -19,6 +19,18 @@ return function (App $app){
         if ( isset($_SESSION['mailUserLogued']) ){
 
             $company = $companiesController->getCompaniesData($args['rut'])->objectResult;
+            $idSucPrincipal = -1;
+            $sucursalesNew = array();
+            foreach ($company->sucursales as $key => $value) {
+                if($value->isPrincipal)
+                    $idSucPrincipal = $value->codDGI;
+                else{
+                    if ($value->codDGI == $idSucPrincipal)
+                        continue;
+                }
+                $sucursalesNew[] = $value;
+            }
+            $company->sucursales = $sucursalesNew;
             $args["company"] = $company;
 
             $args['files'] = false;
@@ -328,6 +340,74 @@ return function (App $app){
             }else
                 return json_encode($companie);
         }else return json_encode(["result"=>0]);
+    });
+
+    $app->post('/deleteBranch', function ($request, $response, $args) use ($container, $companiesController){
+        $response = new \stdClass();
+        if ( $_SESSION['mailUserLogued'] ){
+            $data = $request->getParams();
+            $branch = $data['branch'];
+            // No lo uso? uso el de la SESSION?
+            $companie = $data['companie'];
+            $rut = $_SESSION['rutUserLogued'];
+
+            $responseDeleteBranch = $companiesController->deleteCompanieBranch($rut, $branch);
+            if ( $responseDeleteBranch->result == 2 ) {
+                $response->result = 2;
+            } else {
+                $response->result = 0;
+            }
+            return json_encode($response);
+        } else return json_encode(["result"=>0]);
+    });
+
+    $app->post('/setPrincipalCompanieBranch', function ($request, $response, $args) use ($container, $companiesController){
+        if ( $_SESSION['mailUserLogued'] ){
+            $response = new \stdClass();
+            $data = $request->getParams();
+            $branch = $data['branch'];
+            $rut = $_SESSION['rutUserLogued'];
+            $response = $companiesController->setPrincipalCompanieBranch($rut, $branch);
+            
+            return json_encode($response);
+        } else return json_encode(["result"=>0]);
+    });
+
+    $app->post('/newCompanieBranch', function ($request, $response, $args) use ($container, $companiesController){
+        if ( $_SESSION['mailUserLogued'] ){
+            $response = new \stdClass();
+            $data = $request->getParams();
+            $rut = $_SESSION['rutUserLogued'];
+            $company = $companiesController->getCompaniesData($rut)->objectResult;
+            $idMayor = 0;
+            foreach ( $company->sucursales as $key => $value) {
+                if($value->codDGI > $idMayor){
+                    $idMayor = $value->codDGI;
+                }
+            }
+            $newId = $idMayor + 1;
+            $data['codDgi'] = $newId;
+            $data['rut'] = $rut;
+            $isPrincipal = $data['isPrincipal'] === 'true'? true: false;
+
+            $response = null;
+            if($isPrincipal){
+                $response = $companiesController->changeCompanieData( $data );
+                if ( $response->result == 2 ) {
+                    $response = $companiesController->setPrincipalCompanieBranch($rut, $data['codDgi']);
+                }
+            } else {
+                $response = $companiesController->changeCompanieData( $data ); 
+            }
+
+            if ( $response->result == 2 ) {
+                $response->message = "Nueva sucursal creada con exito!";
+            } else {
+                $response->result = 0;
+                $response->message = "Error. No se pudo crear la nueva sucursal";
+            }
+            return json_encode($response);
+        } else return json_encode(["result"=>0]);
     });
 
 
