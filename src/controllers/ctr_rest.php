@@ -491,7 +491,7 @@ class ctr_rest{
 			$result = json_decode($petitionResponse);
 			if ($result->resultado->codigo === 200 ){
 				$response->result = 2;
-				$response->message = "ok";
+				$response->message = "Sucursal eliminada con exito!";
 				// return $response;
 			}else{
 				error_log("Error al eliminar una sucursal, función deleteCompanieBranch " . $_SESSION['rutUserLogued'] . ", valor enviado $branch, error: " .$result->resultado->error);
@@ -523,7 +523,7 @@ class ctr_rest{
 			$result = json_decode($petitionResponse);
 			if ($result->resultado->codigo === 200 ){
 				$response->result = 2;
-				$response->message = "ok";
+				$response->message = "Sucursal cambiada a principal con exito!";
 			}else{
 				error_log("Error al cambiar sucursal a principal, función setPrincipalCompanieBranch " . $_SESSION['rutUserLogued'] . ", valor enviado $data, error: " .$result->resultado->error);
 				$response->result = 1;

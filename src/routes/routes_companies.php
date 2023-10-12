@@ -354,8 +354,10 @@ return function (App $app){
             $responseDeleteBranch = $companiesController->deleteCompanieBranch($rut, $branch);
             if ( $responseDeleteBranch->result == 2 ) {
                 $response->result = 2;
+                $response->message = $responseDeleteBranch->message;
             } else {
                 $response->result = 0;
+                $response->message = $responseDeleteBranch->message;
             }
             return json_encode($response);
         } else return json_encode(["result"=>0]);

@@ -1,4 +1,4 @@
-<div class="tab-pane show" id="sucursales-data" role="tabpanel">
+<div class="tab-pane active show" id="sucursales-data" role="tabpanel">
 	<div class="containerTable">
 		<form method="POST" id="formCompanieDetails">
 	    	<table class="table">
@@ -6,20 +6,22 @@
 					{% if company.sucursales %}
 					<div class="d-flex flex-row-reverse mb-2">
 						<div>
-							<a id="newSucursal" type="button" onclick="createNewSucursalModal()" class="btn background-template-color text-template-color" alt="Crear nueva sucursal"><i class="fas fa-plus"></i></a>
+							<a id="newSucursal" type="button" onclick="createNewSucursalModal()" style="height: 2.5rem;" class="btn background-template-color text-template-color" title="Crear nueva sucursal"><i class="fas fa-plus"></i></a>
 						</div>
+						{% if company.suspendida == 0 %}
+	    					<button type="button" class="btn btn-warning col-6 col-sm-6 col-md-2 mr-2" style="height: 2.5rem;overflow: hidden;" onclick="suspenderActivarEmpresa(1)"  title="La empresa está activada, presiona para suspender">Suspender empresa</button>
+	    				{% endif %}
+						{% if company.suspendida == 1 %}
+	    					<button type="button" class="btn btn-info col-6 col-sm-6 col-md-2 mr-2" onclick="suspenderActivarEmpresa(0)" title="La empresa está suspendida, presiona para activar">Activar empresa</button>
+						{% endif %}
                         <div class="col-4">
                             <select  id="selectBranchCompanieDetails" class="form-control" style="height: 2.5rem;" onchange="loadBranchCompanieData(this.value, {{company.rut}})">
-                                {# {% for suc in company.sucursales %}
-                                    {% if suc.isPrincipal %}
-                                    <option value="{{suc.codDGI}}">{{suc.codDGI}} - PRINCIPAL</option>
-                                    {% else %}
-                                    <option value="{{suc.codDGI}}">{{suc.codDGI}} - SUCURSAL</option>
-                                    {% endif %}
-
-                                {% endfor %} #}
                                 {% for suc in company.sucursales %}
-                                    <option value="{{suc.codDGI}}">{{suc.codDGI}} - {% if suc.isPrincipal %} PRINCIPAL {% else %} SUCURSAL {% endif %}</option>
+                                    {% if suc.isPrincipal %}
+                                    	<option value="{{suc.codDGI}}">{{suc.codDGI}} - PRINCIPAL</option>
+                                    {% else %}
+                                    	<option value="{{suc.codDGI}}">{{suc.codDGI}} - SUCURSAL</option>
+                                    {% endif %}
                                 {% endfor %}
                             </select>
                         </div>
@@ -60,44 +62,84 @@
 	    		<tbody id="">
 
 					<tr>
-						<div class="form__group field">
-							<input type="text" id="tdBranchDataNombre" name="nombre" class="form__field" onchange="datachanged()" placeholder="Nombre comercial" />
-						</div>
+						<td class="col-2">
+							<label class="font-weight-bold">Nombre Comercial</label>
+	    				</td>
+						<td class="col-10">
+							{# <div class="form__group field"> #}
+								<input type="text" id="tdBranchDataNombre" name="nombre" class="form__field" onchange="datachanged()" placeholder="Nombre comercial" />
+							{# </div> #}
+						</td>
 					</tr>
 					<tr>
-						<div class="form__group field">
+						<td class="col-2">
+							<label class="font-weight-bold">Dirección</label>
+						</td>
+						<td class="col-10">
+						{# <div class="form__group field"> #}
 							<input type="text" id="tdBranchDataDireccion" name="direccion" onchange="datachanged()" class="form__field" placeholder="Dirección" />
-						</div>
+						{# </div> #}
+						</td>
 					</tr>
 					<tr>
-						<div class="form__group field">
+						<td class="col-2">
+							<label class="font-weight-bold">Departamento</label>
+						</td>
+						<td class="col-10">
+						{# <div class="form__group field"> #}
 							<input type="text" id="tdBranchDataDepto" name="departamento" class="form__field" onchange="datachanged()" placeholder="Departamento" />
-						</div>
+						{# </div> #}
+						</td>
 					</tr>
 					<tr>
-						<div class="form__group field">
+						<td class="col-2">
+							<label class="font-weight-bold">Localidad</label>
+						</td>
+						<td class="col-10">
+						{# <div class="form__group field"> #}
 							<input type="text" id="tdBranchDataLocalidad" name="localidad" class="form__field" onchange="datachanged()" placeholder="Localidad" />
-						</div>
+						{# </div> #}
+						</td>
 					</tr>
 					<tr>
-						<div class="form__group field">
+						<td class="col-2">
+							<label class="font-weight-bold">Telefono</label>
+						</td>
+						<td class="col-10">
+						{# <div class="form__group field"> #}
 							<input type="text" id="tdBranchDataTel" name="telefono" class="form__field" onchange="datachanged()" placeholder="Teléfono 1" />
-						</div>
+						{# </div> #}
+						</td>
 					</tr>
 					<tr>
-						<div class="form__group field">
+						<td class="col-2">
+							<label class="font-weight-bold">Telefono 2</label>
+						</td>
+						<td class="col-10">
+						{# <div class="form__group field"> #}
 							<input type="text" id="tdBranchDataTel2" name="telefono2" class="form__field" onchange="datachanged()" placeholder="Teléfono 2" />
-						</div>
+						{# </div> #}
+						</td>
 					</tr>
 					<tr>
-						<div class="form__group field">
+						<td class="col-2">
+							<label class="font-weight-bold">Correo</label>
+						</td>
+						<td class="col-10">
+						{# <div class="form__group field"> #}
 							<input type="text" id="tdBranchDataCorreo" name="correo" class="form__field" onchange="datachanged()" placeholder="Correo" />
-						</div>
+						{# </div> #}
+						</td>
 					</tr>
 					<tr>
-						<div class="form__group field">
+						<td class="col-2">
+							<label class="font-weight-bold">Sitio</label>
+						</td>
+						<td class="col-10">
+						{# <div class="form__group field"> #}
 							<input type="text" id="tdBranchDataWeb" name="sitio" class="form__field" onchange="datachanged()" placeholder="Sitio web" />
-						</div>
+						{# </div> #}
+						</td>
 					</tr>
 	    		</tbody>
 	    	</table>
