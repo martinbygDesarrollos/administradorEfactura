@@ -19,18 +19,18 @@ return function (App $app){
         if ( isset($_SESSION['mailUserLogued']) ){
 
             $company = $companiesController->getCompaniesData($args['rut'])->objectResult;
-            $idSucPrincipal = -1;
-            $sucursalesNew = array();
-            foreach ($company->sucursales as $key => $value) {
-                if($value->isPrincipal)
-                    $idSucPrincipal = $value->codDGI;
-                else{
-                    if ($value->codDGI == $idSucPrincipal)
-                        continue;
-                }
-                $sucursalesNew[] = $value;
-            }
-            $company->sucursales = $sucursalesNew;
+            // $idSucPrincipal = -1;
+            // $sucursalesNew = array();
+            // foreach ($company->sucursales as $key => $value) {
+            //     if($value->isPrincipal)
+            //         $idSucPrincipal = $value->codDGI;
+            //     else{
+            //         if ($value->codDGI == $idSucPrincipal)
+            //             continue;
+            //     }
+            //     $sucursalesNew[] = $value;
+            // }
+            // $company->sucursales = $sucursalesNew;
             $args["company"] = $company;
 
             $args['files'] = false;
@@ -394,10 +394,11 @@ return function (App $app){
 
             $response = null;
             if($isPrincipal){
-                $response = $companiesController->changeCompanieData( $data );
-                if ( $response->result == 2 ) {
-                    $response = $companiesController->setPrincipalCompanieBranch($rut, $data['codDgi']);
-                }
+                // ERROR EN LAS CONSULTAS, TODAVIA NO IMPLEMENTAR SETPRINCIPALCOMPANIEBRANCH
+                // $response = $companiesController->changeCompanieData( $data );
+                // if ( $response->result == 2 ) {
+                //     $response = $companiesController->setPrincipalCompanieBranch($rut, $data['codDgi']);
+                // }
             } else {
                 $response = $companiesController->changeCompanieData( $data ); 
             }

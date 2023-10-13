@@ -151,7 +151,7 @@
 
 				<button  id="buttonDeleteBranchCompanieDetails" type="button" class="btn btn-secondary ml-3" >Eliminar Sucursal</button>
             
-				<button  id="buttonSetPrincipalBranchCompanieDetails" type="button" class="btn btn-secondary" >Convertir en principal</button>
+				<button disabled id="buttonSetPrincipalBranchCompanieDetails" type="button" class="btn btn-secondary" >Convertir en principal</button>
 	        </div>
 	    </form>
 	</div>
@@ -167,54 +167,75 @@
 				</button>
 			</div>
 			<div class="modal-body">
-			<div class="row mt-2">
-				<div class="col-4">
-					<input type="text" id="BranchDataNombreModal" name="nombre" class="form-control" onchange="datachanged()" placeholder="Nombre comercial" />
+				<div class="row mt-2">
+					<div class="col-4">
+						<input type="text" id="BranchDataNombreModal" name="nombre" class="form-control" onchange="datachanged()" placeholder="Nombre comercial" />
+					</div>
+					<div class="col-4">
+						<input type="text" id="BranchDataDireccionModal" name="direccion" onchange="datachanged()" class="form-control" placeholder="Dirección" />
+					</div>
+					<div class="col-4">
+						<input type="text" id="BranchDataDeptoModal" name="departamento" class="form-control" onchange="datachanged()" placeholder="Departamento" />
+					</div>
 				</div>
-				<div class="col-4">
-					<input type="text" id="BranchDataDireccionModal" name="direccion" onchange="datachanged()" class="form-control" placeholder="Dirección" />
+				<div class="row mt-2">
+					<div class="col-4">
+						<input type="text" id="BranchDataLocalidadModal" name="localidad" class="form-control" onchange="datachanged()" placeholder="Localidad" />
+					</div>
+					<div class="col-4">
+						<input type="text" id="BranchDataTelModal" name="telefono" class="form-control" onchange="datachanged()" placeholder="Teléfono 1" />
+					</div>
+					<div class="col-4">
+						<input type="text" id="BranchDataTel2Modal" name="telefono2" class="form-control" onchange="datachanged()" placeholder="Teléfono 2" />
+					</div>
 				</div>
-				<div class="col-4">
-					<input type="text" id="BranchDataDeptoModal" name="departamento" class="form-control" onchange="datachanged()" placeholder="Departamento" />
+				<div class="row mt-2">
+					<div class="col-6">
+						<input type="text" id="BranchDataCorreoModal" name="correo" class="form-control" onchange="datachanged()" placeholder="Correo" />
+					</div>
+					<div class="col-6">
+						<input type="text" id="BranchDataWebModal" name="sitio" class="form-control" onchange="datachanged()" placeholder="Sitio web" />
+					</div>
 				</div>
-			</div>
-			<div class="row mt-2">
-				<div class="col-4">
-					<input type="text" id="BranchDataLocalidadModal" name="localidad" class="form-control" onchange="datachanged()" placeholder="Localidad" />
+				{# <hr>
+				<label class="text-primary" for="inputExportCobrosFechaProduccion">Tipo de Sucursal</label>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="options" id="option2" value="option2" checked>
+					<label class="form-check-label" for="option2">
+						Secundaria
+					</label>
 				</div>
-				<div class="col-4">
-					<input type="text" id="BranchDataTelModal" name="telefono" class="form-control" onchange="datachanged()" placeholder="Teléfono 1" />
-				</div>
-				<div class="col-4">
-					<input type="text" id="BranchDataTel2Modal" name="telefono2" class="form-control" onchange="datachanged()" placeholder="Teléfono 2" />
-				</div>
-			</div>
-			<div class="row mt-2">
-				<div class="col-6">
-					<input type="text" id="BranchDataCorreoModal" name="correo" class="form-control" onchange="datachanged()" placeholder="Correo" />
-				</div>
-				<div class="col-6">
-					<input type="text" id="BranchDataWebModal" name="sitio" class="form-control" onchange="datachanged()" placeholder="Sitio web" />
-				</div>
-			</div>
-			<hr>
-			<label class="text-primary" for="inputExportCobrosFechaProduccion">Tipo de Sucursal</label>
-			<div class="form-check">
-				<input class="form-check-input" type="radio" name="options" id="option2" value="option2" checked>
-				<label class="form-check-label" for="option2">
-					Secundaria
-				</label>
-			</div>
-			<div class="form-check">
-				<input class="form-check-input" type="radio" name="options" id="option1" value="option1">
-				<label class="form-check-label" for="option1">
-					Principal
-				</label>
-			</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="options" id="option1" value="option1">
+					<label class="form-check-label" for="option1">
+						Principal
+					</label>
+				</div> #}
 			</div>
 			<div class="modal-footer d-flex justify-content-between">
 				<button type="button" class="btn btn-danger shadow-sm" tabindex="5" data-dismiss="modal">Cancelar</button>
 				<button id="buttonModalNewSucursal" type="button" class="btn btn-success shadow-sm" tabindex="4" >Confirmar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="modalDeleteBranch" class="modal" tabindex="-1" role="dialog">
+	<div class="modal-dialog w-25" role="document">
+		<div class="modal-content">
+			<div class="modal-header background-template-color">
+				<span id="modalConfirmTitle" class="modal-title"> Confirmar </span>
+				<button type="button" class="close" data-dismiss="modal" accesskey="x" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p id="modalConfirmMessage" class="text-center"> ¿Seguro que quiere eliminar la sucursal? </p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="buttonConfirmDeleteBranch" class="btn btn-success shadow-sm" data-dismiss="modal" accesskey="o">C<u>o</u>nfirmar</button>
+        		<button type="button" class="btn background-template-color text-template-color shadow-sm" data-dismiss="modal" accesskey="a" >C<u>a</u>ncelar</button>
+				{# <button id="modalButtonResponse" type="button" accesskey="o" class="btn background-template-color text-template-color shadow-sm"><u>O</u>k</button> #}
 			</div>
 		</div>
 	</div>

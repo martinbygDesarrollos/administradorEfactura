@@ -217,12 +217,12 @@ function createRowsToBranchTableInfo(branch){
 		console.log("principal");
 		$("#tdBranchDataPrincipal").prop('checked', true);
 		$("#buttonDeleteBranchCompanieDetails").attr("disabled", "disabled");
-		$("#buttonSetPrincipalBranchCompanieDetails").attr("disabled", "disabled");
+		// $("#buttonSetPrincipalBranchCompanieDetails").attr("disabled", "disabled");
 	} else {
 		console.log("sucursal");
 		$("#tdBranchDataPrincipal").prop('checked', false);
 		$("#buttonDeleteBranchCompanieDetails").removeAttr("disabled");
-		$("#buttonSetPrincipalBranchCompanieDetails").removeAttr("disabled");
+		// $("#buttonSetPrincipalBranchCompanieDetails").removeAttr("disabled");
 	}
 
 	$("#tdBranchDataCodDgi").val(branch.codDGI);
@@ -364,6 +364,10 @@ function formFilter(idForm){
 }
 
 $('#buttonDeleteBranchCompanieDetails').click(function(){
+	$('#modalDeleteBranch').modal();
+});
+
+$('#buttonConfirmDeleteBranch').click(function(){
 	branchSelected = $("#selectBranchCompanieDetails").val();
 	rutSelected = $("#textRutCompanieSelected").text();
 	deleteBranchCompanie(branchSelected, rutSelected);
@@ -417,12 +421,13 @@ $('#buttonModalNewSucursal').click(function(){
 	let correo = $('#BranchDataCorreoModal').val();
 	let sitio = $('#BranchDataWebModal').val();
 
-	let principal;
-	if ($('#option1').prop('checked')) { // Principal
-		principal = true;
-	} else if ($('#option2').prop('checked')) { // Secundaria
-		principal = false; 
-	}
+	let principal = false;
+	// POR AHORA NO SE MANDA
+	// if ($('#option1').prop('checked')) { // Principal
+	// 	principal = true;
+	// } else if ($('#option2').prop('checked')) { // Secundaria
+	// 	principal = false; 
+	// }
 
 	sendAsyncPost("newCompanieBranch", {isPrincipal: principal, nombre: nombre, direccion: direccion, departamento: departamento, localidad: localidad, telefono: telefono, telefono2: telefono2, correo: correo, sitio: sitio})
 	.then((response)=>{
