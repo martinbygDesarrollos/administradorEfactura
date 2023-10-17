@@ -217,12 +217,13 @@ function createRowsToBranchTableInfo(branch){
 		console.log("principal");
 		$("#tdBranchDataPrincipal").prop('checked', true);
 		$("#buttonDeleteBranchCompanieDetails").attr("disabled", "disabled");
-		// $("#buttonSetPrincipalBranchCompanieDetails").attr("disabled", "disabled");
+		$("#buttonSetPrincipalBranchCompanieDetails").attr("disabled", "disabled");
 	} else {
 		console.log("sucursal");
 		$("#tdBranchDataPrincipal").prop('checked', false);
 		$("#buttonDeleteBranchCompanieDetails").removeAttr("disabled");
-		// $("#buttonSetPrincipalBranchCompanieDetails").removeAttr("disabled");
+		if ( !branch.isTemplate )
+			$("#buttonSetPrincipalBranchCompanieDetails").removeAttr("disabled");
 	}
 
 	$("#tdBranchDataCodDgi").val(branch.codDGI);
@@ -288,6 +289,9 @@ function createRowsToCaesTableInfo(objCae){
 
 //habilita el botón del formulario que está en principal
 function datachanged(){
+	if($('#BranchDataDGIModal').val() >= 90){
+		$("#templateContainer").removeClass("d-none");
+	}
 	dataIsChanged = true;
 	$("#buttonSubmitCompanieDetails").removeAttr("disabled");
 }
@@ -386,6 +390,10 @@ function deleteBranchCompanie( branch, rut  ){
 }
 
 $('#buttonSetPrincipalBranchCompanieDetails').click(function(){
+	$('#modalSetMainBranch').modal();
+});
+
+$('#buttonConfirmSetMainBranch').click(function(){
 	branchSelected = $("#selectBranchCompanieDetails").val();
 	rutSelected = $("#textRutCompanieSelected").text();
 	setPrincipalBranch(branchSelected, rutSelected);
@@ -407,7 +415,24 @@ function createNewSucursalModal(){
 	$('#modalNewSucursal').modal();
 }
 $('#modalNewSucursal').on('shown.bs.modal', function() {
+	if(!$('#templateContainer').hasClass("d-none")){
+		$('#templateContainer').addClass("d-none");
+		$('#BranchDataTemplateModal').prop( "checked", false );
+	}
 	$('#BranchDataNombreModal').focus();
+})
+
+$('#modalNewSucursal').on('hidden.bs.modal', function() {
+	$('#BranchDataNombreModal').val("");
+	$('#BranchDataDireccionModal').val("");
+	$('#BranchDataDeptoModal').val("");
+	$('#BranchDataLocalidadModal').val("");
+	$('#BranchDataTelModal').val("");
+	$('#BranchDataTel2Modal').val("");
+	$('#BranchDataCorreoModal').val("");
+	$('#BranchDataWebModal').val("");
+	$('#BranchDataDGIModal').val("");
+	$('#BranchDataTemplateModal').val("");
 })
 
 $('#buttonModalNewSucursal').click(function(){
@@ -420,16 +445,20 @@ $('#buttonModalNewSucursal').click(function(){
 	let telefono2 = $('#BranchDataTel2Modal').val();
 	let correo = $('#BranchDataCorreoModal').val();
 	let sitio = $('#BranchDataWebModal').val();
+	let codDGI = $('#BranchDataDGIModal').val();
+	let isTemplate = false;
+	isTemplate = $('#BranchDataTemplateModal').is(':checked');
+
 
 	let principal = false;
 	// POR AHORA NO SE MANDA
-	// if ($('#option1').prop('checked')) { // Principal
-	// 	principal = true;
-	// } else if ($('#option2').prop('checked')) { // Secundaria
-	// 	principal = false; 
-	// }
+	if ($('#option1').prop('checked')) { // Principal
+		principal = true;
+	} else if ($('#option2').prop('checked')) { // Secundaria
+		principal = false; 
+	}
 
-	sendAsyncPost("newCompanieBranch", {isPrincipal: principal, nombre: nombre, direccion: direccion, departamento: departamento, localidad: localidad, telefono: telefono, telefono2: telefono2, correo: correo, sitio: sitio})
+	sendAsyncPost("newCompanieBranch", {isPrincipal: principal, nombre: nombre, direccion: direccion, departamento: departamento, localidad: localidad, telefono: telefono, telefono2: telefono2, correo: correo, sitio: sitio, codDGI: codDGI, isTemplate: isTemplate})
 	.then((response)=>{
 		if ( response.result == 2 ){
 			showMessage(response.result, response.message);

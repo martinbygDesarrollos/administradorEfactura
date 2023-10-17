@@ -124,3 +124,7 @@ a[aria-selected="true"]{
 #newSucursal {
     margin: auto !important;
 }
+
+.slider{
+    border-radius: 3px !important;
+}

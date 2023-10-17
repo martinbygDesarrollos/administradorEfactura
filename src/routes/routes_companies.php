@@ -369,7 +369,21 @@ return function (App $app){
             $data = $request->getParams();
             $branch = $data['branch'];
             $rut = $_SESSION['rutUserLogued'];
-            $response = $companiesController->setPrincipalCompanieBranch($rut, $branch);
+
+            $company = $companiesController->getCompaniesData($rut)->objectResult;
+            $sucPrincipal = new \stdClass();
+            $newSucPrincipal = new \stdClass();
+            
+            foreach ( $company->sucursales as $key => $value) {
+                if($value->isPrincipal)
+                    $sucPrincipal = $value;
+                if($value->codDGI == $branch)
+                    $newSucPrincipal = $value;
+            }
+            // var_dump($sucPrincipal);
+            // var_dump($newSucPrincipal);
+            // exit;
+            $response = $companiesController->setExistingBranchLikePrincipal($sucPrincipal, $newSucPrincipal, $rut);
             
             return json_encode($response);
         } else return json_encode(["result"=>0]);
@@ -380,27 +394,35 @@ return function (App $app){
             $response = new \stdClass();
             $data = $request->getParams();
             $rut = $_SESSION['rutUserLogued'];
+            $newCodDGI = $data['codDGI'];
             $company = $companiesController->getCompaniesData($rut)->objectResult;
-            $idMayor = 0;
+            $sucPrincipal = new \stdClass();
+            $codDGIRepetido = false;
+
             foreach ( $company->sucursales as $key => $value) {
-                if($value->codDGI > $idMayor){
-                    $idMayor = $value->codDGI;
+                if($value->isPrincipal)
+                    $sucPrincipal = $value;
+                if($value->codDGI == $newCodDGI){
+                    $codDGIRepetido = true;
+                    break;
                 }
             }
-            $newId = $idMayor + 1;
-            $data['codDgi'] = $newId;
+            if($codDGIRepetido){
+                $response->result = 0;
+                $response->message = "Error. Codigo DGI repetido";
+                return json_encode($response);
+            }
+
             $data['rut'] = $rut;
             $isPrincipal = $data['isPrincipal'] === 'true'? true: false;
-
+            $data['isTemplate'] = $data['isTemplate'] === 'true'? true: false;
             $response = null;
             if($isPrincipal){
-                // ERROR EN LAS CONSULTAS, TODAVIA NO IMPLEMENTAR SETPRINCIPALCOMPANIEBRANCH
-                // $response = $companiesController->changeCompanieData( $data );
-                // if ( $response->result == 2 ) {
-                //     $response = $companiesController->setPrincipalCompanieBranch($rut, $data['codDgi']);
-                // }
+                // echo "Nueva principal";
+                $response = $companiesController->newPrincipalCompanieBranch( $sucPrincipal, $data );
             } else {
-                $response = $companiesController->changeCompanieData( $data ); 
+                // echo "Nueva secundaria";
+                $response = $companiesController->newSecondaryCompanieBranch( $data ); 
             }
 
             if ( $response->result == 2 ) {

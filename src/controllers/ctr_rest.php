@@ -74,7 +74,6 @@ class ctr_rest{
 
 
 	public function changeCompanieData($data){
-
 		$petitionClass = new sendPetition();
 		$usersController = new ctr_users();
 		$response = new \stdClass();
@@ -100,6 +99,9 @@ class ctr_rest{
 			$newData->telephone2 = $data['telefono2'];
 			$newData->email = $data['correo'];
 			$newData->website = $data['sitio'];
+			if(isset($data['isTemplate'])){
+				$newData->isTemplate = $data['isTemplate'];
+			}
 
 			$tokenRest = $token->objectResult->tokenRest;
 			$petitionResponse = $petitionClass->changeCompanieData($data['rut'], $data['codDgi'], $newData, $tokenRest);

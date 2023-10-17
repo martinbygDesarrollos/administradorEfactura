@@ -239,10 +239,136 @@ class ctr_companies{
 	}
 
 
-	public function setPrincipalCompanieBranch($rut, $branch){
+	public function setExistingBranchLikePrincipal($sucPrincipal, $newSucPrincipal, $rut){ // CORREGIR, BORRA LA ANTERIOR BRANCH No
+		$companieController = new ctr_companies();
 		$restController = new ctr_rest();
-		$data = $restController->setPrincipalCompanieBranch($rut, $branch);
-		return $data;
+		//PASOS
+		// 21 elimino la sucursal que quiero setear como principal
+			$response = $companieController->deleteCompanieBranch($rut, $newSucPrincipal->codDGI);
+			if($response->result == 2){
+				// 2 actualizo los datos de la principal con los de la eliminada
+				$data = array (
+					nombre => $newSucPrincipal->nombreComercial,
+					direccion => $newSucPrincipal->direccion,
+					departamento => $newSucPrincipal->departamento,
+					localidad => $newSucPrincipal->localidad,
+					telefono => $newSucPrincipal->telephone1,
+					telefono2 => $newSucPrincipal->telephone2,
+					correo => $newSucPrincipal->email,
+					sitio => $newSucPrincipal->website,
+					codDgi => $sucPrincipal->codDGI,
+					rut => $rut
+				);
+				$response = $companieController->changeCompanieData( $data );
+				if($response->result == 2){
+					// 3 seteo la nueva sucursal principal con el DGI de la que queria setear como principal(solo cambia el codDGI a la que ya esta como principal)
+					$response = $restController->setPrincipalCompanieBranch($rut, $newSucPrincipal->codDGI);
+					if($response->result == 2){
+						// 4 creo una nueva sucursal secundaria con todos los datos de la principal anterior (incluso el codDGI)
+						$data2 = array (
+							nombre => $sucPrincipal->nombreComercial,
+							direccion => $sucPrincipal->direccion,
+							departamento => $sucPrincipal->departamento,
+							localidad => $sucPrincipal->localidad,
+							telefono => $sucPrincipal->telephone1,
+							telefono2 => $sucPrincipal->telephone2,
+							correo => $sucPrincipal->email,
+							sitio => $sucPrincipal->website,
+							codDgi => $sucPrincipal->codDGI,
+							rut => $rut
+						);
+						$response = $companieController->changeCompanieData( $data2 );
+						if($response->result == 2){
+							$response->message = "Nueva sucursal establecida como principal";
+						}
+					}
+					
+				}
+			}
+		return $response;
+	}
+
+	public function newSecondaryCompanieBranch( $data ){
+		$companieController = new ctr_companies();
+		$response = new \stdClass();
+		$newData = array(
+			nombre => $data['nombre'],
+			direccion => $data['direccion'],
+			departamento => $data['departamento'],
+			localidad => $data['localidad'],
+			telefono => $data['telefono'],
+			telefono2 => $data['telefono2'],
+			correo => $data['correo'],
+			sitio => $data['sitio'],
+			codDgi => $data['codDGI'],
+			isTemplate => $data['isTemplate'],
+			rut => $data['rut']
+		);
+		$response = $companieController->changeCompanieData( $newData ); 
+		if($response->result == 2){
+			$response->message = "Nueva sucursal creada con exito!";
+		}
+		return $response;
+	}
+
+	public function newPrincipalCompanieBranch($sucPrincipal, $data){
+		$companieController = new ctr_companies();
+		$restController = new ctr_rest();
+		$response = new \stdClass();
+		$newDGI = $data['codDGI'];
+		// PASOS:
+		// NEW 1 Consulto la principal y me quedo los DATOS
+
+		// isPrincipal
+		// nombre
+		// direccion
+		// departamento
+		// localidad
+		// telefono
+		// telefono2
+		// correo
+		// sitio
+		// codDGI
+		// isTemplate
+
+		// NEW 2 actualizo la principal con los datos de la nueva
+		$newData = array(
+			nombre => $data['nombre'],
+			direccion => $data['direccion'],
+			departamento => $data['departamento'],
+			localidad => $data['localidad'],
+			telefono => $data['telefono'],
+			telefono2 => $data['telefono2'],
+			correo => $data['correo'],
+			sitio => $data['sitio'],
+			codDgi => $sucPrincipal->codDGI,
+			rut => $data['rut']
+		);
+		$response = $companieController->changeCompanieData( $newData ); 
+		if ( $response->result == 2 ) {
+			// NEW 3 seteo la sucursal principal con el DGI de la nueva(solo cambia el codDGI a la que ya esta como principal)
+			$response = $restController->setPrincipalCompanieBranch($data['rut'], $newDGI);
+			if ( $response->result == 2 ) {
+				// NEW 4 creo una nueva sucursal secundaria con todos los datos de la principal anterior (incluso el codDGI)
+				$data2 = array (
+					nombre => $sucPrincipal->nombreComercial,
+					direccion => $sucPrincipal->direccion,
+					departamento => $sucPrincipal->departamento,
+					localidad => $sucPrincipal->localidad,
+					telefono => $sucPrincipal->telephone1,
+					telefono2 => $sucPrincipal->telephone2,
+					correo => $sucPrincipal->email,
+					sitio => $sucPrincipal->website,
+					codDgi => $sucPrincipal->codDGI,
+					rut => $data['rut']
+				);
+				$response = $companieController->changeCompanieData( $data2 );
+				if($response->result == 2){
+					$response->message = "Nueva sucursal principal creada con exito!";
+				}
+			}
+		}
+		return $response;
 	}
 
 
