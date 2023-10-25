@@ -28,10 +28,10 @@
 						{% if company.suspendida == 1 %}
 	    					<button type="button" class="btn btn-info align-self-right" style="height: 2.5rem;overflow: hidden; max-width:180px;" onclick="suspenderActivarEmpresa(0)" title="La empresa está suspendida, presiona para activar">Activar empresa</button>
 						{% endif %}
-					{# </div> #}
-                        
+					{# </div> #}  
 					</div>
 					{% endif %}
+					{# {{company.giros}} #}
 					<tr class="w-100">
 						<td class="col-4">
 							<label class="font-weight-bold">Estado</label>
@@ -147,7 +147,12 @@
 					</tr>
 	    		</tbody>
 	    	</table>
-
+			<label class="ml-2"> <b> Giros: </b> </label>
+			<ul style = "list-style: none;">
+				{% for giro in company.giros %}
+					<li value="{{giro.code}}">{{giro.name}}</li>
+				{% endfor %}
+			</ul>
 
 	        <div class="d-flex flex-row-reverse p-1">
 

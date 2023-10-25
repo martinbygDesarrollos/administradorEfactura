@@ -36,6 +36,103 @@ return function (App $app){
 		return json_encode($result);
 	});
 
+	$app->post('/loadListUser', function ($request, $response, $args) use ($usersController){ // ARREGLARRRR
+        $response = new \stdClass();
+
+        if ( $_SESSION['mailUserLogued'] ){
+
+            $data = $request->getParams();
+            $rut = $data['rut'];
+			
+            $usersResponse = $usersController->loadListUser($rut);
+			
+            if ( $usersResponse->result == 2 ){
+				$response->result = 2;
+				$response->objectResult = $usersResponse->objectResult;
+				return json_encode($response);
+				
+            }else
+                return json_encode($response);
+        }else return json_encode(["result"=>0]);
+    });
+
+	$app->post('/loadUserDetails', function ($request, $response, $args) use ($usersController){
+        $response = new \stdClass();
+        if ( $_SESSION['mailUserLogued'] ){
+
+            $data = $request->getParams();
+            $rut = $data['rut'];
+            $email = $data['email'];
+			
+            $usersResponse = $usersController->loadUser($rut, $email);
+			// var_dump($usersResponse);
+			// exit;
+            if ( $usersResponse->result == 2 ){
+				$response->result = 2;
+				$response->objectResult = $usersResponse->objectResult;
+				return json_encode($response);
+            } else {
+                return json_encode($response);
+			}
+        }else return json_encode(["result"=>0]);
+    });
+	
+	$app->post('/updateUser', function ($request, $response, $args) use ($usersController){
+        $response = new \stdClass();
+        if ( $_SESSION['mailUserLogued'] ){
+
+            $data = $request->getParams();
+            $rut = $data['rut'];
+            $email = $data['email'];
+            $name = $data['name'];
+			$active = $data['active'] === 'true'? true: false;
+            $cellphone = $data['cellphone'];
+            $scopes = $data['scopes'];
+			// var_dump($email);
+			// var_dump($name);
+			// var_dump($active);
+			// var_dump($cellphone);
+			// var_dump($scopes);
+			// exit;
+
+            $usersResponse = $usersController->updateUser($rut, $email, $name, $active, $cellphone, $scopes);
+			// var_dump($usersResponse);
+			// exit;
+            // if ( $usersResponse->result == 2 ){
+			// 	$response->result = 2;
+			// 	$response->objectResult = $usersResponse->objectResult;
+			// 	$response->message = $usersResponse->message;
+				// return json_encode($response);
+            // } else {
+                return json_encode($usersResponse);
+			// }
+        }else return json_encode(["result"=>0]);
+    });
+
+	$app->post('/newUser', function ($request, $response, $args) use ($usersController){
+        // $response = new \stdClass();
+        if ( $_SESSION['mailUserLogued'] ){
+            $data = $request->getParams();
+            $rut = $data['rut'];
+            $email = $data['email'];
+            $name = $data['name'];
+            $cellphone = $data['cellphone'];
+            $scopes = $data['scopes'];
+            $usersResponse = $usersController->newUser($rut, $email, $name, $cellphone, $scopes);
+			return json_encode($usersResponse);
+        }else return json_encode(["result"=>0]);
+    });
+	
+	$app->post('/updatePassword', function ($request, $response, $args) use ($usersController){
+        if ( $_SESSION['mailUserLogued'] ){
+            $data = $request->getParams();
+            $rut = $data['rut'];
+            $email = $data['email'];
+            $usersResponse = $usersController->updateUserPassword($rut, $email);
+			return json_encode($usersResponse);
+        }else return json_encode(["result"=>0]);
+    });
+
 }
 
 ?>

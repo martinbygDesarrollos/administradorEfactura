@@ -13,8 +13,10 @@
 				<!--a class="btn " data-toggle="pill" href="#estadisticas-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Estadísticas</a-->
 				<a class="btn " data-toggle="pill" href="#importar-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Importación emitidos</a>
 				<a class="btn " data-toggle="pill" href="#importar-receipt" role="tab" aria-controls="v-pills-profile" aria-selected="false">Importación recibidos</a>
+				<a class="btn " data-toggle="pill" href="#users-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Usuarios</a>
 			</div>
 		</div>
+		{# {{giros}} #}
 		<div class="card-body">
 			<div class="tab-content">
 				<!-- EMPRESA -->
@@ -59,6 +61,10 @@
 
 				<!-- IMPORTAR XML RECIBIDOS-->
 				{% include("importCfeReceipt.twig") %}
+
+
+				<!-- USUARIOS -->
+				{% include("users.twig") %}
 			</div>
 		</div>
 	</div>
@@ -79,7 +85,10 @@
 		rutSelected = $("#textRutCompanieSelected").text();
 		loadBranchCompanieData(branchSelected, rutSelected);
 		loadCaesDetailsCompanies(rutSelected);
-
+		loadUsersCompanie(rutSelected);
+		// console.log()
+		// var_dump($company->objectResult->giros);
+            // exit;
 	});
 </script>
 {% endblock %}

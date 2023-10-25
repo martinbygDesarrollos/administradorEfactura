@@ -1,0 +1,475 @@
+<div class="tab-pane fade" id="users-data" role="tabpanel">
+	<div class="containerTable">
+		
+		<div class="d-flex flex-row mb-2">
+			<div class="col">
+				<label class="col-3 col-form-label" style="min-width:222px; max-width:222px; font-weight: 700"> Usuarios: </label>
+			</div>
+			{# <div class="col">
+			</div> #}
+			<button onclick="showModalNewUser()" id="buttonNewUser" type="button" class="btn btn-success align-self-right mr-2"> <i class="fas fa-plus"></i> Nuevo</button>
+			{# <div class="col-2">
+			</div> #}
+		</div>
+		<br>
+		<table class="table">
+			<thead>
+				<tr>
+					<th class="col-1"></th>
+					<th class="col-2">Nombre</th>
+					<th class="col-3">Email</th>
+					<th class="col-3">Estado</th>
+					<th class="col-3">Última actividad</th>
+				</tr>
+			</thead>
+			<tbody id="usersTableBody">
+				
+			</tbody>
+		</table>
+
+		{# <div class="d-flex flex-row-reverse p-1">
+			<button onclick="showModalNewUser()" id="buttonNewUser" type="button" class="btn btn-success ml-3"> <i class="fas fa-plus"></i> Nuevo</button>
+		</div> #}
+	</div>
+</div>
+
+<div class="modal fade" id="modalShowUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header background-template-color">
+				<span class="modal-title text-white">Usuario</span>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-4" style="min-width: 180px; max-width: 180px;">
+						<div id="modalUserImg" class="img-user-big" style="background-color:red; width:150px; height:150px;">
+							A
+						</div>
+					</div>
+					<div class="col-8 ml-2" style="margin-top: auto;">
+						<label id="modalUserName" class="font-weight-bold" contenteditable = "true">NOMBRE</label>
+						<hr style="width:50%; margin-left:0; margin-top: 5px; margin-bottom: 5px">
+						<p id="modalUserEmail"> Correo</p>
+						<p class="user-state" id="modalUserState" onclick="changeUserState()" style="display:inline-block"> Estado</p> 
+						<span class="ml-2 reset-pwd" onclick="showModalNewPwd()" title="Cambiar contraseña"> <i class="fas fa-unlock"></i> </span>
+						{# <a><i class="fa-solid fa-unlock"></i> </a> #}
+						{# <i class="fa-solid fa-lock-open"></i> #}
+					</div>
+				</div>
+				<table class="table mt-2">
+					<thead>
+						<tr class="row">
+							<th class="col-1">
+								<div class="checkboxOverride">
+									<input onchange="selectAllPermisos(this)" type="checkbox" name="" id="permisos" value="1">
+									<label for="permisos"></label>
+								</div>
+							</th>
+							<th class="col-10">Permiso</th>
+						</tr>
+					</thead>
+					<tbody id="usersPermisos">
+						<tr class="row">
+							<td class="col-1">
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="checkboxInputOverride_owner" data-format="owner" value="1">
+									<label for="checkboxInputOverride_owner"></label>
+								</div>
+								{# <input type="checkbox" id="owner" name="" checked />  #}
+							</td>
+							<td class="col-11">
+								<label class="font-weight-bold">Dueño</label>
+								<p> Control total sobre la empresa</p>
+							</td>
+						</tr>
+						<tr class="row">
+							<td class="col-1">
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="checkboxInputOverride_cfe_read" data-format="cfe:read" value="1">
+									<label for="checkboxInputOverride_cfe_read"></label>
+								</div>
+							</td>
+							<td class="col-11">
+								<label class="font-weight-bold">Visualización de comprobantes</label>
+								<p> Permite visualizar los comprobantes emitidos y recibidos de la empresa</p>
+							</td>
+						</tr>
+						<tr class="row">
+							<td class="col-1"> 
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="checkboxInputOverride_cfe_write" data-format="cfe:write" value="1">
+									<label for="checkboxInputOverride_cfe_write"></label>
+								</div>
+							</td>
+							<td class="col-11">
+								<label class="font-weight-bold">Emisión de comprobantes</label>
+								<p> Permite emitir cualquier tipo de comprobante en nombre de la empresa</p>
+							</td>
+						</tr>
+						<tr class="row">
+							<td class="col-1">
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="checkboxInputOverride_customers" data-format="customers" value="1">
+									<label for="checkboxInputOverride_customers"></label>
+								</div>
+							</td>
+							<td class="col-11">
+								<label class="font-weight-bold">Administración de clientes</label>
+								<p> Permite visualizar, agregar y modificar clientes</p>
+							</td>
+						</tr>
+						<tr class="row">
+							<td class="col-1">
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="checkboxInputOverride_cae_read" data-format="cae:read" value="1">
+									<label for="checkboxInputOverride_cae_read"></label>
+								</div>
+							</td>
+							<td class="col-11">
+								<label class="font-weight-bold">Visualización de autorizaciones de emisión</label>
+								<p> Permite visualizar Constancias de Autorización de Emisión (CAEs)</p>
+							</td>
+						</tr>
+						<tr class="row">
+							<td class="col-1"> 
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="checkboxInputOverride_cae_write" data-format="cae:write" value="1">
+									<label for="checkboxInputOverride_cae_write"></label>
+								</div>
+							</td>
+							<td class="col-10">
+								<label class="font-weight-bold">Administración de autorizaciones de emisión</label>
+								<p> Permite cargar nuevas Constancias de Autorización de Emisión (CAEs)</p>
+							</td>
+						</tr>
+						<tr class="row">
+							<td class="col-1">
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="checkboxInputOverride_users" data-format="users" value="1">
+									<label for="checkboxInputOverride_users"></label>
+								</div>
+							</td>
+							<td class="col-11">
+								<label class="font-weight-bold">Administración de usuarios</label>
+								<p> Permite visualizar, agregar y modificar usuarios</p>
+							</td>
+						</tr>
+						<tr class="row">
+							<td class="col-1"> 
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="checkboxInputOverride_export_application_excel" data-format="export_application/vnd.ms-excel" value="1">
+									<label for="checkboxInputOverride_export_application_excel"></label>
+								</div>
+							</td>
+							<td class="col-11">
+								<label class="font-weight-bold">Exportación en Microsoft Excel</label>
+								<p> Permite realizar la exportación de comprobantes en formato Excel</p>
+							</td>
+						</tr>
+						<tr class="row">
+							<td class="col-1"> 
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="checkboxInputOverride_export_text_xml" data-format="export_text/xml" value="1">
+									<label for="checkboxInputOverride_export_text_xml"></label>
+								</div>
+							</td>
+							<td class="col-11">
+								<label class="font-weight-bold">Exportación en XML</label>
+								<p> Permite realizar la exportación de comprobantes en formato XML</p>
+							</td>
+						</tr>
+						<tr class="row">
+							<td class="col-1"> 
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="checkboxInputOverride_export_application_pdf" data-format="export_application/pdf" value="1">
+									<label for="checkboxInputOverride_export_application_pdf"></label>
+								</div>
+							</td>
+							<td class="col-11">
+								<label class="font-weight-bold">Exportación en PDF</label>
+								<p> Permite realizar la exportación de comprobantes en formato PDF</p>
+							</td>
+						</tr>
+						<tr class="row">
+							<td class="col-1"> 
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="checkboxInputOverride_certificate" data-format="certificate" value="1">
+									<label for="checkboxInputOverride_certificate"></label>
+								</div>
+							</td>
+							<td class="col-11">
+								<label class="font-weight-bold">Administración del certificado digital</label>
+								<p> Permite visualizar y renovar el certificado digital de la empresa</p>
+							</td>
+						</tr>
+						<tr class="row">
+							<td class="col-1"> 
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="checkboxInputOverride_forms_2181" data-format="forms:2181" value="1">
+									<label for="checkboxInputOverride_forms_2181"></label>
+								</div>
+							</td>
+							<td class="col-11">
+								<label class="font-weight-bold">Generación del formulario 2181</label>
+								<p> Permite generar y exportar el formulario 2181 de DGI</p>
+							</td>
+						</tr>
+						<tr class="row">
+							<td class="col-1"> 
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="checkboxInputOverride_reports" data-format="reports" value="1">
+									<label for="checkboxInputOverride_reports"></label>
+								</div>
+							</td>
+							<td class="col-11">
+								<label class="font-weight-bold">Visualización de reportes y estadísticas</label>
+								<p> Permite la visualización de reportes y estadísticas de ventas</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal-footer d-flex justify-content-between">
+				<button type="button" class="btn btn-danger shadow-sm" tabindex="5" data-dismiss="modal">Cancelar</button>
+				<button id="buttonModalSaveUser" type="button" class="btn btn-success shadow-sm" tabindex="4" >Guardar</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="modalNewUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header background-template-color">
+				<span class="modal-title text-white">Nuevo usuario</span>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-4" style="min-width: 180px; max-width: 180px;">
+						<div id="modalUserImg" class="img-user-big" style="background-color:red; width:150px; height:150px;">
+							?
+						</div>
+					</div>
+					<div class="col-8 ml-2" style="margin: auto;">
+						{# <label id="modalUserName" class="font-weight-bold" contenteditable = "true">NOMBRE</label> #}
+						<input type="text" id="newUser_name" class="form-control" placeholder="Nombre..." />
+						<hr style="width:50%; margin-left:0; margin-top: 5px; margin-bottom: 5px">
+						{# <p id="modalUserEmail"> Correo</p> #}
+						<input type="text" id="newUser_email" class="form-control" placeholder="Correo electronico..." />
+					</div>
+				</div>
+				<table class="table mt-2">
+					<thead>
+						<tr class="row">
+							<th class="col-1">
+								<div class="checkboxOverride">
+									<input onchange="newUser_selectAllPermisos(this)" type="checkbox" name="" id="newUser_permisos" value="1">
+									<label for="newUser_permisos"></label>
+								</div>
+							</th>
+							<th class="col-10">Permiso</th>
+						</tr>
+					</thead>
+					<tbody id="newUser_usersPermisos">
+						<tr class="row">
+							<td class="col-1">
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="newUser_checkboxInputOverride_owner" data-format="owner" value="1">
+									<label for="newUser_checkboxInputOverride_owner"></label>
+								</div>
+								{# <input type="checkbox" id="owner" name="" checked />  #}
+							</td>
+							<td class="col-11">
+								<label class="font-weight-bold">Dueño</label>
+								<p> Control total sobre la empresa</p>
+							</td>
+						</tr>
+						<tr class="row">
+							<td class="col-1">
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="newUser_checkboxInputOverride_cfe_read" data-format="cfe:read" value="1">
+									<label for="newUser_checkboxInputOverride_cfe_read"></label>
+								</div>
+							</td>
+							<td class="col-11">
+								<label class="font-weight-bold">Visualización de comprobantes</label>
+								<p> Permite visualizar los comprobantes emitidos y recibidos de la empresa</p>
+							</td>
+						</tr>
+						<tr class="row">
+							<td class="col-1"> 
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="newUser_checkboxInputOverride_cfe_write" data-format="cfe:write" value="1">
+									<label for="newUser_checkboxInputOverride_cfe_write"></label>
+								</div>
+							</td>
+							<td class="col-11">
+								<label class="font-weight-bold">Emisión de comprobantes</label>
+								<p> Permite emitir cualquier tipo de comprobante en nombre de la empresa</p>
+							</td>
+						</tr>
+						<tr class="row">
+							<td class="col-1">
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="newUser_checkboxInputOverride_customers" data-format="customers" value="1">
+									<label for="newUser_checkboxInputOverride_customers"></label>
+								</div>
+							</td>
+							<td class="col-11">
+								<label class="font-weight-bold">Administración de clientes</label>
+								<p> Permite visualizar, agregar y modificar clientes</p>
+							</td>
+						</tr>
+						<tr class="row">
+							<td class="col-1">
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="newUser_checkboxInputOverride_cae_read" data-format="cae:read" value="1">
+									<label for="newUser_checkboxInputOverride_cae_read"></label>
+								</div>
+							</td>
+							<td class="col-11">
+								<label class="font-weight-bold">Visualización de autorizaciones de emisión</label>
+								<p> Permite visualizar Constancias de Autorización de Emisión (CAEs)</p>
+							</td>
+						</tr>
+						<tr class="row">
+							<td class="col-1"> 
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="newUser_checkboxInputOverride_cae_write" data-format="cae:write" value="1">
+									<label for="newUser_checkboxInputOverride_cae_write"></label>
+								</div>
+							</td>
+							<td class="col-10">
+								<label class="font-weight-bold">Administración de autorizaciones de emisión</label>
+								<p> Permite cargar nuevas Constancias de Autorización de Emisión (CAEs)</p>
+							</td>
+						</tr>
+						<tr class="row">
+							<td class="col-1">
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="newUser_checkboxInputOverride_users" data-format="users" value="1">
+									<label for="newUser_checkboxInputOverride_users"></label>
+								</div>
+							</td>
+							<td class="col-11">
+								<label class="font-weight-bold">Administración de usuarios</label>
+								<p> Permite visualizar, agregar y modificar usuarios</p>
+							</td>
+						</tr>
+						<tr class="row">
+							<td class="col-1"> 
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="newUser_checkboxInputOverride_export_application_excel" data-format="export_application/vnd.ms-excel" value="1">
+									<label for="newUser_checkboxInputOverride_export_application_excel"></label>
+								</div>
+							</td>
+							<td class="col-11">
+								<label class="font-weight-bold">Exportación en Microsoft Excel</label>
+								<p> Permite realizar la exportación de comprobantes en formato Excel</p>
+							</td>
+						</tr>
+						<tr class="row">
+							<td class="col-1"> 
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="newUser_checkboxInputOverride_export_text_xml" data-format="export_text/xml" value="1">
+									<label for="newUser_checkboxInputOverride_export_text_xml"></label>
+								</div>
+							</td>
+							<td class="col-11">
+								<label class="font-weight-bold">Exportación en XML</label>
+								<p> Permite realizar la exportación de comprobantes en formato XML</p>
+							</td>
+						</tr>
+						<tr class="row">
+							<td class="col-1"> 
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="newUser_checkboxInputOverride_export_application_pdf" data-format="export_application/pdf" value="1">
+									<label for="newUser_checkboxInputOverride_export_application_pdf"></label>
+								</div>
+							</td>
+							<td class="col-11">
+								<label class="font-weight-bold">Exportación en PDF</label>
+								<p> Permite realizar la exportación de comprobantes en formato PDF</p>
+							</td>
+						</tr>
+						<tr class="row">
+							<td class="col-1"> 
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="newUser_checkboxInputOverride_certificate" data-format="certificate" value="1">
+									<label for="newUser_checkboxInputOverride_certificate"></label>
+								</div>
+							</td>
+							<td class="col-11">
+								<label class="font-weight-bold">Administración del certificado digital</label>
+								<p> Permite visualizar y renovar el certificado digital de la empresa</p>
+							</td>
+						</tr>
+						<tr class="row">
+							<td class="col-1"> 
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="newUser_checkboxInputOverride_forms_2181" data-format="forms:2181" value="1">
+									<label for="newUser_checkboxInputOverride_forms_2181"></label>
+								</div>
+							</td>
+							<td class="col-11">
+								<label class="font-weight-bold">Generación del formulario 2181</label>
+								<p> Permite generar y exportar el formulario 2181 de DGI</p>
+							</td>
+						</tr>
+						<tr class="row">
+							<td class="col-1"> 
+								<div class="checkboxOverride">
+									<input type="checkbox" name="" id="newUser_checkboxInputOverride_reports" data-format="reports" value="1">
+									<label for="newUser_checkboxInputOverride_reports"></label>
+								</div>
+							</td>
+							<td class="col-11">
+								<label class="font-weight-bold">Visualización de reportes y estadísticas</label>
+								<p> Permite la visualización de reportes y estadísticas de ventas</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal-footer d-flex justify-content-between">
+				<button type="button" class="btn btn-danger shadow-sm" tabindex="5" data-dismiss="modal">Cancelar</button>
+				<button id="buttonModalNewUser" type="button" class="btn btn-success shadow-sm" tabindex="4" >Guardar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modalNewPwd" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header background-template-color">
+				<span id="modalNewPwdTitle" class="modal-title text-white"></span>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<input type="password" id="newPwd" class="form-control m-2" placeholder="Nueva contraseña" />
+					<input type="password" id="newPwd2" class="form-control m-2" placeholder="Repita contraseña" onkeyup="validatePassword()" />
+					<div class="m-2" id="passwordMessage"></div>
+					{# <div class="col-4" style="min-width: 180px; max-width: 180px;">
+						
+					</div>
+					<div class="col-8 ml-2" style="margin-top: auto;">
+						
+					</div> #}
+				</div>
+			</div>
+			<div class="modal-footer d-flex justify-content-between">
+				<button type="button" class="btn btn-danger shadow-sm" tabindex="5" data-dismiss="modal">Cancelar</button>
+				<button id="buttonModalChangePwd" type="button" class="btn btn-success shadow-sm" tabindex="4" disabled >Actualizar</button>
+			</div>
+		</div>
+	</div>
+</div>

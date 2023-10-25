@@ -32,7 +32,36 @@ class sendPetition{
 
 		return $thisClass->prepareAndSendCurl("GET", "company/".$rut."?CustomFields=*&IncludeLogo=1", $token, null);
 	}
+	
+	public function getListUser( $token, $rut){
+		$thisClass = new sendPetition();
 
+		return $thisClass->prepareAndSendCurl("GET", "users/".$rut, $token, null);
+	}
+
+	public function getUser( $token, $rut, $email){
+		$thisClass = new sendPetition();
+
+		return $thisClass->prepareAndSendCurl("GET", "users/".$rut."/". $email, $token, null);
+	}
+
+	public function updateUser( $token, $rut, $data){
+		$thisClass = new sendPetition();
+
+		return $thisClass->prepareAndSendCurl("PUT", "users/".$rut."/". $data->email, $token, $data);
+	}
+
+	public function newUser( $token, $rut, $data){
+		$thisClass = new sendPetition();
+
+		return $thisClass->prepareAndSendCurl("POST", "users/".$rut, $token, $data);
+	}
+	
+	public function updateUserPassword( $token, $rut, $data, $email){
+		$thisClass = new sendPetition();
+
+		return $thisClass->prepareAndSendCurl("PUT", "users/".$rut."/".$email."/password", $token, $data);
+	}
 
 
 	public function changeCompanieData($rut, $codBranch, $data, $token){

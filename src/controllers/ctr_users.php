@@ -52,6 +52,45 @@ class ctr_users{
 		$response = $usersClass->getToken( $mail );
 		return $response;
 	}
+
+	public function loadListUser($rut){
+		$restController = new ctr_rest();
+		// $usersClass = new users();
+
+		$responseUsers = $restController->loadListUser( $rut );
+		
+		return $responseUsers;
+	}
+
+	public function loadUser($rut, $email){
+		$restController = new ctr_rest();
+		// $usersClass = new users();
+
+		$responseUser = $restController->loadUser( $rut, $email );
+		
+		return $responseUser;
+	}
+
+	public function updateUser($rut, $email, $name, $active, $cellphone, $scopes){
+		$restController = new ctr_rest();
+		
+		$responseUser = $restController->updateUser($rut, $email, $name, $active, $cellphone, $scopes);
+		return $responseUser;
+	}
+
+	public function newUser($rut, $email, $name, $cellphone, $scopes){
+		$restController = new ctr_rest();
+		
+		$responseUser = $restController->newUser($rut, $email, $name, $cellphone, $scopes);
+		return $responseUser;
+	}
+	// updateUserPassword($rut, $email)
+	public function updateUserPassword($rut, $email){
+		$restController = new ctr_rest();
+		
+		$responseUser = $restController->updateUserPassword($rut, $email);
+		return $responseUser;
+	}
 }
 
 

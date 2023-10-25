@@ -536,6 +536,156 @@ class ctr_rest{
 
 	}
 
+
+	public function loadListUser( $rut ){
+
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+		$response->objectResult = new \stdClass();
+
+		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
+		if ( $token->result == 2 ){
+			$tokenRest = $token->objectResult->tokenRest;
+			$petitionResponse = $petitionClass->getListUser( $tokenRest, $rut);
+			$petitionResponse = json_decode($petitionResponse);
+			$response->result = 2;
+			$response->objectResult = $petitionResponse;
+		}else return $token;
+
+		return $response;
+	}
+
+	public function loadUser( $rut, $email ){
+
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+		$response->objectResult = new \stdClass();
+
+		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
+		if ( $token->result == 2 ){
+			$tokenRest = $token->objectResult->tokenRest;
+			$petitionResponse = $petitionClass->getUser( $tokenRest, $rut, $email);
+			$petitionResponse = json_decode($petitionResponse);
+			$response->result = 2;
+			$response->objectResult = $petitionResponse;
+		}else return $token;
+
+		return $response;
+	}
+
+	public function updateUser($rut, $email, $name, $active, $cellphone, $scopes){
+
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+		$response->objectResult = new \stdClass();
+
+		$data = new \stdClass();
+		$data->email = $email;
+		$data->name = $name;
+		$data->active = $active;
+		$data->cellphone = $cellphone;
+		$data->scopes = $scopes;
+
+		// var_dump($data);
+		// exit;
+
+		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
+		if ( $token->result == 2 ){
+			$tokenRest = $token->objectResult->tokenRest;
+			$petitionResponse = $petitionClass->updateUser($tokenRest, $rut, $data);
+			// $petitionResponse = $petitionClass->updateUser($tokenRest, $rut, $email, $name, $active, $cellphone, $scopes);
+			// $petitionResponse = $petitionClass->getUser( $tokenRest, $rut, $email);
+			$petitionResponse = json_decode($petitionResponse);
+			// var_dump($petitionResponse);
+			// exit;
+			if(isset($petitionResponse->resultado->error)) {// Hubo algun error
+				$response->result = 0;
+				$response->message = $petitionResponse->resultado->error;
+			} else {
+				$response->result = 2;
+				$response->message = "Usuario actualizado con exito!";
+			}
+			$response->objectResult = $petitionResponse;
+		}else return $token;
+
+		return $response;
+	}
+	
+	public function updateUserPassword($rut, $email){
+
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+		$response->objectResult = new \stdClass();
+
+		$data = new \stdClass();
+		$data->newPassword = $email;
+		$data->requireChange = false;
+
+		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
+		if ( $token->result == 2 ){
+			$tokenRest = $token->objectResult->tokenRest;
+			$petitionResponse = $petitionClass->updateUserPassword($tokenRest, $rut, $data, $email);
+			$petitionResponse = json_decode($petitionResponse);
+			if($petitionResponse->resultado->error != "OK") {// Hubo algun error
+				$response->result = 0;
+				$response->message = $petitionResponse->resultado->error;
+			} else {
+				$response->result = 2;
+				$response->message = "Contraseña actualizada con exito!";
+			}
+			$response->objectResult = $petitionResponse;
+		}else return $token;
+
+		return $response;
+	}
+	
+	public function newUser($rut, $email, $name, $cellphone, $scopes){
+
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+		$response->objectResult = new \stdClass();
+
+		$data = new \stdClass();
+		$data->email = $email;
+		$data->name = $name;
+		$data->active = true;
+		$data->cellphone = $cellphone;
+		$data->scopes = $scopes;
+
+		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
+		if ( $token->result == 2 ){
+			$tokenRest = $token->objectResult->tokenRest;
+			$petitionResponse = $petitionClass->newUser($tokenRest, $rut, $data);
+			$petitionResponse = json_decode($petitionResponse);
+			// var_dump($petitionResponse);
+			// exit;
+			if($petitionResponse->resultado->error != 'OK') {// Hubo algun error
+				$response->result = 0;
+				$response->message = $petitionResponse->resultado->error;
+			} else {
+				$response->result = 2;
+				$response->message = "Usuario nuevo agregado con exito!";
+			}
+			$response->objectResult = $petitionResponse;
+		} else return $token;
+		return $response;
+	}
+
 }
 
 

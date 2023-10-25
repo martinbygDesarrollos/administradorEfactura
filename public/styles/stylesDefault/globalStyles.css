@@ -128,3 +128,106 @@ a[aria-selected="true"]{
 .slider{
     border-radius: 3px !important;
 }
+
+.img-user{
+    border-radius: 50%;
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    vertical-align: bottom;
+    color: white;
+    line-height: 45px;
+    font-weight: 500;
+    box-shadow: 1px 1px 2px rgb(127, 127, 127);
+}
+
+.img-user-big{
+    border-radius: 50%;
+    display: inline-block;
+    width: 150px;
+    height: 150px;
+    text-align: center;
+    vertical-align: bottom;
+    color: white;
+    line-height: 145px;
+    font-weight: 500;
+    box-shadow: 1px 1px 2px rgb(127, 127, 127);
+    font-size: xx-large;
+}
+/* display: grid; */
+#usersPermisos > tr > td {
+    display: grid;
+}
+
+#usersTableBody > tr > td {
+    vertical-align: middle !important;
+    
+}
+
+.showModalUser{
+    cursor: pointer;
+}
+
+.user-state{
+    cursor: pointer;
+    box-shadow: 1px 1px 2px rgb(64, 64, 64);
+    font-weight: 500;
+    color: white;
+    width: 90px;
+    border-radius: 999em 999em 999em 999em;
+    text-align: center;
+}
+
+.reset-pwd{
+    cursor: pointer;
+    
+}
+
+.user-state.activo{
+    background: #2bb449;
+}
+
+.user-state.inactivo{
+    background: #777;
+}
+
+#usersPermisos tr td label, #usersPermisos tr td p{
+    margin-bottom: 0;
+}
+
+
+#modalShowUser input[type="checkbox"], #modalNewUser input[type="checkbox"] {
+    visibility: hidden;
+}
+#modalShowUser .checkboxOverride, #modalNewUser .checkboxOverride {
+    margin: 10px auto;
+    position: relative;
+    width: 25px;
+}
+#modalShowUser .checkboxOverride input[type="checkbox"]:checked + label:after, #modalNewUser .checkboxOverride input[type="checkbox"]:checked + label:after {
+    opacity: 1; 
+}
+#modalShowUser .checkboxOverride label, #modalNewUser .checkboxOverride label {
+    background: none repeat scroll 0 0 #EEEEEE;
+    border: 1px solid #DDDDDD;
+    cursor: pointer;
+    height: 25px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 25px;
+}
+#modalShowUser .checkboxOverride label:after, #modalNewUser .checkboxOverride label:after {
+    border-style: none none solid solid;
+    content: "";
+    height: 5px;
+    left: 6px;
+    opacity: 0;
+    position: absolute;
+    top: 7px;
+    -ms-transform:rotate(-45deg); /* IE 9 */
+    -webkit-transform:rotate(-45deg); /* Safari and Chrome */
+    transform:rotate(-45deg);
+    width: 10px;
+}

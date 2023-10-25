@@ -38,7 +38,8 @@ return function (App $app){
                 $args['files'] = true;
             }
 
-
+            // var_dump($company->objectResult->giros);
+            // exit;
             return $this->view->render($response, "companyDetail.twig", $args);
         }else return $response->withRedirect($request->getUri()->getBaseUrl());
     });
@@ -118,7 +119,8 @@ return function (App $app){
             $company = $companiesController->getCompaniesData($rut);
             $_SESSION['companieUserLogued'] = $company->objectResult->razonSocial;
             $_SESSION['rutUserLogued'] = $company->objectResult->rut;
-
+            // var_dump($company->objectResult->giros);
+            // exit;
             return json_encode($company);
         }else return json_encode(["result"=>0]);
     });
@@ -304,6 +306,8 @@ return function (App $app){
             $rut = $data['companie'];
 
             $companie = $companiesController->getCompaniesData($rut);
+            // var_dump($companie);
+            // exit;
             if ( $companie->result == 2 ){
                 foreach ($companie->objectResult->sucursales as $key => $value) {
                     if($value->codDGI == $branchCode){

@@ -198,6 +198,60 @@ function createRowCompanie(obj){
 }
 
 
+function loadUsersCompanie(  rut  ){
+	sendAsyncPost("loadListUser", {rut:rut})
+	.then((response)=>{
+		if ( response.result == 2 ){
+			// console.log("usuarios: ");
+			console.log(response.objectResult);
+			$("#usersTableBody tr").remove();
+			createRowsToUsersTable(response.objectResult.users);
+
+		}else if ( response.result == 0 ){
+			window.location.href = getSiteURL() + "cerrar-session";
+		}
+	})
+}
+
+function createRowsToUsersTable(users) {
+	users.forEach(function(user) {
+		appendRow(user);
+	})
+	
+}
+
+function appendRow(user){
+	const randomColor = Math.floor(Math.random()*16777215).toString(16);
+	let row = '<tr>';
+	let firstLetter = user.name.charAt(0);
+
+	let td0 = '<td class="w-10" id="tdImgUser"> <div class="img-user" style="background-color:#' + randomColor + '">' + firstLetter +  '</div> </td>';
+	let td1 = '<td class="w-20"> <label class="showModalUser" onclick="showModalUser(\''+ user.email +'\')">' + user.name + '</label> </td>';
+	let td2 = '<td class="w-40"> <a href="mailto:'+ user.email +'">' + user.email + '</a> </td>';
+	// let td2 = '<td class="w-40"> <label >' + user.email + '</label> </td>';
+	let td3 = '<td class="w-15">';
+	if(user.active){
+		td3 += '<label class="user-state activo"> ACTIVO </label> </td>';
+	} else {
+		td3 += '<label class="user-state inactivo"> INACTIVO </label> </td>';
+	}
+	let fecha = "";
+	let hora = "";
+	let td4 = '<td class="w-15"> <label > - </label> </td>';
+	// Split the string twice
+	// console.log(user.lastActivity);
+	if(user.lastActivity != null) {
+		fecha = user.lastActivity.split("T"); // The second argument specifies the maximum number of splits
+		hora = fecha[1].split("Z"); // The second argument specifies the maximum number of splits
+		hora = hora[0].split("."); // The second argument specifies the maximum number of splits
+		td4 = '<td class="w-15"> <label >' + fecha[0].replaceAll("-", "/") + " " + hora[0] + '</label> </td>';
+	}
+	// let td4 = '<td class="w-15">  <label >' + user.lastActivity + '</label> </td>';
+	row += td0 + td1 + td2 + td3 + td4;
+	row += '</tr>';
+	// console.log("#" + randomColor);
+	$("#usersTableBody").append(row);
+}
 
 
 function loadBranchCompanieData( value, rut  ){
@@ -210,6 +264,240 @@ function loadBranchCompanieData( value, rut  ){
 		}
 	})
 }
+
+function loadUserDetails( email ){
+	rutSelected = $("#textRutCompanieSelected").text();
+	sendAsyncPost("loadUserDetails", {email: email, rut: rutSelected})
+	.then((response)=>{
+		if ( response.result == 2 ){
+			// console.log("ASD");
+			// console.log(response.objectResult.scopes);
+			console.log(response.objectResult);
+			const randomColor = Math.floor(Math.random()*16777215).toString(16);
+			$('#modalUserImg').css('background-color', '#' + randomColor);
+			// Initialize an array to store key-value pairs
+			var keyValueArray = [];
+			if($.inArray("owner", response.objectResult.scopes) != -1) keyValueArray.push("owner");
+			if($.inArray("cfe:read", response.objectResult.scopes) != -1) keyValueArray.push("cfe_read");
+			if($.inArray("cfe:write", response.objectResult.scopes) != -1) keyValueArray.push("cfe_write");
+			if($.inArray("customers", response.objectResult.scopes) != -1) keyValueArray.push("customers");
+			if($.inArray("cae:read", response.objectResult.scopes) != -1) keyValueArray.push("cae_read");
+			if($.inArray("cae:write", response.objectResult.scopes) != -1) keyValueArray.push("cae_write");
+			if($.inArray("users", response.objectResult.scopes) != -1) keyValueArray.push("users");
+			if($.inArray("export_application/vnd.ms-excel", response.objectResult.scopes) != -1) keyValueArray.push("export_application_excel");
+			if($.inArray("export_text/xml", response.objectResult.scopes) != -1) keyValueArray.push("export_text_xml");
+			if($.inArray("export_application/pdf", response.objectResult.scopes) != -1) keyValueArray.push("export_application_pdf");
+			if($.inArray("certificate", response.objectResult.scopes) != -1) keyValueArray.push("certificate");
+			if($.inArray("forms:2181", response.objectResult.scopes) != -1) keyValueArray.push("forms_2181");
+			if($.inArray("reports", response.objectResult.scopes) != -1) keyValueArray.push("reports");
+			
+			// console.log(keyValueArray.length)
+			$("#usersPermisos input[type='checkbox']").prop('checked', false);
+			// Iterate through the array and check the checkboxes with matching IDs
+			$.each(keyValueArray, function(index, value) {
+				// Construct the ID selector
+				var idSelector = "checkboxInputOverride_" + value;
+				// console.log(idSelector)
+				// Use the selector to find the checkbox and set it to "checked"
+				$('#' + idSelector).prop("checked", true);
+			});
+			if(keyValueArray.length == 13)
+				$('#permisos').prop("checked", true);
+			else 
+				$('#permisos').prop("checked", false);
+
+		
+			// console.log(owner);
+			$('#modalUserImg').html(response.objectResult.name.charAt(0));
+			$('#modalUserName').text(response.objectResult.name);
+			$('#modalUserEmail').text(response.objectResult.email);
+			if(response.objectResult.active){
+				$('#modalUserState').removeClass();
+				$('#modalUserState').addClass('user-state activo');
+				$('#modalUserState').text("ACTIVO")
+			} else {
+				$('#modalUserState').removeClass();
+				$('#modalUserState').addClass('user-state inactivo');
+				$('#modalUserState').text("INACTIVO")
+			}
+			// $('#modalUserState').text(response.objectResult.email);
+			// createRowsToBranchTableInfo(response.objectResult);
+		}else if ( response.result == 0 ){
+			// window.location.href = getSiteURL() + "cerrar-session";
+		}
+	})
+}
+
+function selectAllPermisos(checkbox){
+	const checkboxes = $(":checkbox[id^='checkboxInputOverride']");
+		if (checkbox.checked) {
+		// Check if any of the checkboxes are already checked
+		const allChecked = checkboxes.filter(":checked").length === checkboxes.length;
+
+		// Toggle the checkboxes
+		checkboxes.prop("checked", !allChecked);
+		// $(":checkbox[id^='checkboxInputOverride']").prop("checked", true);
+	} else {
+		checkboxes.prop("checked", false);
+	}
+}
+function newUser_selectAllPermisos(checkbox){
+	const checkboxes = $(":checkbox[id^='newUser_checkboxInputOverride']");
+	if (checkbox.checked) {
+		// Check if any of the checkboxes are already checked
+		const allChecked = checkboxes.filter(":checked").length === checkboxes.length;
+
+		// Toggle the checkboxes
+		checkboxes.prop("checked", !allChecked);
+		// $(":checkbox[id^='checkboxInputOverride']").prop("checked", true);
+	} else {
+		checkboxes.prop("checked", false);
+	}
+}
+
+function changeUserState(){
+	modalUserState
+	if($('#modalUserState').text() == "ACTIVO") {
+		$('#modalUserState').removeClass();
+		$('#modalUserState').addClass('user-state inactivo');
+		$('#modalUserState').text("INACTIVO")
+	} else {
+		$('#modalUserState').removeClass();
+		$('#modalUserState').addClass('user-state activo');
+		$('#modalUserState').text("ACTIVO")
+	}
+	// console.log($('#modalUserState').text());
+}
+
+function showModalUser(email){
+	loadUserDetails(email);
+	$('#modalShowUser').modal();
+}
+
+function showModalNewUser(){
+	$('#modalNewUser').modal();
+}
+
+function showModalNewPwd(){
+	$('#modalShowUser').modal("hide");
+	$('#modalNewPwd').modal();
+	$('#newPwd').val("")
+	$('#newPwd2').val("")
+	$('#modalNewPwdTitle').text("Cambio de contraseña para " + $('#modalUserEmail').text());
+	$('#modalNewPwdTitle').data('email', $('#modalUserEmail').text());
+}
+
+$('#modalNewPwd').on('shown.bs.modal', function() {
+	$('#newPwd').focus();
+})
+
+function validatePassword() {
+	let password1 = $('#newPwd').val();
+	let password2 = $('#newPwd2').val();
+
+	if (password1 === password2) {
+		// Passwords match
+		document.getElementById("passwordMessage").innerHTML = "La contraseña coincide!";
+		$('#buttonModalChangePwd').prop("disabled", false);
+	} else {
+		// Passwords do not match
+		document.getElementById("passwordMessage").innerHTML = "Contraseñas distintas!";
+		$('#buttonModalChangePwd').prop("disabled", true);
+	}
+}
+
+$('#buttonModalChangePwd').click(function(){
+	let rutSelected = $("#textRutCompanieSelected").text();
+	let email = $('#modalNewPwdTitle').data('email');
+	console.log(rutSelected);
+	console.log(email);
+	sendAsyncPost("updatePassword", {email: email, rut: rutSelected})
+	.then((response)=>{
+		if (response.result == 2){
+			$("#modalNewPwd").modal("hide");
+			showMessage(2, response.message);
+			// console.log(response);
+			// window.location.reload();
+		}else if ( response.result == 0 ){
+			// console.log(response);
+			$("#modalNewPwd").modal("hide");
+			showMessage(0, response.message);
+		}
+	})
+});
+
+$('#buttonModalSaveUser').click(function(){
+	let rutSelected = $("#textRutCompanieSelected").text();
+	let email = $("#modalUserEmail").text();
+	let name = $("#modalUserName").text();
+	let active;
+	if($('#modalUserState').text() == "ACTIVO")
+		active = true;
+	else
+		active = false;
+	let cellphone = "";
+	let scopes = [];
+	// Loop through checkboxes in the table's tbody
+	$('#usersPermisos input[id^="checkboxInputOverride"]').each(function(index) {
+		if ($(this).is(':checked')) {
+			// Get the data-format attribute value and push it into the array
+  			const dataFormatValue = $(this).data('format');
+			scopes.push(dataFormatValue);
+		}
+	});
+	sendAsyncPost("updateUser", {email: email, name: name, active: active, cellphone:cellphone, scopes: scopes, rut: rutSelected})
+	.then((response)=>{
+		if (response.result == 2){
+			$("#modalShowUser").modal("hide");
+			showMessage(2, response.message);
+			// console.log(response);
+			window.location.reload();
+		}else if ( response.result == 0 ){
+			// console.log(response);
+			$("#modalShowUser").modal("hide");
+			showMessage(0, response.message);
+		}
+	})
+});
+
+$('#buttonModalNewUser').click(function(){
+	let rutSelected = $("#textRutCompanieSelected").text();
+	let email = $("#newUser_email").val();
+	let name = $("#newUser_name").val();
+	let cellphone = "";
+	let scopes = [];
+	// Loop through checkboxes in the table's tbody
+	$('#newUser_usersPermisos input[id^="newUser_checkboxInputOverride"]').each(function(index) {
+		if ($(this).is(':checked')) {
+			// Get the data-format attribute value and push it into the array
+  			const dataFormatValue = $(this).data('format');
+			scopes.push(dataFormatValue);
+		}
+	});
+	sendAsyncPost("newUser", {email: email, name: name, cellphone:cellphone, scopes: scopes, rut: rutSelected})
+	.then((response)=>{
+		if (response.result == 2){
+			// console.log(response);
+			$("#modalNewUser").modal("hide");
+			showMessage(2, response.message);
+			window.location.reload();
+		} else if ( response.result == 0 ){
+			// console.log(response);
+			$("#modalNewUser").modal("hide");
+			showMessage(0, response.message);
+		}
+	})
+});
+
+
+$('#modalNewUser').on('hidden.bs.modal', function() {
+	$('#newUser_name').val("");
+	$('#newUser_email').val("");
+	const checkboxes = $(":checkbox[id^='newUser_checkboxInputOverride']");
+	$('#newUser_permisos').prop("checked", false);
+	checkboxes.prop("checked", false);
+})
+
 
 
 function createRowsToBranchTableInfo(branch){
