@@ -221,14 +221,15 @@ function createRowsToUsersTable(users) {
 }
 
 function appendRow(user){
-	const randomColor = Math.floor(Math.random()*16777215).toString(16);
+	// const randomColor = Math.floor(Math.random()*16777215).toString(16);
+	let colors = ["#a89e9d", "#7ab4c2", "#37a398"];//#a89e9d
+	let randomColor = colors[Math.floor(Math.random() * colors.length)];
 	let row = '<tr>';
 	let firstLetter = user.name.charAt(0);
 
-	let td0 = '<td class="w-10" id="tdImgUser"> <div class="img-user" style="background-color:#' + randomColor + '">' + firstLetter +  '</div> </td>';
+	let td0 = '<td class="w-10" id="tdImgUser"> <div class="img-user" style="background-color:' + randomColor + '">' + firstLetter +  '</div> </td>';
 	let td1 = '<td class="w-20"> <label class="showModalUser" onclick="showModalUser(\''+ user.email +'\')">' + user.name + '</label> </td>';
 	let td2 = '<td class="w-40"> <a href="mailto:'+ user.email +'">' + user.email + '</a> </td>';
-	// let td2 = '<td class="w-40"> <label >' + user.email + '</label> </td>';
 	let td3 = '<td class="w-15">';
 	if(user.active){
 		td3 += '<label class="user-state activo"> ACTIVO </label> </td>';
@@ -239,17 +240,14 @@ function appendRow(user){
 	let hora = "";
 	let td4 = '<td class="w-15"> <label > - </label> </td>';
 	// Split the string twice
-	// console.log(user.lastActivity);
 	if(user.lastActivity != null) {
-		fecha = user.lastActivity.split("T"); // The second argument specifies the maximum number of splits
-		hora = fecha[1].split("Z"); // The second argument specifies the maximum number of splits
-		hora = hora[0].split("."); // The second argument specifies the maximum number of splits
+		fecha = user.lastActivity.split("T");
+		hora = fecha[1].split("Z");
+		hora = hora[0].split(".");
 		td4 = '<td class="w-15"> <label >' + fecha[0].replaceAll("-", "/") + " " + hora[0] + '</label> </td>';
 	}
-	// let td4 = '<td class="w-15">  <label >' + user.lastActivity + '</label> </td>';
 	row += td0 + td1 + td2 + td3 + td4;
 	row += '</tr>';
-	// console.log("#" + randomColor);
 	$("#usersTableBody").append(row);
 }
 
@@ -270,11 +268,11 @@ function loadUserDetails( email ){
 	sendAsyncPost("loadUserDetails", {email: email, rut: rutSelected})
 	.then((response)=>{
 		if ( response.result == 2 ){
-			// console.log("ASD");
-			// console.log(response.objectResult.scopes);
 			console.log(response.objectResult);
-			const randomColor = Math.floor(Math.random()*16777215).toString(16);
-			$('#modalUserImg').css('background-color', '#' + randomColor);
+			// Array of hex colors
+			var colors = ["#a89e9d", "#7ab4c2", "#37a398"];
+			var randomColor = colors[Math.floor(Math.random() * colors.length)];
+			$('#modalUserImg').css('background-color', randomColor);
 			// Initialize an array to store key-value pairs
 			var keyValueArray = [];
 			if($.inArray("owner", response.objectResult.scopes) != -1) keyValueArray.push("owner");
@@ -291,13 +289,11 @@ function loadUserDetails( email ){
 			if($.inArray("forms:2181", response.objectResult.scopes) != -1) keyValueArray.push("forms_2181");
 			if($.inArray("reports", response.objectResult.scopes) != -1) keyValueArray.push("reports");
 			
-			// console.log(keyValueArray.length)
 			$("#usersPermisos input[type='checkbox']").prop('checked', false);
 			// Iterate through the array and check the checkboxes with matching IDs
 			$.each(keyValueArray, function(index, value) {
 				// Construct the ID selector
 				var idSelector = "checkboxInputOverride_" + value;
-				// console.log(idSelector)
 				// Use the selector to find the checkbox and set it to "checked"
 				$('#' + idSelector).prop("checked", true);
 			});
@@ -320,8 +316,6 @@ function loadUserDetails( email ){
 				$('#modalUserState').addClass('user-state inactivo');
 				$('#modalUserState').text("INACTIVO")
 			}
-			// $('#modalUserState').text(response.objectResult.email);
-			// createRowsToBranchTableInfo(response.objectResult);
 		}else if ( response.result == 0 ){
 			// window.location.href = getSiteURL() + "cerrar-session";
 		}
@@ -333,7 +327,6 @@ function selectAllPermisos(checkbox){
 		if (checkbox.checked) {
 		// Check if any of the checkboxes are already checked
 		const allChecked = checkboxes.filter(":checked").length === checkboxes.length;
-
 		// Toggle the checkboxes
 		checkboxes.prop("checked", !allChecked);
 		// $(":checkbox[id^='checkboxInputOverride']").prop("checked", true);
@@ -346,7 +339,6 @@ function newUser_selectAllPermisos(checkbox){
 	if (checkbox.checked) {
 		// Check if any of the checkboxes are already checked
 		const allChecked = checkboxes.filter(":checked").length === checkboxes.length;
-
 		// Toggle the checkboxes
 		checkboxes.prop("checked", !allChecked);
 		// $(":checkbox[id^='checkboxInputOverride']").prop("checked", true);
@@ -366,7 +358,6 @@ function changeUserState(){
 		$('#modalUserState').addClass('user-state activo');
 		$('#modalUserState').text("ACTIVO")
 	}
-	// console.log($('#modalUserState').text());
 }
 
 function showModalUser(email){
@@ -389,6 +380,9 @@ function showModalNewPwd(){
 
 $('#modalNewPwd').on('shown.bs.modal', function() {
 	$('#newPwd').focus();
+	$('#passwordMessage').html("");
+	$('#passwordMessage').css("background-color", "#fff");
+	$('#buttonModalChangePwd').prop("disabled", true);
 })
 
 function validatePassword() {
@@ -397,11 +391,18 @@ function validatePassword() {
 
 	if (password1 === password2) {
 		// Passwords match
-		document.getElementById("passwordMessage").innerHTML = "La contraseña coincide!";
-		$('#buttonModalChangePwd').prop("disabled", false);
+		if($('#newPwd2').val().length > 3) {
+			$('#passwordMessage').html("La contraseña coincide!");
+			$('#passwordMessage').css("background-color", "#2bb449");
+			$('#buttonModalChangePwd').prop("disabled", false);
+		} else {
+			$('#passwordMessage').html("La contraseña debe tener al menos 4 caracteres!");
+			$('#passwordMessage').css("background-color", "#ffc107");
+		}
 	} else {
 		// Passwords do not match
-		document.getElementById("passwordMessage").innerHTML = "Contraseñas distintas!";
+		$('#passwordMessage').html("Contraseñas distintas!");
+		$('#passwordMessage').css("background-color", "#ffc107");
 		$('#buttonModalChangePwd').prop("disabled", true);
 	}
 }
@@ -409,6 +410,7 @@ function validatePassword() {
 $('#buttonModalChangePwd').click(function(){
 	let rutSelected = $("#textRutCompanieSelected").text();
 	let email = $('#modalNewPwdTitle').data('email');
+	
 	console.log(rutSelected);
 	console.log(email);
 	sendAsyncPost("updatePassword", {email: email, rut: rutSelected})
@@ -416,7 +418,6 @@ $('#buttonModalChangePwd').click(function(){
 		if (response.result == 2){
 			$("#modalNewPwd").modal("hide");
 			showMessage(2, response.message);
-			// console.log(response);
 			// window.location.reload();
 		}else if ( response.result == 0 ){
 			// console.log(response);

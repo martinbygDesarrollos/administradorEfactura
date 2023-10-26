@@ -140,19 +140,35 @@
 							<label class="font-weight-bold">Sitio</label>
 						</td>
 						<td class="col-10">
-						{# <div class="form__group field"> #}
 							<input type="text" id="tdBranchDataWeb" name="sitio" class="form__field" onchange="datachanged()" placeholder="Sitio web" />
-						{# </div> #}
 						</td>
 					</tr>
 	    		</tbody>
 	    	</table>
-			<label class="ml-2"> <b> Giros: </b> </label>
-			<ul style = "list-style: none;">
+			<hr>
+			<label style="margin-left: 0.75rem!important;"> <b> Giros: </b> </label>
+			{# <ul style = "list-style: none;">
 				{% for giro in company.giros %}
 					<li value="{{giro.code}}">{{giro.name}}</li>
 				{% endfor %}
-			</ul>
+			</ul> #}
+			<table class="table">
+				<thead>
+					<tr>
+						<th class="col-1" style="font-weight: 600; border: none!important;"> Codigo </th>
+						<th class="col-11" style="font-weight: 600; border: none!important;"> Nombre </th>
+					<tr>
+				</thead>
+				<tbody id="tBodyGiros">
+					{% for giro in company.giros %}
+						<tr> 
+							<td class="col-1"> <label>  {{giro.code}} </label> </td> 
+							<td class="col-11"> <label>  {{giro.name}} </label> </td> 
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+
 
 	        <div class="d-flex flex-row-reverse p-1">
 
