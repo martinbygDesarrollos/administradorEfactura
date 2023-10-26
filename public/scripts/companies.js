@@ -367,6 +367,8 @@ function showModalUser(email){
 
 function showModalNewUser(){
 	$('#modalNewUser').modal();
+	$("#newUser_name").val("");
+	$("#newUser_email").val("");
 }
 
 function showModalNewPwd(){
