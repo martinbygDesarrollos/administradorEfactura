@@ -398,6 +398,7 @@ function validatePassword() {
 			$('#passwordMessage').css("background-color", "#2bb449");
 			$('#buttonModalChangePwd').prop("disabled", false);
 		} else {
+			$('#buttonModalChangePwd').prop("disabled", true);
 			$('#passwordMessage').html("La contraseña debe tener al menos 4 caracteres!");
 			$('#passwordMessage').css("background-color", "#ffc107");
 		}
