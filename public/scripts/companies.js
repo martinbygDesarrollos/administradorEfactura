@@ -202,8 +202,6 @@ function loadUsersCompanie(  rut  ){
 	sendAsyncPost("loadListUser", {rut:rut})
 	.then((response)=>{
 		if ( response.result == 2 ){
-			// console.log("usuarios: ");
-			console.log(response.objectResult);
 			$("#usersTableBody tr").remove();
 			createRowsToUsersTable(response.objectResult.users);
 
