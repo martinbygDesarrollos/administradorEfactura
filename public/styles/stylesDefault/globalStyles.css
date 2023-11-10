@@ -231,3 +231,8 @@ a[aria-selected="true"]{
     transform:rotate(-45deg);
     width: 10px;
 }
+
+
+.font-weight-bold{
+    font-weight: 550!important;
+}

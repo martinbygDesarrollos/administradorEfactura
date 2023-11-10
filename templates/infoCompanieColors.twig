@@ -1,49 +1,61 @@
 <div class="tab-pane fade" id="colors-data" role="tabpanel">
 	<div class="container-fluid">
 		<div class="float-end">
-			<!--button class="btn btn-info" data-toggle="modal" data-target="#modalPreviewVoucher" >vista previa</button-->
+			<button class="btn btn-info" data-toggle="modal" data-target="#modalPreviewVoucher" >vista previa</button>
 			<button class="btn btn-info" id="btnComColorUndo" title="Deshacer todo" onclick="companieColorsUndo()" hidden disabled><i class="fas fa-undo"></i></button>
 			<button class="btn btn-info" title="Asignar colores por defecto" onclick="companieColorsDefault()" ><i class="fas fa-paint-brush"></i></button>
 		</div>
 		<form method="POST" id="formUpdateRepImpresa">
 		<h5 class="pt-3">Columnas</h5>
-		<table class="table">
+		<table class="table my-3">
     		<tbody >
 				<tr class="row">
+					<td class="col-md-3 col-12">
+						<label class="font-weight-bold">Fondo col. 'Descripción' y 'Cantidad'</label>
+    				</td>
 					<td class="col-md-2 col-12">
 						<input type="color" id="inputCompColorDescColor" name="color1" onchange="assignColor(this.value, inputCompColorDescription)" class="form__field_colorpicker m-2">
 					</td>
-					<td class="col-md-10 col-12">
+					<td class="col-md-7 col-12">
 						<input type="text" id="inputCompColorDescription" name="color1" onchange="assignColor(this.value, inputCompColorDescColor)" class="form__field" placeholder="Color columnas 'Descripción' y 'Cantidad'" />
 					</td>
 				</tr>
 				<tr class="row">
+					<td class="col-md-3 col-12">
+						<label class="font-weight-bold">Fondo col. 'P. Unitario'</label>
+    				</td>
 					<td class="col-md-2 col-12">
 						<input type="color" id="inputCompColorPrecioColor" name="" class="form__field_colorpicker m-2" onchange="assignColor(this.value, inputCompColorPrecio)">
 					</td>
-					<td class="col-md-10 col-12">
+					<td class="col-md-7 col-12">
 						<input type="text" id="inputCompColorPrecio" name="" class="form__field" onchange="assignColor(this.value, inputCompColorPrecioColor)" placeholder="Color columna 'P. Unitario'" />
 					</td>
 				</tr>
     		</tbody>
     	</table>
 		<h5 class="pt-3">Texto</h5>
-    	<table class="table">
+    	<table class="table my-3">
     		<tbody >
     			<tr class="row">
+    				<td class="col-md-3 col-12">
+						<label class="font-weight-bold">Color del texto de las columnas '#' y 'Total'</label>
+    				</td>
 					<td class="col-md-2 col-12">
 						<input type="color" id="inputCompColorTextoTotalColor" name="" class="form__field_colorpicker m-2" onchange="assignColor(this.value, inputCompColorTextoTotal)">
 					</td>
-					<td class="col-md-10 col-12">
-						<input type="text" id="inputCompColorTextoTotal" name="" class="form__field" onchange="assignColor(this.value, inputCompColorTextoTotalColor)" placeholder="Color del texto de las columna '#' y Total'" />
+					<td class="col-md-7 col-12">
+						<input type="text" id="inputCompColorTextoTotal" name="" class="form__field" onchange="assignColor(this.value, inputCompColorTextoTotalColor)" placeholder="Color del texto de las columnas '#' y 'Total'" />
 					</td>
 				</tr>
 				<tr class="row">
+					<td class="col-md-3 col-12">
+						<label class="font-weight-bold">Tamaño del nombre de la empresa emisora</label>
+    				</td>
 					<td class="col-md-2 col-12"></td>
-					<td class="col-md-5 col-12">
+					<td class="col-md-3 col-12">
 						<input type="text" id="inputCompColorTamEmisor" name="color1" class="form__field" onchange="datachangedRepImpresa()" placeholder="Tamaño del nombre de la empresa emisora" />
 					</td>
-					<td class="col-md-5 col-12">
+					<td class="col-md-4 col-12">
 						<select class="form__field" onchange="datachangedRepImpresa()" id="inputCompColorTamEmisorUnidadMedida">
 							<option value="px" selected>px</option>
 							<option value="em">em</option>
@@ -53,20 +65,26 @@
 				</tr>
     		</tbody>
     	</table>
-		<h5 class="pt-3">Lineas del listado detalle</h5>
-    	<table class="table">
+		<h5 class="pt-3">Estilo de las líneas que dividen las filas del detalle</h5>
+    	<table class="table my-3">
     		<tbody >
     			<tr class="row">
+    				<td class="col-md-3 col-12">
+						<label class="font-weight-bold">Color</label>
+    				</td>
 					<td class="col-md-2 col-12">
 						<input type="color" id="inputCompColorDetailLineColor" name="" class="form__field_colorpicker m-2" onchange="assignColor(this.value, inputCompColorDetailLine)">
 					</td>
-					<td class="col-md-10 col-12">
-						<input type="text" id="inputCompColorDetailLine" name="" class="form__field" onchange="assignColor(this.value, inputCompColorDetailLineColor)" placeholder="Color de las líneas que dividen las filas de detalle" />
+					<td class="col-md-7 col-12">
+						<input type="text" id="inputCompColorDetailLine" name="" class="form__field" onchange="assignColor(this.value, inputCompColorDetailLineColor)" placeholder="Color de las líneas que dividen las filas del detalle" />
 					</td>
 				</tr>
 				<tr class="row">
+					<td class="col-md-3 col-12">
+						<label class="font-weight-bold">Estilo</label>
+    				</td>
 					<td class="col-md-2 col-12"></td>
-					<td class="col-md-10 col-12">
+					<td class="col-md-7 col-12">
 						<select class="form__field" onchange="datachangedRepImpresa()" id="inputCompColorDetailLineStyle">
 							<option value="solid" selected>Solida</option>
 							<option value="dashed" >Punteada</option>
@@ -74,15 +92,16 @@
 					</td>
 				</tr>
 				<tr class="row">
+					<td class="col-md-3 col-12">
+						<label class="font-weight-bold">Tamaño del ancho</label>
+    				</td>
 					<td class="col-md-2 col-12"></td>
-					<td class="col-md-5 col-12">
-						<input type="text" id="inputCompColorDetailLineWidth" name="color1" class="form__field" onchange="datachangedRepImpresa()" placeholder="Tamaño del ancho las líneas que dividen las filas de detalle" />
+					<td class="col-md-3 col-12">
+						<input type="text" id="inputCompColorDetailLineWidth" name="color1" class="form__field" onchange="datachangedRepImpresa()" placeholder="Tamaño del ancho de las líneas que dividen las filas de detalle" />
 					</td>
-					<td class="col-md-5 col-12">
+					<td class="col-md-4 col-12">
 						<select class="form__field" onchange="datachangedRepImpresa()" id="inputCompColorDetailLineWidthUnidadMedida" >
 							<option value="px" selected>px</option>
-							<option value="em">em</option>
-							<option value="rem">rem</option>
 						</select>
 					</td>
 				</tr>
