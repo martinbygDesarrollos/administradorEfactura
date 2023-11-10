@@ -14,11 +14,11 @@
 
             .detail-line {
                 padding: 3px 10px;
-                border-bottom: <?php echo $_GET["detailLineWidth"];?> solid #ffffff;
+                border-bottom: <?php echo $_GET["detailLineWidth"]." ".$_GET["lineStyle"]." ".$_GET["detailLineColor"]; ?>;
             }
 
             .column-primary {
-                color: #ffffff;
+                color: <?php echo $_GET["totalColor"];?>;
                 background: #57B223;
             }
 
@@ -61,7 +61,7 @@
       <img src="">
     </div>
     <div style="float: left; margin-left: 8px;">
-      <h2 style="font-size: 1.4em; font-weight: normal; margin: 0;">NOMBRE EMPRESA EMISORA</h2>
+      <h2 style="font-size: <?php echo $_GET["tamEmisor"];?>; font-weight: normal; margin: 0;">NOMBRE EMPRESA EMISORA</h2>
       <div><strong>Nombre sucursal</strong></div>
       <div>DIRECCIÓN, CALLE 1111</div>
       <div></div>

@@ -79,8 +79,8 @@ function loadDataStyles(obj){
 
 	if (obj.emitterNameSize){
 		let emitterNameSize = obj.emitterNameSize
-		let onlyNumber = emitterNameSize.replace(/\D/g, "")
-		let onlyText = emitterNameSize.replace(/[0-9]/g, "")
+		let onlyNumber = emitterNameSize.replace(/[a-zA-Z]/g, "")
+		let onlyText = emitterNameSize.replace(/[0-9.]/g, "")
 		$("#inputCompColorTamEmisor").val(onlyNumber);
 		$("#inputCompColorTamEmisorUnidadMedida").val(onlyText)
 	}
@@ -106,8 +106,10 @@ function loadDataStyles(obj){
 	if(obj.detailLineStyle)
 		$("#inputCompColorDetailLineStyle").val(obj.detailLineStyle);
 
-	if(obj.detailLineWidth)
-		$("#inputCompColorDetailLineWidth").val(obj.detailLineWidth);
+	if(obj.detailLineWidth){
+		let num = obj.detailLineWidth.replace(/\D/g, "")
+		$("#inputCompColorDetailLineWidth").val(num);
+	}
 
 	if(obj.detailLineColor){
 		$("#inputCompColorDetailLineColor").val(obj.detailLineColor);
