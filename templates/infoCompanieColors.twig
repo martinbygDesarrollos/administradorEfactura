@@ -5,6 +5,20 @@
 			<button class="btn btn-info" id="btnComColorUndo" title="Deshacer todo" onclick="companieColorsUndo()" hidden disabled><i class="fas fa-undo"></i></button>
 			<button class="btn btn-info" title="Asignar colores por defecto" onclick="companieColorsDefault()" ><i class="fas fa-paint-brush"></i></button>
 		</div>
+		<h5 class="pt-3">Comprobante</h5>
+		<table class="table my-3">
+    		<tbody >
+				<tr class="row">
+					<td class="col-md-3 col-12">
+						<label class="font-weight-bold">Información adicional</label>
+    				</td>
+					<td class="col-md-2 col-12"></td>
+					<td class="col-md-7 col-12">
+						<textarea id="idTextareaInfoAdicional" maxlength="120" onchange="datachangedInfoAdicional()" cols="2" class="form__field"></textarea>
+					</td>
+				</tr>
+    		</tbody>
+    	</table>
 		<form method="POST" id="formUpdateRepImpresa">
 		<h5 class="pt-3">Columnas</h5>
 		<table class="table my-3">

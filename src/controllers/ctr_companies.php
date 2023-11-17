@@ -371,7 +371,10 @@ class ctr_companies{
 		return $response;
 	}
 
-
+	public function saveInfoAdicional($value, $rut){
+		$restController = new ctr_rest();
+		return $restController->saveInfoAdicional($value, $rut);
+	}
 }
 
 

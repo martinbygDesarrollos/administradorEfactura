@@ -1,11 +1,24 @@
 //funciones sin nombre
 $("#formUpdateRepImpresa").on( "submit", function( event ) {
 	event.preventDefault();
-	console.log("toda accion del submit cancelado");
-	saveCompanieColors( null )
-	.then((response)=>{
-		showMessage(response.result, response.message);
-	})
+
+	if(infoAdicionalIsChanged){
+		if ($("#idTextareaInfoAdicional").val() != ""){
+			saveInfoAdicional($("#idTextareaInfoAdicional").val())
+			.then((response)=>{
+				showMessage(response.result, response.message);
+			})
+		}
+	}
+
+
+	if(dataIsChanged){
+		saveCompanieColors( null )
+		.then((response)=>{
+			showMessage(response.result, response.message);
+		})
+	}
+
 });
 
 
@@ -152,7 +165,6 @@ function companieColorsDefault(){
 }
 
 
-//si viene data puede ser que
 function saveCompanieColors( data ){
 
 	return new Promise((resolve, reject)=>{
@@ -161,7 +173,6 @@ function saveCompanieColors( data ){
 			data = getFormValues()
 		}
 
-		console.log(data);
 		sendAsyncPut("representacionimpresa", {data:data})
 		.then( response =>{
 			resolve(response)
@@ -184,6 +195,11 @@ function datachangedRepImpresa(){
 	$("#buttonSubmitCompanieColors").removeAttr("disabled");
 	document.getElementById("btnComColorUndo").disabled = false;
 	document.getElementById("btnComColorUndo").hidden = false;
+}
+
+function datachangedInfoAdicional(){
+	infoAdicionalIsChanged = true;
+	$("#buttonSubmitCompanieColors").removeAttr("disabled");
 }
 
 
@@ -216,4 +232,18 @@ function getFormValues(){
 	}
 
 	return data;
+}
+
+
+
+function saveInfoAdicional(value){
+
+	return new Promise((resolve, reject)=>{
+
+		sendAsyncPost("saveInfoAdicional", {info:value})
+		.then( response =>{
+			resolve(response)
+		})
+	})
+
 }

@@ -158,6 +158,12 @@ class sendPetition{
 	}
 
 
+	public function saveInfoAdicional($token, $rut, $data){
+		$thisClass = new sendPetition();
+		return $thisClass->prepareAndSendCurl("PUT", "company/".$rut."/infoAdicional", $token, $data);
+	}
+
+
 	public function prepareAndSendCurl($typeMethod, $method, $token, $data){
 		$thisClass = new sendPetition();
 		$curlPetition = curl_init(URL_REST . $method);

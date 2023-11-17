@@ -686,6 +686,36 @@ class ctr_rest{
 		return $response;
 	}
 
+
+	public function saveInfoAdicional($value, $rut){
+
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+		$response->objectResult = new \stdClass();
+
+		$data = new \stdClass();
+		$data->infoAdicional = $value;
+
+		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
+		if ( $token->result == 2 ){
+			$tokenRest = $token->objectResult->tokenRest;
+			$petitionResponse = $petitionClass->saveInfoAdicional($tokenRest, $rut, $data);
+			$petitionResponse = json_decode($petitionResponse);
+			if($petitionResponse->resultado->error != 'OK') {// Hubo algun error
+				$response->result = 0;
+				$response->message = $petitionResponse->resultado->error;
+			} else {
+				$response->result = 2;
+				$response->message = "Informacion adicional agregada con éxito!";
+			}
+			$response->objectResult = $petitionResponse;
+		} else return $token;
+		return $response;
+	}
+
 }
 
 

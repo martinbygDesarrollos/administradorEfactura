@@ -1,4 +1,5 @@
 var dataIsChanged = false;
+var infoAdicionalIsChanged = false;
 var companiesList = null;
 
 var lastid = 0;

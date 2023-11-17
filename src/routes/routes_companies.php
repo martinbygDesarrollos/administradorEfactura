@@ -548,6 +548,21 @@ return function (App $app){
         }else return json_encode(["result"=>0]);
     });
 
+
+
+    $app->post('/saveInfoAdicional', function ($request, $response, $args) use ($companiesController){
+
+        if ( $_SESSION['mailUserLogued'] ){
+            $response = new \stdClass();
+            $rut = $_SESSION['rutUserLogued'];
+            $info = $request->getParams()['info'];
+
+            $response = $companiesController->saveInfoAdicional($info, $rut);
+            return json_encode($response);
+
+        }else return json_encode(["result"=>0]);
+    });
+
 }
 
 ?>
