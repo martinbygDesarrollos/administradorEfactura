@@ -68,7 +68,12 @@ class ctr_companies{
 			}
 
 			//ver de que color se muestra la fila según el vencimiento del certificado dgi 60 dias marcar en naranja 20 dias rojo
-			$expireColor = $companieController->expireColorWarning($expireDate);
+			$expireColor = new stdClass();
+			$expireColor->color = null;
+			$expireColor->title = null;
+			if ($value->estado == 6){
+				$expireColor = $companieController->expireColorWarning($expireDate);
+			}
 
 			$responseCompanies->listResult[$key]->logo = "";
 			$responseCompanies->listResult[$key]->proxVencDescr = $expireDate;
@@ -84,10 +89,10 @@ class ctr_companies{
 
 		}
 
-		$responseCompanies->listResult[1]->proxVencDescr = "";
+		/*$responseCompanies->listResult[1]->proxVencDescr = "";
 		$responseCompanies->listResult[1]->proxVencimiento = "";
 		$responseCompanies->listResult[1]->comprobante = "";
-		$responseCompanies->listResult[1]->tipoCae = "";
+		$responseCompanies->listResult[1]->tipoCae = "";*/
 		$responseCompanies->listResult = $this->companiesOrders( $responseCompanies->listResult );
 		return $responseCompanies;
 	}
