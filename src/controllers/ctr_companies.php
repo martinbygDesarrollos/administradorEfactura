@@ -7,6 +7,7 @@ require_once 'ctr_rest.php';
 class ctr_companies{
 
 	public function getCompanies(){
+		$companieController = new ctr_companies();
 		$restController = new ctr_rest();
 		$utilClass = new utils();
 		$responseCompanies = $restController->getCompanies();
@@ -65,6 +66,10 @@ class ctr_companies{
 				}
 
 			}
+
+			//ver de que color se muestra la fila según el vencimiento del certificado dgi 60 dias marcar en naranja 20 dias rojo
+			$expireColor = $companieController->expireColorWarning($expireDate);
+
 			$responseCompanies->listResult[$key]->logo = "";
 			$responseCompanies->listResult[$key]->proxVencDescr = $expireDate;
 
@@ -75,6 +80,7 @@ class ctr_companies{
 			$responseCompanies->listResult[$key]->proxVencimiento = $auxExpireDate;
 			$responseCompanies->listResult[$key]->comprobante = $expireDateVoucher;
 			$responseCompanies->listResult[$key]->tipoCae = $expireDateCaeType;
+			$responseCompanies->listResult[$key]->expireDateColor = $expireColor;
 
 		}
 
@@ -282,7 +288,7 @@ class ctr_companies{
 							$response->message = "Nueva sucursal establecida como principal";
 						}
 					}
-					
+
 				}
 			}
 		return $response;
@@ -304,7 +310,7 @@ class ctr_companies{
 			isTemplate => $data['isTemplate'],
 			rut => $data['rut']
 		);
-		$response = $companieController->changeCompanieData( $newData ); 
+		$response = $companieController->changeCompanieData( $newData );
 		if($response->result == 2){
 			$response->message = "Nueva sucursal creada con exito!";
 		}
@@ -344,7 +350,7 @@ class ctr_companies{
 			codDgi => $sucPrincipal->codDGI,
 			rut => $data['rut']
 		);
-		$response = $companieController->changeCompanieData( $newData ); 
+		$response = $companieController->changeCompanieData( $newData );
 		if ( $response->result == 2 ) {
 			// NEW 3 seteo la sucursal principal con el DGI de la nueva(solo cambia el codDGI a la que ya esta como principal)
 			$response = $restController->setPrincipalCompanieBranch($data['rut'], $newDGI);
@@ -374,6 +380,35 @@ class ctr_companies{
 	public function saveInfoAdicional($value, $rut){
 		$restController = new ctr_rest();
 		return $restController->saveInfoAdicional($value, $rut);
+	}
+
+
+
+	public function expireColorWarning($expireDate){
+		$expireInfo = new stdClass();
+		$expireInfo->color = null;
+		$expireInfo->title = null;
+
+		if (isset($expireDate) && $expireDate != ""){
+			$nextMonth = date('Ymd',  strtotime("+ 2 month" , strtotime(date("Ymd"))));
+			$twentyDays = date('Ymd',  strtotime("+ 20 days" , strtotime(date("Ymd"))));
+
+			if($expireDate < date("Ymd")){
+				$expireInfo->color = "#F44336"; //rojos
+				$expireInfo->title = "Expiró";
+			}elseif($expireDate <= $twentyDays){
+				$expireInfo->color = "#F44336"; //rojo
+				$expireInfo->title = "Expira en menos de 20 días";
+			}elseif ($expireDate > $twentyDays && $expireDate <= $nextMonth) {
+				$expireInfo->color = "#FF9800"; //naranja
+				$expireInfo->title = "Expira en menos de 60 días";
+			}else{
+				$expireInfo->color = null;
+				$expireInfo->title = null;
+			}
+		}
+
+		return $expireInfo;
 	}
 }
 

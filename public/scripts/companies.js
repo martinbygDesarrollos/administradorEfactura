@@ -60,7 +60,6 @@ $("#formCompanieDetails").submit((e)=>{
 
 	sendAsyncPostForm("changeCompanieData", formData)
 	.then(( response )=>{
-		console.log(response);
 		if (response.result == 2){
 			window.location.reload();
 		}else if ( response.result == 0 ){
@@ -86,7 +85,6 @@ $("#formCompanieColors").submit((e)=>{
 
 	sendAsyncPostForm("changeCompanieColor", formData)
 	.then(( response )=>{
-		console.log(response);
 		if (response.result == 2){
 			window.location.reload();
 		}else if ( response.result == 0 ){
@@ -103,7 +101,6 @@ function selectCompanie( companieRut, companieName ){
 
 	sendAsyncPost("companies", {rut:companieRut, name:companieName})
 	.then((response)=>{
-		console.log(response);
 		if ( response.result == 2 ){
 			$("#indexCompanieWork a").text(response.objectResult.razonSocial);
 			$("#indexCompanieName").text(response.objectResult.razonSocial);
@@ -189,10 +186,18 @@ function createRowCompanie(obj){
 		estado = '<span class="badge" style="background-color: blue">'+obj.estadoDescripcion+'</span>';
 	}
 
+	expireDate = "";
+	expireDateTitle = "";
+	if(obj.expireDateColor.color){
+		expireDate = '<i class="fas fa-exclamation m-2 fa-lg" style="color:'+obj.expireDateColor.color+';"></i>'+comprobante+tipocae+' '+ vencimiento;
+		expireDateTitle = obj.expireDateColor.title;
+	}else{
+		expireDate = comprobante+tipocae+' '+ vencimiento;
+	}
 
 	let row = '<tr><td onclick="selectCompanie(`'+obj.rut+'`, `'+obj.razonSocial+'`)" ><a href="'+getSiteURL()+'empresas/'+obj.rut+'">'+obj.razonSocial+'</a><br>'+obj.rut+'</td>';
 	row += '<td onclick="selectCompanie(`'+obj.rut+'`, `'+obj.razonSocial+'`)" >'+estado+'</td>';
-	row += '<td onclick="selectCompanie(`'+obj.rut+'`, `'+obj.razonSocial+'`)" >'+comprobante+tipocae+' '+ vencimiento+'</td>';
+	row += '<td onclick="selectCompanie(`'+obj.rut+'`, `'+obj.razonSocial+'`)" title="'+expireDateTitle+'" >'+expireDate+'</td>';
 	row += '<td>'+selectCaes+'</td></tr>';
 
 	return row;
@@ -267,7 +272,6 @@ function loadUserDetails( email ){
 	sendAsyncPost("loadUserDetails", {email: email, rut: rutSelected})
 	.then((response)=>{
 		if ( response.result == 2 ){
-			console.log(response.objectResult);
 			// Array of hex colors
 			var colors = ["#a89e9d", "#7ab4c2", "#37a398"];
 			var randomColor = colors[Math.floor(Math.random() * colors.length)];
@@ -412,9 +416,6 @@ function validatePassword() {
 $('#buttonModalChangePwd').click(function(){
 	let rutSelected = $("#textRutCompanieSelected").text();
 	let email = $('#modalNewPwdTitle').data('email');
-	
-	console.log(rutSelected);
-	console.log(email);
 	sendAsyncPost("updatePassword", {email: email, rut: rutSelected})
 	.then((response)=>{
 		if (response.result == 2){
@@ -505,12 +506,10 @@ $('#modalNewUser').on('hidden.bs.modal', function() {
 
 function createRowsToBranchTableInfo(branch){
 	if ( branch.isPrincipal ) {
-		console.log("principal");
 		$("#tdBranchDataPrincipal").prop('checked', true);
 		$("#buttonDeleteBranchCompanieDetails").attr("disabled", "disabled");
 		$("#buttonSetPrincipalBranchCompanieDetails").attr("disabled", "disabled");
 	} else {
-		console.log("sucursal");
 		$("#tdBranchDataPrincipal").prop('checked', false);
 		$("#buttonDeleteBranchCompanieDetails").removeAttr("disabled");
 		if ( !branch.isTemplate )
@@ -594,21 +593,6 @@ function searchCompaniesFromList(text){
 		lastid = 0;
 		textToSearch = text
 		loadCompanies();
-		/*sendAsyncPost("loadCompaniesByName", {name:text})
-		.then((response)=>{
-			if ( response.result == 2 ){
-				companiesList = response.companiesList;
-				if ( response.companiesList ){
-					for (var i = 0; i < response.companiesList.length; i++) {
-
-						row = createRowCompanie(response.companiesList[i]);
-						$("#tbodyCompaniesList").append(row);
-					}
-				}
-			}else if ( response.result == 0 ){
-				window.location.href = getSiteURL() + "cerrar-session";
-			}
-		})*/
 	}else{
 		textToSearch = "";
 		$("#tbodyCompaniesList").empty();
@@ -762,56 +746,4 @@ $('#buttonModalNewSucursal').click(function(){
 
 
 async function getReportsByCompanie(){
-
-	/*let periodo = $("idSelectDateReports");
-	sendAsyncPost("getReportsByCompanie", {date:periodo})
-	.then((response)=>{
-		console.log(response);
-
-		if (response.result == 2){
-
-
-			for (const [key, value] of Object.entries(response.objectResult)) {
-				$("#tbodyCompaniesReports").append("<tr><td>"+tableCfeType(key)+"</td><td>"+value+"</td></tr>");
-			}
-
-		}else{
-			$("#tbodyCompaniesReports").empty();
-		}
-	})*/
 }
-
-
-
-
-/*
-
-async function selectAllFilesXml(value){
-	$("#tbodyCfeFilesImported tr").map((index, tr)=>{
-		if (index <= 99){
-			tr.getElementsByTagName("input")[0].checked = value;
-		}
-	})
-}
-
-
-
-async function sendFilesXml(){
-
-	//poner la pantalla de carga
-
-	$("#tbodyCfeFilesImported tr").map((index, tr)=>{
-
-		if (tr.getElementsByTagName("input")[0].checked){
-
-			let trid = tr.id.split("_");
-			sendAsyncPost("sendImportCfeEmitedXml", {folder:trid[0], name:trid[1]})
-			.then((response)=>{
-				console.log(response);
-			})
-		}
-	})
-
-}
-
-*/
