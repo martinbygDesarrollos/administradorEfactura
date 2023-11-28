@@ -4,26 +4,8 @@ require_once '..\src\config.php';
 var_dump("<pre>");
 printf("notificando vencimientos por correo//");
 
-//CONEXIÓN BD
-$connection = new mysqli(DB_HOST, DB_USR, DB_PASS, DB_DB) or die("No se puede conectar con la Base de Datos");
-$connection->set_charset("utf8");
-if($connection){
-    $query = $connection->prepare("SELECT tokenRest FROM `usuarios` WHERE correo = 'guillermo@gargano.com.uy'");
-    $query->execute();
-    $result = $query->get_result();
-    $tokenRest = $result->fetch_object()->tokenRest;
-}
-
-$opciones = array('http' =>
-    array(
-        'method'  => 'GET',
-        'header'  => array("Accept: aplication/json", "Authorization: Bearer " . $tokenRest),
-    )
-);
-
-$contexto = stream_context_create($opciones);
-$resultado = file_get_contents(URL_REST.'companies', false, $contexto);//rest companies
-$resultCompanies = json_decode($resultado);
+$consultas = new Consultas();
+$resultCompanies = $consultas->enviarConsulta('companies');
 $numberOfComp = 0;
 $tableBody = "";
 $tableBodyCaes = "";
@@ -52,12 +34,13 @@ $to = MAIL_AVISOVENCIMIENTOS;
 $subject = "$numberOfComp empresas con CAE o Certificado por vencer";
 $header  = "MIME-Version: 1.0\r\nContent-type:text/html; charset=UTF-8";
 $body = createMail($tableBody);
-
-$resultSendMail = mail($to, $subject, $body, $header);
+var_dump($body);exit;
+/*$resultSendMail = mail($to, $subject, $body, $header);
 if ($resultSendMail)
     printf("email enviado");
 else
-    printf("error al enviar el email");
+    printf("error al enviar el email");*/
+
 
 
 function createMail($tableBody){
@@ -93,6 +76,7 @@ function createMail($tableBody){
         <tr>
         <th>Empresa</th>
         <th>Tipo CFE</th>
+        <th>Pedir</th>
         <th>Disponibles(%)</th>
         <th>Disponibles</th>
         <th>Total</th>
@@ -130,6 +114,7 @@ function appendCompanieToTableCaes($companie, $infoCaes){
     foreach ($infoCaes as $cae) {
         $row .= '<tr><td>'.$companie->razonSocial.'<br>'.$companie->rut.'</td>';
         $row .= '<td>'.$cae->tipoCFE.'</td>';
+        $row .= '<td>'.$cae->estimadoPedir.'</td>';
         $row .= '<td>'.$cae->disponiblesPorcentaje.'</td>';
         $row .= '<td>'.$cae->disponibles.'</td>';
         $row .= '<td>'.$cae->total.'</td>';
@@ -224,8 +209,11 @@ function pocosCaes($empresa){
                     $totalCAEs = $cae->total;
                     $disponiblesCAEs = $cae->disponibles;
 
-                    // Verificar si la cantidad disponibles es menos del 10% del total
-                    if ($totalCAEs > 0 && (($disponiblesCAEs / $totalCAEs) < 0.1)) {
+                    // Verificar si la cantidad disponibles es menos del 5% del total
+                    if ($totalCAEs > 0 && (($disponiblesCAEs / $totalCAEs) < 1)) {
+
+                        $estimadoPedir = cuantosCaesPedir($empresa->rut, $cae->tipoCFE);
+
                         $pocosCaes[] = array(
                             'tipoCFE' => $cae->tipoCFE,
                             'disponibles' => $cae->disponibles,
@@ -242,6 +230,71 @@ function pocosCaes($empresa){
     }
 
     return $pocosCaes;
+}
+
+
+function cuantosCaesPedir($rut, $type){
+
+    $consultas = new Consultas();
+
+    define("FROM", date("YmdHis", strtotime("-2 year", strtotime(date("YmdHis")))));
+    define("TO", date("YmdHis"));
+    define("PAGE_SIZE", 100);
+    $usadosEnDosAños = 0;
+
+
+    // do {
+
+        $emitidos = $consultas->enviarConsulta("company/$rut/cfe/emitidos?LastId=".$lastId."From=".FROM."&To=".TO."&Type=$type&PageSize=".PAGE_SIZE);
+
+        $usadosEnDosAños += count($emitidos);
+        var_dump(count($emitidos), $usadosEnDosAños, count($emitidos) == PAGE_SIZE);exit;
+
+    // } while (count($emitidos) == PAGE_SIZE);
+
+
+}
+
+
+
+class Consultas
+{
+    public $tokenRest = null;
+    function __construct()
+    {
+        // code...
+    }
+
+    function enviarConsulta($path){
+
+        if (!$this->tokenRest){
+            echo "consultando la bd//";
+            //CONEXIÓN BD
+            $connection = new mysqli(DB_HOST, DB_USR, DB_PASS, DB_DB) or die("No se puede conectar con la Base de Datos");
+            $connection->set_charset("utf8");
+            if($connection){
+                $query = $connection->prepare("SELECT tokenRest FROM `usuarios` WHERE correo = 'guillermo@gargano.com.uy'");
+                $query->execute();
+                $result = $query->get_result();
+                $tokenRest = $result->fetch_object()->tokenRest;
+                $this->tokenRest = $tokenRest;
+            }
+        }
+
+
+        $opciones = array('http' =>
+            array(
+                'method'  => 'GET',
+                'header'  => array("Accept: aplication/json", "Authorization: Bearer " . $tokenRest),
+            )
+        );
+
+        $contexto = stream_context_create($opciones);
+        $resultado = file_get_contents(URL_REST.$path, false, $contexto);//rest companies
+        $resultCompanies = json_decode($resultado);
+
+        return $resultCompanies;
+    }
 }
 
 ?>
