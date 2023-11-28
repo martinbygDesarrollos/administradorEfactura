@@ -1,6 +1,7 @@
 <?php
 
 require_once '..\src\config.php';
+var_dump("<pre>");
 printf("notificando vencimientos por correo//");
 
 //CONEXIÓN BD
@@ -25,23 +26,29 @@ $resultado = file_get_contents(URL_REST.'companies', false, $contexto);//rest co
 $resultCompanies = json_decode($resultado);
 $numberOfComp = 0;
 $tableBody = "";
+$tableBodyCaes = "";
 foreach ($resultCompanies as $companie) {
 
     if ( $companie->estado == 6 ){
 
         $expireInfo = companieExpire( $companie);
-        $addCompanie = expireColorWarning($expireInfo->expireDate);
+        $addCompanie = expireThisMonth($expireInfo->expireDate);
 
         if ($addCompanie){
             $numberOfComp ++;
             $tableBody .= appendCompanieToTable($companie, $expireInfo);
         }
 
+        $arrayCaes = pocosCaes($companie);
+        if (count($arrayCaes) >0 ){
+            $tableBodyCaes .= appendCompanieToTableCaes($companie, $arrayCaes);
+        }
+
     }
 
 }
 
-$to = MAIL_ADMINISTRACION.",".MAIL_GUILLERMO;
+$to = MAIL_AVISOVENCIMIENTOS;
 $subject = "$numberOfComp empresas con CAE o Certificado por vencer";
 $header  = "MIME-Version: 1.0\r\nContent-type:text/html; charset=UTF-8";
 $body = createMail($tableBody);
@@ -68,6 +75,7 @@ function createMail($tableBody){
         </style>
         </head>
         <body>
+        <h5>Vencimientos de CAEs o Certificados</h5>
         <div align="center">
         <table style="width:70%">
         <tbody>
@@ -75,6 +83,20 @@ function createMail($tableBody){
         <th>Empresa</th>
         <th>Fecha vencimiento</th>
         </tr>'. $tableBody . '
+        </tbody>
+        </table>
+        </div>
+        <h5>Cantidad de CAEs disponibles</h5>
+        <div align="center">
+        <table style="width:70%">
+        <tbody>
+        <tr>
+        <th>Empresa</th>
+        <th>Tipo CFE</th>
+        <th>Disponibles(%)</th>
+        <th>Disponibles</th>
+        <th>Total</th>
+        </tr>'. $tableBodyCaes . '
         </tbody>
         </table>
         </div>
@@ -96,6 +118,25 @@ function appendCompanieToTable($companie, $expireInfo){
     else
         $row .= '<td>'.$expireInfo->expireDateVoucher.' ' . $expireDate.'</td>';
     $row .= '</tr>';
+    return $row;
+
+
+}
+
+
+function appendCompanieToTableCaes($companie, $infoCaes){
+
+    $row = "";
+    foreach ($infoCaes as $cae) {
+        $row .= '<tr><td>'.$companie->razonSocial.'<br>'.$companie->rut.'</td>';
+        $row .= '<td>'.$cae->tipoCFE.'</td>';
+        $row .= '<td>'.$cae->disponiblesPorcentaje.'</td>';
+        $row .= '<td>'.$cae->disponibles.'</td>';
+        $row .= '<td>'.$cae->total.'</td>';
+        $row .= '</tr>';
+    }
+
+
     return $row;
 
 
@@ -156,7 +197,7 @@ function isDuplicatedCae($cae, $caes) {
 
 
 
-function expireColorWarning($expireDate){
+function expireThisMonth($expireDate){
 
     if (isset($expireDate) && $expireDate != ""){
         $nextMonth = date('Ymd',  strtotime("+ 1 month" , strtotime(date("Ymd"))));
@@ -167,6 +208,40 @@ function expireColorWarning($expireDate){
     }
 
     return false;
+}
+
+
+
+function pocosCaes($empresa){
+    $pocosCaes = [];
+    if (isset($empresa->caes) && is_array($empresa->caes)) {
+
+        foreach ($empresa->caes as $cae) {
+            $caeDuplicated = isDuplicatedCae($cae, $empresa->caes);
+
+            if (!$caeDuplicated){
+                if (isset($cae->total) && isset($cae->disponibles)) {
+                    $totalCAEs = $cae->total;
+                    $disponiblesCAEs = $cae->disponibles;
+
+                    // Verificar si la cantidad disponibles es menos del 10% del total
+                    if ($totalCAEs > 0 && (($disponiblesCAEs / $totalCAEs) < 0.1)) {
+                        $pocosCaes[] = array(
+                            'tipoCFE' => $cae->tipoCFE,
+                            'disponibles' => $cae->disponibles,
+                            'total' => $cae->total,
+                            'disponiblesPorcentaje' => (($disponiblesCAEs / $totalCAEs) * 100),
+                        );
+                    }
+                }
+            }
+
+        }
+
+
+    }
+
+    return $pocosCaes;
 }
 
 ?>
