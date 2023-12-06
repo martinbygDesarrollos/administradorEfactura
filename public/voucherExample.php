@@ -9,7 +9,7 @@
             }
 
             .border-secondary {
-                border-left: 6px solid #0087C3;
+                border-left: 6px solid <?php echo $_GET["colorSecundario"];?>;
             }
 
             .detail-line {
@@ -19,7 +19,7 @@
 
             .column-primary {
                 color: <?php echo $_GET["totalColor"];?>;
-                background: #57B223;
+                background: <?php echo $_GET["colorPrincipal"];?>;
             }
 
             .column-odd {

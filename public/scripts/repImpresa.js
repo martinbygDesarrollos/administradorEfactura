@@ -54,6 +54,9 @@ $('#modalPreviewVoucher').on('show.bs.modal', function (e) {
 	let lineStyle = $("#inputCompColorDetailLineStyle").val() || "solid";
 	let detailLineColor = $("#inputCompColorDetailLineColor").val();
 
+	let colorPrincipal = $("#inputCompColorPrincipal").val();
+	let colorSecundario = $("#inputCompColorSecundario").val();
+
 	let detailLineWidth = "1px";
 	if ($("#inputCompColorDetailLineWidth").val() > 0 )
 		detailLineWidth = $("#inputCompColorDetailLineWidth").val() + $("#inputCompColorDetailLineWidthUnidadMedida").val()
@@ -65,7 +68,9 @@ $('#modalPreviewVoucher').on('show.bs.modal', function (e) {
 	    totalColor:totalColor,
 	    lineStyle:lineStyle,
 	    detailLineColor:detailLineColor,
-	    detailLineWidth:detailLineWidth
+	    detailLineWidth:detailLineWidth,
+	    colorPrincipal:colorPrincipal,
+	    colorSecundario:colorSecundario,
 	})
 
 	fetch("../voucherExample.php?" + data)
@@ -160,16 +165,6 @@ function loadDataStyles(obj){
 
 }
 
-//deshacer todos los cambios de colores
-function companieColorsUndo(){
-
-	getColorsInfo()
-	datachangedRepImpresa();
-
-	document.getElementById("btnComColorUndo").disabled = true;
-	document.getElementById("btnComColorUndo").hidden = true;
-
-}
 
 //deshacer todos los cambios de colores
 function companieColorsDefault(){
@@ -231,8 +226,6 @@ function assignColorBranches(value, idInput){
 function datachangedRepImpresa(){
 	dataIsChanged = true;
 	$("#buttonSubmitCompanieColors").removeAttr("disabled");
-	document.getElementById("btnComColorUndo").disabled = false;
-	document.getElementById("btnComColorUndo").hidden = false;
 }
 
 function datachangedInfoAdicional(){
@@ -243,8 +236,6 @@ function datachangedInfoAdicional(){
 function datachangedColorBranches(){
 	dataColorBranches = true;
 	$("#buttonSubmitCompanieColors").removeAttr("disabled");
-	document.getElementById("btnComColorUndo").disabled = false;
-	document.getElementById("btnComColorUndo").hidden = false;
 }
 
 
