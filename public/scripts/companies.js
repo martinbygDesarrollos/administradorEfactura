@@ -1,5 +1,6 @@
 var dataIsChanged = false;
 var infoAdicionalIsChanged = false;
+var dataColorBranches = false;
 var companiesList = null;
 
 var lastid = 0;
@@ -16,6 +17,8 @@ $(document).ready(()=>{
 	});
 
 	dataIsChanged = false;
+	infoAdicionalIsChanged = false;
+	dataColorBranches = false;
 
 
 	getDateLastCfeReceipt();

@@ -90,7 +90,7 @@ class ctr_rest{
 
 		if ( $token->result == 2 ){
 
-			$newData = new stdClass();
+			/*$newData = new stdClass();
 			$newData->nombreComercial = $data['nombre'];
 			$newData->direccion = $data['direccion'];
 			$newData->departamento = $data['departamento'];
@@ -101,10 +101,10 @@ class ctr_rest{
 			$newData->website = $data['sitio'];
 			if(isset($data['isTemplate'])){
 				$newData->isTemplate = $data['isTemplate'];
-			}
+			}*/
 
 			$tokenRest = $token->objectResult->tokenRest;
-			$petitionResponse = $petitionClass->changeCompanieData($data['rut'], $data['codDgi'], $newData, $tokenRest);
+			$petitionResponse = $petitionClass->changeCompanieData($data['rut'], $data['codDgi'], $data, $tokenRest);
 			$petitionResponse = json_decode($petitionResponse);
 			$response->result = 2;
 			$response->objectResult = $petitionResponse;

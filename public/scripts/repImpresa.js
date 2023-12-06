@@ -11,6 +11,24 @@ $("#formUpdateRepImpresa").on( "submit", function( event ) {
 		}
 	}
 
+	if (dataColorBranches){
+		console.log("ruta para guardar los colores principales")
+		var formData = new FormData();
+		formData.append("rut", $("#textRutCompanieSelected").text());
+		formData.append("codDgi", $("#selectBranchCompanieDetails").val());
+
+		//color principal
+		formData.append("colorPrimary", $("#inputCompColorPrincipal").val());
+		formData.append("colorSecondary", $("#inputCompColorSecundario").val());
+
+
+		sendAsyncPostForm("changeCompanieData", formData)
+		.then(( response )=>{
+			console.log(response)
+			showMessage(response.result, response.objectResult.resultado.error);
+		})
+	}
+
 
 	if(dataIsChanged){
 		saveCompanieColors( null )
@@ -188,6 +206,12 @@ function assignColor(value, idInput){
 }
 
 
+function assignColorBranches(value, idInput){
+	$(idInput).val(value);
+	datachangedColorBranches();
+}
+
+
 
 //habilita el botón del formulario de representacion impresa
 function datachangedRepImpresa(){
@@ -200,6 +224,13 @@ function datachangedRepImpresa(){
 function datachangedInfoAdicional(){
 	infoAdicionalIsChanged = true;
 	$("#buttonSubmitCompanieColors").removeAttr("disabled");
+}
+
+function datachangedColorBranches(){
+	dataColorBranches = true;
+	$("#buttonSubmitCompanieColors").removeAttr("disabled");
+	document.getElementById("btnComColorUndo").disabled = false;
+	document.getElementById("btnComColorUndo").hidden = false;
 }
 
 

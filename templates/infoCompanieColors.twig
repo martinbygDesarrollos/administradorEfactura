@@ -17,6 +17,28 @@
 						<textarea id="idTextareaInfoAdicional" maxlength="120" onchange="datachangedInfoAdicional()" cols="2" class="form__field"></textarea>
 					</td>
 				</tr>
+				<tr class="row">
+					<td class="col-md-3 col-12">
+						<label class="font-weight-bold">Color principal</label>
+    				</td>
+					<td class="col-md-2 col-12">
+						<input type="color" id="inputCompColorPrincipal" name="" onchange="assignColorBranches(this.value, inputCompColPincipal)" class="form__field_colorpicker m-2">
+					</td>
+					<td class="col-md-7 col-12">
+						<input type="text" id="inputCompColPincipal" name="" onchange="assignColorBranches(this.value, inputCompColorPrincipal)" class="form__field" placeholder="Fondo col. '#' y 'Total'" />
+					</td>
+				</tr>
+				<tr class="row">
+					<td class="col-md-3 col-12">
+						<label class="font-weight-bold">Color secundario</label>
+    				</td>
+					<td class="col-md-2 col-12">
+						<input type="color" id="inputCompColorSecundario" name="" onchange="assignColorBranches(this.value, inputCompColSecundario)" class="form__field_colorpicker m-2">
+					</td>
+					<td class="col-md-7 col-12">
+						<input type="text" id="inputCompColSecundario" name="" onchange="assignColorBranches(this.value, inputCompColorSecundario)" class="form__field" placeholder="Fondo col. '#' y 'Total'" />
+					</td>
+				</tr>
     		</tbody>
     	</table>
 		<form method="POST" id="formUpdateRepImpresa">
@@ -28,10 +50,10 @@
 						<label class="font-weight-bold">Fondo col. 'Descripción' y 'Cantidad'</label>
     				</td>
 					<td class="col-md-2 col-12">
-						<input type="color" id="inputCompColorDescColor" name="color1" onchange="assignColor(this.value, inputCompColorDescription)" class="form__field_colorpicker m-2">
+						<input type="color" id="inputCompColorDescColor" name="" onchange="assignColor(this.value, inputCompColorDescription)" class="form__field_colorpicker m-2">
 					</td>
 					<td class="col-md-7 col-12">
-						<input type="text" id="inputCompColorDescription" name="color1" onchange="assignColor(this.value, inputCompColorDescColor)" class="form__field" placeholder="Color columnas 'Descripción' y 'Cantidad'" />
+						<input type="text" id="inputCompColorDescription" name="" onchange="assignColor(this.value, inputCompColorDescColor)" class="form__field" placeholder="Color columnas 'Descripción' y 'Cantidad'" />
 					</td>
 				</tr>
 				<tr class="row">
@@ -67,7 +89,7 @@
     				</td>
 					<td class="col-md-2 col-12"></td>
 					<td class="col-md-3 col-12">
-						<input type="text" id="inputCompColorTamEmisor" name="color1" class="form__field" onchange="datachangedRepImpresa()" placeholder="Tamaño del nombre de la empresa emisora" />
+						<input type="text" id="inputCompColorTamEmisor" name="" class="form__field" onchange="datachangedRepImpresa()" placeholder="Tamaño del nombre de la empresa emisora" />
 					</td>
 					<td class="col-md-4 col-12">
 						<select class="form__field" onchange="datachangedRepImpresa()" id="inputCompColorTamEmisorUnidadMedida">
@@ -111,7 +133,7 @@
     				</td>
 					<td class="col-md-2 col-12"></td>
 					<td class="col-md-3 col-12">
-						<input type="text" id="inputCompColorDetailLineWidth" name="color1" class="form__field" onchange="datachangedRepImpresa()" placeholder="Tamaño del ancho de las líneas que dividen las filas de detalle" />
+						<input type="text" id="inputCompColorDetailLineWidth" name="" class="form__field" onchange="datachangedRepImpresa()" placeholder="Tamaño del ancho de las líneas que dividen las filas de detalle" />
 					</td>
 					<td class="col-md-4 col-12">
 						<select class="form__field" onchange="datachangedRepImpresa()" id="inputCompColorDetailLineWidthUnidadMedida" >
