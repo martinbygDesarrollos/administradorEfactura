@@ -90,15 +90,13 @@ $('#modalPreviewVoucher').on('show.bs.modal', function (e) {
 
 //obtener valores de la representacion impresa de la empresa
 function getColorsInfo(){
-	sendAsyncPost("representacionimpresa")
+	let sucursal = $("#selectBranchCompanieDetails").val()
+	sendAsyncPost("representacionimpresa", {sucursal:sucursal})
 	.then( response =>{
 		if(response.result === 2){
 			loadDataStyles(response.objectResult);
-		}else if(response.result === 1){
-			showMessage(response.result, "No se encontraron datos.")
-		}
-		else{
-			window.location.href = getSiteURL() + "cerrar-session";
+		}else{
+			showMessage(response.result, response.message)
 		}
 	})
 
@@ -148,6 +146,18 @@ function loadDataStyles(obj){
 	}else
 		$("#inputCompColorDetailLineColor").val("#ffffff");
 
+	if(obj.colorPrincipal){
+		$("#inputCompColorPrincipal").val(obj.colorPrincipal);
+		$("#inputCompColPincipal").val(obj.colorPrincipal);
+	}else
+		$("#inputCompColorPrincipal").val("#57B223");
+
+	if(obj.colorSecundario){
+		$("#inputCompColorSecundario").val(obj.colorSecundario);
+		$("#inputCompColSecundario").val(obj.colorSecundario);
+	}else
+		$("#inputCompColorSecundario").val("#0087C3");
+
 }
 
 //deshacer todos los cambios de colores
@@ -178,7 +188,11 @@ function companieColorsDefault(){
 	$("#inputCompColorDetailLineColor").val("#ffffff");//#ffffff
 	$("#inputCompColorDetailLine").val("#ffffff");//#ffffff
 
+	$("#inputCompColorPrincipal").val("#57B223");//#ffffff
+	$("#inputCompColorSecundario").val("#0087C3");//#ffffff
+
 	datachangedRepImpresa();
+	datachangedColorBranches();
 
 }
 

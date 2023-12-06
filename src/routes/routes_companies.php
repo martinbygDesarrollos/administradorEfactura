@@ -510,8 +510,8 @@ return function (App $app){
         if ( $_SESSION['mailUserLogued'] ){
             $response = new \stdClass();
             $rut = $_SESSION['rutUserLogued'];
-
-            $response = $companiesController->getRepresentacionImpresa($rut);
+            $sucursal = $request->getParams()['sucursal'];
+            $response = $companiesController->getRepresentacionImpresa($rut, $sucursal);
             return json_encode($response);
 
         }else return json_encode(["result"=>0]);

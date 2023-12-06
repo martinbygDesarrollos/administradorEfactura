@@ -220,10 +220,23 @@ class ctr_companies{
 	}
 
 
-	public function getRepresentacionImpresa( $rut ){
+	public function getRepresentacionImpresa( $rut, $sucursal){
 
 		$restController = new ctr_rest();
 		$data = $restController->getRepresentacionImpresa($rut);
+		if ($sucursal > 0){
+			$dataBranches = $restController->getCompanyData( $rut );
+			if ($dataBranches->result == 2){
+				foreach ($dataBranches->objectResult->sucursales as $suc) {
+					if($suc->codDGI == $sucursal){
+						$data->objectResult->colorPrincipal = $suc->colorPrimary;
+						$data->objectResult->colorSecundario = $suc->colorSecondary;
+					}
+				}
+
+			}
+
+		}
 		return $data;
 
 	}
