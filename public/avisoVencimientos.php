@@ -116,7 +116,7 @@ function appendCompanieToTable($companie, $expireInfo){
 
 }
 
-function appendCompanieToTableCaes(){
+function appendCompanieToTableCaes($companie, $expireInfo){
     $dateTime = new DateTime($expireInfo->expireDate);
     $expireDate = $dateTime->format('d/m/Y');
 
@@ -231,7 +231,7 @@ function pocosCaes($empresa){
                     $disponiblesCAEs = $cae->disponibles;
 
                     // Verificar si la cantidad disponibles es menos del 10% del total
-                    if ($totalCAEs > 0 && (($disponiblesCAEs / $totalCAEs) < 0.1)) {
+                    if ($totalCAEs > 0 && (($disponiblesCAEs / $totalCAEs) < 0.2)) {
                         $estimadoPedir = cuantosCaesPedir($empresa->rut, $cae->tipoCFE);
                         $pocosCaes[] = array(
                             'tipoCFE' => $cae->tipoCFE,
