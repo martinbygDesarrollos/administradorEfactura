@@ -86,8 +86,9 @@ function createMail($tableBodyCert, $tableBodyCaes, $tableBodyPocosCaes){
         <table style="width:70%">
         <tbody>
         <tr>
-        <th>Empresa</th>
+        <th style="width:25%;" >Empresa</th>
         <th>Tipo CFE</th>
+        <th>Usados en 2 años</th>
         <th>Pedir</th>
         <th>Disponibles(%)</th>
         <th>Disponibles</th>
@@ -134,6 +135,7 @@ function appendCompanieToTablePocosCaes($companie, $infoCaes){
 
         $row .= '<tr><td>'.$companie->razonSocial.'<br>'.$companie->rut.'</td>';
         $row .= '<td>'.$cae['tipoCFE'].'</td>';
+        $row .= '<td>'.$cae['usados'].'</td>';
         $row .= '<td>'.$cae['pedir'].'</td>';
         $row .= '<td>'.$cae['disponiblesPorcentaje'].'</td>';
         $row .= '<td>'.$cae['disponibles'].'</td>';
@@ -233,7 +235,8 @@ function pocosCaes($empresa){
                         $estimadoPedir = cuantosCaesPedir($empresa->rut, $cae->tipoCFE);
                         $pocosCaes[] = array(
                             'tipoCFE' => $cae->tipoCFE,
-                            'pedir' => $estimadoPedir,
+                            'usados' => $estimadoPedir->usadosEnDosAños,
+                            'pedir' => $estimadoPedir->cantCaesPedir,
                             'disponibles' => $cae->disponibles,
                             'total' => $cae->total,
                             'disponiblesPorcentaje' => intval((($disponiblesCAEs / $totalCAEs) * 100) , 10)
@@ -250,6 +253,9 @@ function pocosCaes($empresa){
 
 function cuantosCaesPedir($rut, $type){
 
+    $response = stdClass();
+    $response->cantCaesPedir = 0;
+    $response->usadosEnDosAños = 0;
 
     define("FROM", date("YmdHis", strtotime("-2 year", strtotime(date("YmdHis")))));
     define("TO", date("YmdHis"));
@@ -267,7 +273,10 @@ function cuantosCaesPedir($rut, $type){
     }
 
     $cantCaesPedir = ( round($usadosEnDosAños / 500) * 500 ) == 0 ? 500 : round($usadosEnDosAños / 500) * 500;
-    return $cantCaesPedir;
+
+    $response->cantCaesPedir = $cantCaesPedir;
+    $response->usadosEnDosAños = $usadosEnDosAños;
+    return $response;
 }
 
 
