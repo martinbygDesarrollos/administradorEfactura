@@ -1,28 +1,29 @@
 <?php
+require_once '../src/config.php';
 
-require_once '..\src\config.php';
-//var_dump("<pre>");
-//printf("notificando vencimientos por correo//");
 
 $resultCompanies = enviarConsulta('companies');
 $numberOfComp = 0;
-$tableBody = "";
+$tableBodyCert = "";
 $tableBodyCaes = "";
+$tableBodyPocosCaes = "";
 foreach ($resultCompanies as $companie) {
 
     if ( $companie->estado == 6 ){
-
         $expireInfo = companieExpire( $companie);
         $addCompanie = expireThisMonth($expireInfo->expireDate);
 
         if ($addCompanie){
             $numberOfComp ++;
-            $tableBody .= appendCompanieToTable($companie, $expireInfo);
+            if ($expireInfo->expireDateVoucher === "Certificado")
+                $tableBodyCert .= appendCompanieToTable($companie, $expireInfo);
+            else
+                $tableBodyCaes .= appendCompanieToTableCaes($companie, $expireInfo);
         }
 
         $listadoCaes = pocosCaes($companie);
         if (count($listadoCaes) >0 ){
-            $tableBodyCaes .= appendCompanieToTableCaes($companie, $listadoCaes);
+            $tableBodyPocosCaes .= appendCompanieToTablePocosCaes($companie, $listadoCaes);
         }
 
     }
@@ -32,7 +33,7 @@ foreach ($resultCompanies as $companie) {
 $to = MAIL_AVISOVENCIMIENTOS;
 $subject = "$numberOfComp empresas con CAE o Certificado por vencer";
 $header  = "MIME-Version: 1.0\r\nContent-type:text/html; charset=UTF-8";
-$body = createMail($tableBody, $tableBodyCaes);
+$body = createMail($tableBodyCert, $tableBodyCaes, $tableBodyPocosCaes);
 var_dump($body);exit;
 /*$resultSendMail = mail($to, $subject, $body, $header);
 if ($resultSendMail)
@@ -42,7 +43,7 @@ else
 
 
 
-function createMail($tableBody, $tableBodyCaes){
+function createMail($tableBodyCert, $tableBodyCaes, $tableBodyPocosCaes){
 
         $mail = '<html>
         <head>
@@ -52,24 +53,36 @@ function createMail($tableBody, $tableBodyCaes){
             border: 1px solid black;
             border-collapse: collapse;
             color: black;
-            font-size:20px;
+            font-size:18px;
         }
         </style>
         </head>
         <body>
         <div align="center">
-        <h5>Vencimientos de CAEs o Certificados</h5>
+        <h3>Vencimientos certificados</h3>
         <table style="width:70%">
         <tbody>
         <tr>
-        <th>Empresa</th>
+        <th style="width:50%;" >Empresa</th>
         <th>Fecha vencimiento</th>
-        </tr>'. $tableBody . '
+        </tr>'. $tableBodyCert . '
         </tbody>
         </table>
         </div>
         <div align="center">
-        <h5>Cantidad de CAEs disponibles</h5>
+        <h3>Vencimientos CAEs</h3>
+        <table style="width:70%">
+        <tbody>
+        <tr>
+        <th style="width:50%;" >Empresa</th>
+        <th style="width:25%;" >Tipo CFE</th>
+        <th>Fecha vencimiento</th>
+        </tr>'. $tableBodyCaes . '
+        </tbody>
+        </table>
+        </div>
+        <div align="center">
+        <h3>Cantidad de CAEs disponibles</h3>
         <table style="width:70%">
         <tbody>
         <tr>
@@ -79,7 +92,7 @@ function createMail($tableBody, $tableBodyCaes){
         <th>Disponibles(%)</th>
         <th>Disponibles</th>
         <th>Total</th>
-        </tr>'. $tableBodyCaes . '
+        </tr>'. $tableBodyPocosCaes . '
         </tbody>
         </table>
         </div>
@@ -95,19 +108,26 @@ function appendCompanieToTable($companie, $expireInfo){
     $expireDate = $dateTime->format('d/m/Y');
 
     $row = '<tr><td>'.$companie->razonSocial.'<br>'.$companie->rut.'</td>';
-
-    if ($expireInfo->expireDateCaeType > 0 )
-        $row .= '<td>'.$expireInfo->expireDateVoucher.' '. $expireInfo->expireDateCaeType . ' ' . $expireDate.'</td>';
-    else
-        $row .= '<td>'.$expireInfo->expireDateVoucher.' ' . $expireDate.'</td>';
+    $row .= '<td>' . $expireDate.'</td>';
     $row .= '</tr>';
     return $row;
 
 
 }
 
+function appendCompanieToTableCaes(){
+    $dateTime = new DateTime($expireInfo->expireDate);
+    $expireDate = $dateTime->format('d/m/Y');
 
-function appendCompanieToTableCaes($companie, $infoCaes){
+    $row = '<tr><td>'.$companie->razonSocial.'<br>'.$companie->rut.'</td>';
+    $row .= '<td>CAE '. $expireInfo->expireDateCaeType . '</td>';
+    $row .= '<td>'. $expireDate . '</td>';
+    $row .= '</tr>';
+    return $row;
+}
+
+
+function appendCompanieToTablePocosCaes($companie, $infoCaes){
 
     $row = "";
     foreach ($infoCaes as $cae) {
@@ -135,13 +155,13 @@ function companieExpire($companie) {
     $expireDateCaeType = null;
 
     if (isset($companie->certificateExpireDate) && $companie->certificateExpireDate !== "") {
-
         $dateTime = new DateTime($companie->certificateExpireDate);
         $certExpireDate = $dateTime->format('Ymd');
 
         $expireDate = $certExpireDate;
         $expireDateVoucher = "Certificado";
         $expireDateCaeType = 0;
+
     }
 
     foreach ($companie->caes as $cae) {
@@ -149,15 +169,15 @@ function companieExpire($companie) {
         $date = $dateTime->format('Ymd');
 
         if (isset($expireDate) && $expireDate !== "") {
-            if ($date < $expireDate && !$this->isDuplicatedCae($cae, $companie->caes)) {
+            if ($date < $expireDate && !isDuplicatedCae($cae, $companie->caes)) {
                 $expireDate = $date;
                 $expireDateVoucher = "CAE";
-                $expireDateCaeType = $utilClass->tableCfeType($cae->tipoCFE);
+                $expireDateCaeType = tableCfeType($cae->tipoCFE);
             }
         } else {
             $expireDate = $date;
             $expireDateVoucher = "CAE";
-            $expireDateCaeType = $utilClass->tableCfeType($cae->tipoCFE);
+            $expireDateCaeType = tableCfeType($cae->tipoCFE);
         }
     }
 
@@ -208,8 +228,8 @@ function pocosCaes($empresa){
                     $totalCAEs = $cae->total;
                     $disponiblesCAEs = $cae->disponibles;
 
-                    // Verificar si la cantidad disponibles es menos del 5% del total
-                    if ($totalCAEs > 0 && (($disponiblesCAEs / $totalCAEs) < 0.05)) {
+                    // Verificar si la cantidad disponibles es menos del 10% del total
+                    if ($totalCAEs > 0 && (($disponiblesCAEs / $totalCAEs) < 0.1)) {
                         $estimadoPedir = cuantosCaesPedir($empresa->rut, $cae->tipoCFE);
                         $pocosCaes[] = array(
                             'tipoCFE' => $cae->tipoCFE,
@@ -233,8 +253,6 @@ function cuantosCaesPedir($rut, $type){
 
     define("FROM", date("YmdHis", strtotime("-2 year", strtotime(date("YmdHis")))));
     define("TO", date("YmdHis"));
-    //20221029173623
-    //20221129173623
     define("PAGE_SIZE", 500);
 
     $emitidos = enviarConsulta("company/$rut/cfe/emitidos?From=".FROM."&To=".TO."&Type=$type&PageSize=".PAGE_SIZE);
@@ -254,30 +272,60 @@ function cuantosCaesPedir($rut, $type){
 
 
 
-    function enviarConsulta($path){
-        //CONEXIÓN BD
-        $connection = new mysqli(DB_HOST, DB_USR, DB_PASS, DB_DB) or die("No se puede conectar con la Base de Datos");
-        $connection->set_charset("utf8");
-        if($connection){
-            $query = $connection->prepare("SELECT tokenRest FROM `usuarios` WHERE correo = 'guillermo@gargano.com.uy'");
-            $query->execute();
-            $result = $query->get_result();
-            $tokenRest = $result->fetch_object()->tokenRest;
-        }
-
-
-        $opciones = array('http' =>
-            array(
-                'method'  => 'GET',
-                'header'  => array("Accept: aplication/json", "Authorization: Bearer " . $tokenRest),
-            )
-        );
-
-        $contexto = stream_context_create($opciones);
-        $resultado = file_get_contents(URL_REST.$path, false, $contexto);//rest companies
-        $resultCompanies = json_decode($resultado);
-
-        return $resultCompanies;
+function enviarConsulta($path){
+    //CONEXIÓN BD
+    $connection = new mysqli(DB_HOST, DB_USR, DB_PASS, DB_DB) or die("No se puede conectar con la Base de Datos");
+    $connection->set_charset("utf8");
+    if($connection){
+        $query = $connection->prepare("SELECT tokenRest FROM `usuarios` WHERE correo = 'guillermo@gargano.com.uy'");
+        $query->execute();
+        $result = $query->get_result();
+        $tokenRest = $result->fetch_object()->tokenRest;
     }
+
+
+    $opciones = array('http' =>
+        array(
+            'method'  => 'GET',
+            'header'  => array("Accept: aplication/json", "Authorization: Bearer " . $tokenRest),
+        )
+    );
+
+    $contexto = stream_context_create($opciones);
+    $resultado = file_get_contents(URL_REST.$path, false, $contexto);//rest companies
+    $resultCompanies = json_decode($resultado);
+
+    return $resultCompanies;
+}
+
+function tableCfeType($typeCode){
+
+    switch ($typeCode) {
+        case 101: return "e-Ticket";
+        case 102: return "Nota de crédito de e-Ticket";
+        case 103: return "Nota de débito de e-Ticket";
+        case 111: return "e-Factura";
+        case 112: return "Nota de crédito de e-Factura";
+        case 113: return "Nota de débito de e-Factura";
+        case 121: return "e-Factura Exportación";
+        case 122: return "Nota de crédito de e-Factura Exportación";
+        case 123: return "Nota de débito de e-Factura Exportación";
+        case 124: return "e-Remito de Exportación";
+        case 131: return "e-Ticket Venta por Cuenta Ajena";
+        case 132: return "Nota de crédito de e-Ticket Venta por Cuenta Ajena";
+        case 133: return "Nota de débito de e-Ticket Venta por Cuenta Ajena";
+        case 141: return "e-Factura Venta por Cuenta Ajena";
+        case 142: return "Nota de crédito de e-Factura Venta por Cuenta Ajena";
+        case 143: return "Nota de débito de e-Factura Venta por Cuenta Ajena";
+        case 151: return "e-Boleta de entrada";
+        case 152: return "Nota de crédito de e-Boleta de entrada";
+        case 153: return "Nota de débito de e-Boleta de entrada";
+        case 181: return "e-Remito";
+        case 182: return "e-Resguardo";
+        default: return "";
+    }
+
+
+}
 
 ?>
