@@ -121,7 +121,7 @@ function appendCompanieToTableCaes($companie, $expireInfo){
     $expireDate = $dateTime->format('d/m/Y');
 
     $row = '<tr><td>'.$companie->razonSocial.'<br>'.$companie->rut.'</td>';
-    $row .= '<td>CAE '. $expireInfo->expireDateCaeType . '</td>';
+    $row .= '<td>CAE '. $expireInfo->expireCaeType .' '. $expireInfo->expireDateCaeType . '</td>';
     $row .= '<td>'. $expireDate . '</td>';
     $row .= '</tr>';
     return $row;
@@ -155,6 +155,7 @@ function companieExpire($companie) {
     $expireDate = null;
     $expireDateVoucher = null;
     $expireDateCaeType = null;
+    $expireCaeType = null;
 
     if (isset($companie->certificateExpireDate) && $companie->certificateExpireDate !== "") {
         $dateTime = new DateTime($companie->certificateExpireDate);
@@ -175,17 +176,20 @@ function companieExpire($companie) {
                 $expireDate = $date;
                 $expireDateVoucher = "CAE";
                 $expireDateCaeType = tableCfeType($cae->tipoCFE);
+                $expireCaeType = $cae->tipoCFE;
             }
         } else {
             $expireDate = $date;
             $expireDateVoucher = "CAE";
             $expireDateCaeType = tableCfeType($cae->tipoCFE);
+            $expireCaeType = $cae->tipoCFE;
         }
     }
 
     $response->expireDate = $expireDate;
     $response->expireDateVoucher = $expireDateVoucher;
     $response->expireDateCaeType = $expireDateCaeType;
+    $response->expireCaeType = $expireCaeType;
 
     return $response;
 }
@@ -253,7 +257,7 @@ function pocosCaes($empresa){
 
 function cuantosCaesPedir($rut, $type){
 
-    $response = stdClass();
+    $response = new stdClass();
     $response->cantCaesPedir = 0;
     $response->usadosEnDosAños = 0;
 
