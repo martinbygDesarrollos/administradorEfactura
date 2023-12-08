@@ -5,8 +5,12 @@ require_once '../src/config.php';
 $resultCompanies = enviarConsulta('companies');
 $numberOfComp = 0;
 $tableBodyCert = "";
+$arrayCert = array();
 $tableBodyCaes = "";
+$arrayCaes = array();
 $tableBodyPocosCaes = "";
+$arrayPocosCaes = array();
+
 foreach ($resultCompanies as $companie) {
 
     if ( $companie->estado == 6 ){
@@ -15,19 +19,45 @@ foreach ($resultCompanies as $companie) {
 
         if ($addCompanie){
             $numberOfComp ++;
-            if ($expireInfo->expireDateVoucher === "Certificado")
-                $tableBodyCert .= appendCompanieToTable($companie, $expireInfo);
-            else
-                $tableBodyCaes .= appendCompanieToTableCaes($companie, $expireInfo);
+            if ($expireInfo->expireDateVoucher === "Certificado"){
+                $arrayCert[] = array(
+                    "row"=>appendCompanieToTable($companie, $expireInfo),
+                    "orderParam"=>$expireInfo->expireDate
+                );
+            }
+            else{
+                $arrayCaes[] = array(
+                    "row"=>appendCompanieToTableCaes($companie, $expireInfo),
+                    "orderParam"=>$expireInfo->expireDate
+                );
+            }
         }
 
         $listadoCaes = pocosCaes($companie);
         if (count($listadoCaes) >0 ){
-            $tableBodyPocosCaes .= appendCompanieToTablePocosCaes($companie, $listadoCaes);
+            $arrayPocosCaes[] = array(
+                "row"=>appendCompanieToTablePocosCaes($companie, $listadoCaes),
+                "orderParam"=>$listadoCaes[0]["disponiblesPorcentaje"]
+            );
         }
 
     }
 
+}
+
+$newArrayCert = orderTable($arrayCert);
+foreach($newArrayCert as $cert){
+    $tableBodyCert .= $cert["row"];
+}
+
+$newArrayCaes = orderTable($arrayCaes);
+foreach ($newArrayCaes as $cae) {
+    $tableBodyCaes .= $cae["row"];
+}
+
+$newArrayPocosCaes = orderTable($arrayPocosCaes);
+foreach ($newArrayPocosCaes as $pcae) {
+    $tableBodyPocosCaes .= $pcae['row'];
 }
 
 $to = MAIL_AVISOVENCIMIENTOS;
@@ -35,12 +65,8 @@ $subject = "$numberOfComp empresas con CAE o Certificado por vencer";
 $header  = "MIME-Version: 1.0\r\nContent-type:text/html; charset=UTF-8";
 $body = createMail($tableBodyCert, $tableBodyCaes, $tableBodyPocosCaes);
 $resultSendMail = mail($to, $subject, $body, $header);
-if ($resultSendMail)
-    printf("email enviado");
-else
-    printf("error al enviar el email");
-
-
+if (!$resultSendMail)
+    echo date("d/m/Y H:i")." Error al enviar el email con próximos vencimientos.";
 
 function createMail($tableBodyCert, $tableBodyCaes, $tableBodyPocosCaes){
 
@@ -136,7 +162,7 @@ function appendCompanieToTablePocosCaes($companie, $infoCaes){
         $row .= '<td>'.$cae['tipoCFE'].'</td>';
         $row .= '<td>'.$cae['usados'].'</td>';
         $row .= '<td>'.$cae['pedir'].'</td>';
-        $row .= '<td>'.$cae['disponiblesPorcentaje'].'</td>';
+        $row .= '<td>'.$cae['disponiblesPorcentaje'].' % </td>';
         $row .= '<td>'.$cae['disponibles'].'</td>';
         $row .= '<td>'.$cae['total'].'</td>';
         $row .= '</tr>';
@@ -234,7 +260,7 @@ function pocosCaes($empresa){
                     $disponiblesCAEs = $cae->disponibles;
 
                     // Verificar si la cantidad disponibles es menos del 10% del total
-                    if ($totalCAEs > 0 && (($disponiblesCAEs / $totalCAEs) < 0.2)) {
+                    if ($totalCAEs > 0 && (($disponiblesCAEs / $totalCAEs) < 0.1)) {
                         $estimadoPedir = cuantosCaesPedir($empresa->rut, $cae->tipoCFE);
                         $pocosCaes[] = array(
                             'tipoCFE' => $cae->tipoCFE,
@@ -250,7 +276,9 @@ function pocosCaes($empresa){
         }
     }
 
-    return $pocosCaes;
+
+    $sortedPocosCaes = sortPocosCaes($pocosCaes);
+    return $sortedPocosCaes;
 }
 
 
@@ -336,6 +364,31 @@ function tableCfeType($typeCode){
         case 182: return "e-Resguardo";
         default: return "";
     }
+
+
+}
+
+
+function orderTable($arrayCert){
+
+    uasort($arrayCert, function($a, $b) {
+        if ($a["orderParam"] > $b["orderParam"]) return 1;
+        else return -1;
+    });
+
+    return $arrayCert;
+
+
+}
+
+function sortPocosCaes($array){
+
+    uasort($array, function($a, $b) {
+        if ($a["disponiblesPorcentaje"] > $b["disponiblesPorcentaje"]) return 1;
+        else return -1;
+    });
+
+    return $array;
 
 
 }
