@@ -408,18 +408,18 @@ class ctr_companies{
 		$expireInfo->title = null;
 
 		if (isset($expireDate) && $expireDate != ""){
-			$nextMonth = date('Ymd',  strtotime("+ 2 month" , strtotime(date("Ymd"))));
-			$twentyDays = date('Ymd',  strtotime("+ 20 days" , strtotime(date("Ymd"))));
+			$nextMonth = date('Ymd',  strtotime("+ 1 month" , strtotime(date("Ymd"))));
+			$twentyDays = date('Ymd',  strtotime("+ 15 days" , strtotime(date("Ymd"))));
 
 			if($expireDate < date("Ymd")){
 				$expireInfo->color = "#F44336"; //rojos
 				$expireInfo->title = "Expiró";
 			}elseif($expireDate <= $twentyDays){
 				$expireInfo->color = "#F44336"; //rojo
-				$expireInfo->title = "Expira en menos de 20 días";
+				$expireInfo->title = "Expira en menos de 15 días";
 			}elseif ($expireDate > $twentyDays && $expireDate <= $nextMonth) {
 				$expireInfo->color = "#FF9800"; //naranja
-				$expireInfo->title = "Expira en menos de 60 días";
+				$expireInfo->title = "Expira en menos de 30 días";
 			}else{
 				$expireInfo->color = null;
 				$expireInfo->title = null;
