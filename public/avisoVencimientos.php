@@ -11,6 +11,8 @@ $arrayCaes = array();
 $tableBodyPocosCaes = "";
 $arrayPocosCaes = array();
 
+// var_dump($resultCompanies);
+// exit;
 foreach ($resultCompanies as $companie) {
 
     if ( $companie->estado == 6 ){
@@ -64,6 +66,8 @@ $to = MAIL_AVISOVENCIMIENTOS;
 $subject = "$numberOfComp empresas con CAE o Certificado por vencer";
 $header  = "MIME-Version: 1.0\r\nContent-type:text/html; charset=UTF-8";
 $body = createMail($tableBodyCert, $tableBodyCaes, $tableBodyPocosCaes);
+// var_dump($body);
+// exit;
 $resultSendMail = mail($to, $subject, $body, $header);
 if (!$resultSendMail)
     echo date("d/m/Y H:i")." Error al enviar el email con próximos vencimientos.";
@@ -302,8 +306,11 @@ function cuantosCaesPedir($rut, $type){
             $usadosEnDosAños += count($emitidos);
         } while (count($emitidos) === PAGE_SIZE);
     }
-
-    $cantCaesPedir = ( round($usadosEnDosAños / 500) * 500 ) == 0 ? 500 : round($usadosEnDosAños / 500) * 500;
+    $cantCaesPedir = 500;
+    while($usadosEnDosAños > $cantCaesPedir){
+        $cantCaesPedir += 500;
+    };
+    // $cantCaesPedir = ( round($usadosEnDosAños / 500) * 500 ) == 0 ? 500 : round($usadosEnDosAños / 500) * 500;
 
     $response->cantCaesPedir = $cantCaesPedir;
     $response->usadosEnDosAños = $usadosEnDosAños;
