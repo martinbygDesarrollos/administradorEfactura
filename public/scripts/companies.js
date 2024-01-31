@@ -28,10 +28,14 @@ $(document).ready(()=>{
 	horizontalnav = $("#idDivHorizontalNav").height();
 	footer = $("#sticky-footer").height();
 
-	contentHeight = $(document).height() - horizontalnav - footer;
+	contentHeight = $(document).height() - horizontalnav - footer -2;
 
 	$("#idDivcontentCompanie").css('height', contentHeight);
 	$("#idDivcontentCompanie").css('max-height', contentHeight);
+
+
+	$("#containerCompanies").css('height', contentHeight);
+	$("#containerCompanies").css('max-height', contentHeight);
 
 })
 

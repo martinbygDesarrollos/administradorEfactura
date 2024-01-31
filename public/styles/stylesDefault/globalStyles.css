@@ -236,3 +236,9 @@ a[aria-selected="true"]{
 .font-weight-bold{
     font-weight: 550!important;
 }
+
+
+.card-main{
+    max-width: 1200px;
+    margin: 0 auto;
+}
