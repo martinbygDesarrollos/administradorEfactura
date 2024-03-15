@@ -163,6 +163,12 @@ function loadDataStyles(obj){
 	}else
 		$("#inputCompColorSecundario").val("#0087C3");
 
+
+	if (obj.infoAdicional)
+		$("#idTextareaInfoAdicional").val(obj.infoAdicional);
+	else
+		$("#idTextareaInfoAdicional").val("");
+
 }
 
 

@@ -227,6 +227,12 @@ class ctr_companies{
 		if ($sucursal > 0){
 			$dataBranches = $restController->getCompanyData( $rut );
 			if ($dataBranches->result == 2){
+				foreach ($dataBranches->objectResult->customFields as $customFile) {
+					if( $customFile->key == "cfe.infoAdicional"){
+						$data->objectResult->infoAdicional = $customFile->value;
+					}
+				}
+
 				foreach ($dataBranches->objectResult->sucursales as $suc) {
 					if($suc->codDGI == $sucursal){
 						$data->objectResult->colorPrincipal = $suc->colorPrimary;
