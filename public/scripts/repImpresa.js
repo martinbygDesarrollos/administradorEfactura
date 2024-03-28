@@ -52,6 +52,7 @@ $('#modalPreviewVoucher').on('show.bs.modal', function (e) {
 	let colorPrecio = $("#inputCompColorPrecioColor").val();
 	let totalColor = $("#inputCompColorTextoTotalColor").val();
 	let lineStyle = $("#inputCompColorDetailLineStyle").val() || "solid";
+	let infoAdicional = $("#idTextareaInfoAdicional").val() || " ";
 	let detailLineColor = $("#inputCompColorDetailLineColor").val();
 
 	let colorPrincipal = $("#inputCompColorPrincipal").val();
@@ -62,6 +63,7 @@ $('#modalPreviewVoucher').on('show.bs.modal', function (e) {
 		detailLineWidth = $("#inputCompColorDetailLineWidth").val() + $("#inputCompColorDetailLineWidthUnidadMedida").val()
 
 	const data = new URLSearchParams({
+	    infoAdicional: infoAdicional,
 	    tamEmisor: tamEmisor,
 	    descColor: descColor,
 	    colorPrecio:colorPrecio,
@@ -162,7 +164,6 @@ function loadDataStyles(obj){
 		$("#inputCompColSecundario").val(obj.colorSecundario);
 	}else
 		$("#inputCompColorSecundario").val("#0087C3");
-
 
 	if (obj.infoAdicional)
 		$("#idTextareaInfoAdicional").val(obj.infoAdicional);

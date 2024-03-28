@@ -155,6 +155,14 @@
         </tr></table></td></tr></tbody><tr><td>&nbsp;</td></tr><tr style="page-break-inside: avoid;"></tr>
     <tfoot style="display: table-footer-group;"><tr><td style="padding-top:6px;" colspan="5">
 
+    <table class="border-secondary" style="width: 100%; margin-bottom: 6px;">
+      <tr style="page-break-inside: avoid;">
+        <td colspan="5">
+          <span style="color:#0087C3;">INFORMACIÓN ADICIONAL</span><br>
+          <pre style="white-space: pre-wrap;"><?php echo $_GET["infoAdicional"];?></pre>
+        </td>
+      </tr>
+    </table>
     <table class="border-secondary" style="width: 100%;">
       <tr>
         <td style="text-align: center;">
