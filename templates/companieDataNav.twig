@@ -13,13 +13,9 @@
 			<span class="badge" style="background-color: #4CAF50">{{company.estadoDescripcion}}</span>
 			{% elseif company.estado == 5 %}
 			<span class="badge" style="background-color: blue">{{company.estadoDescripcion}}</span>
-			{%else%}
+			{% else %}
 			<span class="badge">{{company.estadoDescripcion}}</span>
-			{%endif%}
+			{% endif %}
 
 		</div>
-	</div>
-
-	<div class="navItemDown" >
-		<span id="dateLastCfeReceipt" ></span>
 	</div>

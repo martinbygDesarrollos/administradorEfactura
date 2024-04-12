@@ -152,6 +152,56 @@ function loadCompanies(){
 
 }
 
+function searchEmisores(){
+	ruc = $('#emisoresSearchBar').val();
+	console.log(ruc)
+	loadEmisores(ruc);
+}
+
+function verMas(){
+	if($('#btnShowHide').text() == "Ver más...") {
+		$(".hide").removeClass("hide").addClass("show");
+		$('#btnShowHide').text("Ver menos...")
+		
+	} else {
+		$('#btnShowHide').text("Ver más...")
+		$(".show").removeClass("show").addClass("hide");
+	}
+}
+
+function loadEmisores(ruc){
+	sendAsyncPost("loadEmisores", {ruc:ruc})
+	.then((response)=>{
+		if ( response.result == 2 ){
+			$('#ruc').val(response.objectResult.RUC);
+			$('#denominacion').val(response.objectResult.DENOMINACION);
+			$('#mail').val(response.objectResult.MAIL);
+			$('#contacto').val(response.objectResult.MAIL_CONTACTO_TECNICO);
+			
+			$('#inicio').val(response.objectResult.FECHA_INICIO);
+			$('#fin').val(response.objectResult.FECHA_FIN);
+			$('#finTransicion').val(response.objectResult.FECHA_FIN_TRANSICION);
+			$('#webService').val(response.objectResult.URL_WEBSERVICE);
+		} else {
+			showReplyMessage(response.result, response.message);
+			$('#modalButtonResponseCancel').attr("disabled", true);
+			$('#modalButtonResponse').click(function(){
+				$('#modalResponse').modal('hide');
+			});
+			$('#ruc').val("");
+			$('#denominacion').val("");
+			$('#mail').val("");
+			$('#contacto').val("");
+			
+			$('#inicio').val("");
+			$('#fin').val("");
+			$('#finTransicion').val("");
+			$('#webService').val("");
+		}
+	})
+
+}
+
 
 function createRowCompanie(obj){
 	tipocae = "";

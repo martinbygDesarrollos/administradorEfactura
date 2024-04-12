@@ -432,6 +432,16 @@ class ctr_emited{
 
 	}
 
+	public function loadEmisores($ruc){
+		$restController = new ctr_rest();
+		$response = new \stdClass();
+
+		$response = $restController->loadEmisores($ruc);
+		if($response->result == 1)
+			$response->message = "No se encontraron registros para el RUC proporcionado.";
+		return $response;
+	}
+
 }
 
 

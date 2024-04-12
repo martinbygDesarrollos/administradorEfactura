@@ -72,6 +72,25 @@ class ctr_rest{
 
 	}
 
+	public function loadEmisores($ruc){
+
+		$petitionClass = new sendPetition();
+		$response = new \stdClass();
+
+		$response->result = 1;
+		$response->objectResult = new \stdClass();
+
+		$petitionResponse = $petitionClass->getEmisorData($ruc);
+		$petitionResponse = json_decode($petitionResponse);
+		if($petitionResponse){
+			$response->result = 2;
+			$response->objectResult = $petitionResponse;
+		} else {
+			$response->result = 1;
+		}
+		return $response;
+	}
+
 
 	public function changeCompanieData($data){
 		$petitionClass = new sendPetition();

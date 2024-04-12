@@ -163,6 +163,16 @@ class sendPetition{
 		return $thisClass->prepareAndSendCurl("PUT", "company/".$rut."/infoAdicional", $token, $data);
 	}
 
+	public function getEmisorData($ruc){
+		$urlMethod = 'https://ws.byg.uy/emisores/?RUC=' . $ruc;
+		$curlPetition = curl_init();
+		curl_setopt($curlPetition, CURLOPT_URL, $urlMethod);
+		curl_setopt($curlPetition, CURLOPT_GET, true);
+		curl_setopt($curlPetition, CURLOPT_RETURNTRANSFER, true);
+		$responseCurl = curl_exec($curlPetition);
+		curl_close($curlPetition);
+		return $responseCurl;
+	}
 
 	public function prepareAndSendCurl($typeMethod, $method, $token, $data){
 		$thisClass = new sendPetition();

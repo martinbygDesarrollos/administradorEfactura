@@ -113,26 +113,57 @@ return function (App $app){
         }else return json_encode(["result"=>0]);
     });
 
-}
-
-/*
-
-$app->post('/sendImportCfeEmitedXml', function ($request) use ($emitedController){
-
+    
+    /*
+    
+    $app->post('/sendImportCfeEmitedXml', function ($request) use ($emitedController){
+        
         if ( $_SESSION['mailUserLogued'] ){
-
+            
             $data = $request->getParams();
             $folder = $_SESSION['rutUserLogued'].$data['folder'];
             $file = $data['file'];
             //$responseImport = $emitedController->importCfeEmitedXml($_FILES);
             return json_encode( ["result"=>2] );
+            
+        }else return json_encode(["result"=>0]);
+    });
+    
+    
+    */
+    $app->get('/emisores', function ($request, $response, $args) use ($container, $companiesController){
+        $args['version'] = FECHA_ULTIMO_PUSH;
+        $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
+        $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
+        $args["company"] = null;
+        if ( isset($_SESSION['rutUserLogued']) ){
+            $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
+            
+            $company = $companiesController->getCompaniesData($_SESSION['rutUserLogued'])->objectResult;
+            $args["company"] = $company;
+            
+        }else{
+            $_SESSION['rutUserLogued'] = null;
+            $args['rutUserLogued'] = null;
+        }
+        
+        
+        if ( isset($_SESSION['mailUserLogued']) ){
+            return $this->view->render($response, "emisores.twig", $args);
+        }else return $response->withRedirect($request->getUri()->getBaseUrl());
+    })->setName("Emisores");
+
+    $app->post('/loadEmisores', function ($request, $response, $args) use ($container, $emitedController){
+
+        if ( $_SESSION['mailUserLogued'] ){
+            $data = $request->getParams();
+            $ruc = $data['ruc'];
+            // var_dump($data);
+            $responseEmisores = $emitedController->loadEmisores($ruc);
+            return json_encode( $responseEmisores );
 
         }else return json_encode(["result"=>0]);
     });
-
-
-*/
-
-
-
-?>
+    
+}
+    ?>

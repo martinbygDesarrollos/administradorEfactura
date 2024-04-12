@@ -11,6 +11,29 @@
 
     {% include("companieDataNav.twig") %}
 
+    <ul class="nav flex-column bg-white my-5">
+        <li class="nav-item">
+            <a href="{{ path_for('Start') }}" class="nav-link text-dark font-italic bg-light">
+                <i class="fas fa-home text-template-background mx-2"></i>Inicio
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ path_for('Start') }}" class="nav-link text-dark font-italic bg-light">
+                <i class="fas fa-receipt text-template-background mx-2"></i>Lista de artículos
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ path_for('Emisores') }}" class="nav-link text-dark font-italic bg-light">
+                <i class="fas fa-fax text-template-background mx-2"></i>Emisores
+                {# <i class="fas fa-receipt text-template-background mx-2"></i>Emisores #}
+            </a>
+        </li>
+    </ul>
+
+    <div class="navItemDown" >
+        <span id="dateLastCfeReceipt" ></span>
+    </div>
+
 
     <!--nav class="nav flex-column">
         <div class="nav-item"><a class="nav-link" href="{{path_for('Recibidos')}}">Recepción</a></div>
