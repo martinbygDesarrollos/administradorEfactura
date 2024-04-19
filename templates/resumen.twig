@@ -86,7 +86,7 @@
                                             </thead>
                                             <tbody>
                                     {% endif %}
-                                    <tr>
+                                    <tr class="companyTD">
                                         <td class="pl-0">{{ comp.rut }}</td>
                                         <td class="pl-3 pr-3"><a href="{{ path_for('Start')}}empresas/{{ comp.rut }}">{{ comp.razonSocial }}</a></td>
                                         <td class="pl-3 pr-3">{{ comp.pocosCaes[0].disponiblesPorcentaje }} %</td>
@@ -121,7 +121,7 @@
                                             </thead>
                                             <tbody>
                                     {% endif %}
-                                    <tr>
+                                    <tr class="companyTD">
                                         <td class="pl-0">{{ comp.rut }}</td>
                                         <td class="pl-3 pr-3"> <a href="{{ path_for('Start')}}empresas/{{ comp.rut }}">{{ comp.razonSocial }}</a></td>
                                     </tr>
@@ -155,7 +155,7 @@
                                             <tbody>
                                         {% set hasExpireCertificadosSoon = true %}
                                     {% endif %}
-                                    <tr>
+                                    <tr class="companyTD">
                                         <td class="pl-0">{{ comp.rut }}</td>
                                         <td class="pl-3 pr-3"><a href="{{ path_for('Start')}}empresas/{{ comp.rut }}">{{ comp.razonSocial }}</a></td>
                                         <td class="pl-3 pr-3">{{ comp.expireDateCertificados }}</td>

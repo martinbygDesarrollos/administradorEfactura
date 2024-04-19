@@ -214,7 +214,7 @@ return function (App $app) {
                     
                     $nextMonth = date('Ymd',  strtotime("+ 1 month" , strtotime(date("Ymd"))));
                     if($certExpireDate <= $nextMonth){
-                        $expireDateCertificados = $certExpireDate;
+                        $expireDateCertificados = substr($certExpireDate, 6, 2) . "/" . substr($certExpireDate, 4, 2) . "/" . substr($certExpireDate, 0, 4) ;
                         $expireDateCertificadosSoon = true;
                     }
                 }

@@ -246,3 +246,7 @@ a[aria-selected="true"]{
 .hide {
     display: none;
 }
+
+.companyTD:hover {
+    background-color: #dfdfdf;
+}
