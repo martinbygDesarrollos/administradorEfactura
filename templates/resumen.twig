@@ -73,8 +73,9 @@
                             {% set hasPocosCAEs = false %}
                             {% for comp in companiesHabilitadas %}
                                 {% if comp.pocosCaes is not null %}
-                                    {% set hasPocosCAEs = true %}
-                                    {% if loop.first %}
+                                    {% if hasPocosCAEs == false %}
+                                        {% set hasPocosCAEs = true %}
+                                        {# {% if loop.first %} #}
                                         <table class="" style="width: 100%;">
                                             <thead>
                                                 <tr style="background-color: #e7e7e7">
@@ -108,8 +109,9 @@
                             {% set hasExpireCAEsSoon = false %}
                             {% for comp in companiesHabilitadas %}
                                 {% if comp.expireCAEsSoon|length > 0 %}
-                                    {% set hasExpireCAEsSoon = true %}
-                                    {% if loop.first %}
+                                    {% if hasExpireCAEsSoon == false %}
+                                    {# {% if loop.first %} #}
+                                        {% set hasExpireCAEsSoon = true %}
                                         <table class="" style="width: 100%;">
                                             <thead>
                                                 <tr style="background-color: #e7e7e7">
