@@ -251,13 +251,36 @@ return function (App $app) {
         // var_dump($args['companiesList']);
         // var_dump($companiesHabilitadas);
         // exit;
-        if ( isset($_SESSION['mailUserLogued']) ){
-            return $this->view->render($response, "resumen.twig", $args);
-        }else {
+        if( isset($_SESSION['companiesList'] ) ){
+            if ( !isset($_SESSION['companieUserLogued']) && !isset($_SESSION['rutUserLogued'])){
+                $objFirstCompanie = array_pop(array_reverse($_SESSION['companiesList']));
+
+                $_SESSION['companieUserLogued'] = $objFirstCompanie->razonSocial;
+                $_SESSION['rutUserLogued'] = $objFirstCompanie->rut;
+            }
+            if ( isset($_SESSION['companieUserLogued']) ){
+                $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
+            }else{
+                $_SESSION['companieUserLogued'] = null;
+                $args['companieUserLogued'] = null;
+            }
+            $args["company"] = null;
+            if ( isset($_SESSION['rutUserLogued']) ){
+                $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
+                $company = $companiesController->getCompaniesData($_SESSION['rutUserLogued'])->objectResult;
+                $args["company"] = $company;
+            }else{
+                $_SESSION['rutUserLogued'] = null;
+                $args['rutUserLogued'] = null;
+            }
+        } else {
             $args['rutUserLogued'] = null;
             $args['mailUserLogued'] = null;
             $args['companieUserLogued'] = null;
         }
+        // if ( isset($_SESSION['mailUserLogued']) ){
+        //     return $this->view->render($response, "resumen.twig", $args);
+        // }
         return $this->view->render($response, "resumen.twig", $args);
         // return $response->withRedirect($request->getUri()->getBaseUrl());
     })->setName("Start");

@@ -101,7 +101,7 @@ return function (App $app){
                     $args['rutUserLogued'] = null;
                 }
             }
-        }else {
+        } else {
             $args['rutUserLogued'] = null;
             $args['mailUserLogued'] = null;
             $args['companieUserLogued'] = null;
