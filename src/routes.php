@@ -23,85 +23,247 @@ return function (App $app) {
 
 
     //ruta de inicio
+    // $app->get('/', function ($request, $response, $args) use ($container, $companiesController) {
+    //     $args['version'] = FECHA_ULTIMO_PUSH;
+    //     if ( isset($_SESSION['mailUserLogued']) ){
+    //         $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
+
+
+    //         if( isset($_SESSION['companiesList'] ) ){
+    //             //aca cargar companies
+    //             $_SESSION['lastID'] = 0;
+    //             //$args['companiesList'] = $_SESSION['companiesList'];
+
+    //             if ( !isset($_SESSION['companieUserLogued']) && !isset($_SESSION['rutUserLogued'])){
+    //                 $objFirstCompanie = array_pop(array_reverse($_SESSION['companiesList']));
+
+    //                 $_SESSION['companieUserLogued'] = $objFirstCompanie->razonSocial;
+    //                 $_SESSION['rutUserLogued'] = $objFirstCompanie->rut;
+    //             }
+
+    //             if ( isset($_SESSION['companieUserLogued']) ){
+    //                 $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
+    //             }else{
+    //                 $_SESSION['companieUserLogued'] = null;
+    //                 $args['companieUserLogued'] = null;
+    //             }
+
+    //             $args["company"] = null;
+    //             if ( isset($_SESSION['rutUserLogued']) ){
+    //                 $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
+
+    //                 $company = $companiesController->getCompaniesData($_SESSION['rutUserLogued'])->objectResult;
+    //                 $args["company"] = $company;
+
+    //             }else{
+    //                 $_SESSION['rutUserLogued'] = null;
+    //                 $args['rutUserLogued'] = null;
+    //             }
+
+
+    //         }else{
+    //             //aca cargar companies
+    //             $_SESSION['companiesList'] = $companiesController->getCompanies()->listResult;
+    //             $_SESSION['lastID'] = 0;
+    //             //$args['companiesList'] = $_SESSION['companiesList'];
+
+    //             if ( !isset($_SESSION['companieUserLogued']) && !isset($_SESSION['rutUserLogued'])){
+    //                 $objFirstCompanie = array_pop(array_reverse($_SESSION['companiesList']));
+
+    //                 $_SESSION['companieUserLogued'] = $objFirstCompanie->razonSocial;
+    //                 $_SESSION['rutUserLogued'] = $objFirstCompanie->rut;
+    //             }
+
+    //             if ( isset($_SESSION['companieUserLogued']) ){
+    //                 $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
+    //             }else{
+    //                 $_SESSION['companieUserLogued'] = null;
+    //                 $args['companieUserLogued'] = null;
+    //             }
+
+    //             $args["company"] = null;
+    //             if ( isset($_SESSION['rutUserLogued']) ){
+    //                 $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
+
+    //                 $company = $companiesController->getCompaniesData($_SESSION['rutUserLogued'])->objectResult;
+    //                 $args["company"] = $company;
+
+    //             }else{
+    //                 $_SESSION['rutUserLogued'] = null;
+    //                 $args['rutUserLogued'] = null;
+    //             }
+
+
+    //         }
+
+    //     }else {
+    //         $args['rutUserLogued'] = null;
+    //         $args['mailUserLogued'] = null;
+    //         $args['companieUserLogued'] = null;
+    //     }
+
+    //     return $this->view->render($response, "companies.twig", $args);
+    // })->setName("Start");
+
     $app->get('/', function ($request, $response, $args) use ($container, $companiesController) {
         $args['version'] = FECHA_ULTIMO_PUSH;
-        if ( isset($_SESSION['mailUserLogued']) ){
-            $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
+        $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
+        $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
+        $args["company"] = null;
+        if ( isset($_SESSION['rutUserLogued']) ){
+            $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
+            
+            $company = $companiesController->getCompaniesData($_SESSION['rutUserLogued'])->objectResult;
+            $args["company"] = $company;
+            
+        }else{
+            $_SESSION['rutUserLogued'] = null;
+            $args['rutUserLogued'] = null;
+        }
+        $companiesList = $companiesController->getCompanies()->listResult;
+        if( !isset($_SESSION['companiesList'] ) ){
+            //aca cargar companies
+            $_SESSION['companiesList'] = $companiesList;
+        }
+        $args['companiesCount'] = count($companiesList);
+        $companiesType = array();
+        $companiesHabilitadas = array();
+        $emisorHabilitadoCount = 0;
+        $pendientePostulacionCount = 0;
+        $pendienteAprobacionCount = 0;
+        $pendienteCertificacionCount = 0;
+        $pendienteResolucionCount = 0;
+        $emisorNoHabilitadoCount = 0;
+        $enEsperaComenzarCount = 0;
+        $pendienteUsuarioCount = 0;
 
-
-            if( isset($_SESSION['companiesList'] ) ){
-                //aca cargar companies
-                $_SESSION['lastID'] = 0;
-                //$args['companiesList'] = $_SESSION['companiesList'];
-
-                if ( !isset($_SESSION['companieUserLogued']) && !isset($_SESSION['rutUserLogued'])){
-                    $objFirstCompanie = array_pop(array_reverse($_SESSION['companiesList']));
-
-                    $_SESSION['companieUserLogued'] = $objFirstCompanie->razonSocial;
-                    $_SESSION['rutUserLogued'] = $objFirstCompanie->rut;
-                }
-
-                if ( isset($_SESSION['companieUserLogued']) ){
-                    $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
-                }else{
-                    $_SESSION['companieUserLogued'] = null;
-                    $args['companieUserLogued'] = null;
-                }
-
-                $args["company"] = null;
-                if ( isset($_SESSION['rutUserLogued']) ){
-                    $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
-
-                    $company = $companiesController->getCompaniesData($_SESSION['rutUserLogued'])->objectResult;
-                    $args["company"] = $company;
-
-                }else{
-                    $_SESSION['rutUserLogued'] = null;
-                    $args['rutUserLogued'] = null;
-                }
-
-
-            }else{
-                //aca cargar companies
-                $_SESSION['companiesList'] = $companiesController->getCompanies()->listResult;
-                $_SESSION['lastID'] = 0;
-                //$args['companiesList'] = $_SESSION['companiesList'];
-
-                if ( !isset($_SESSION['companieUserLogued']) && !isset($_SESSION['rutUserLogued'])){
-                    $objFirstCompanie = array_pop(array_reverse($_SESSION['companiesList']));
-
-                    $_SESSION['companieUserLogued'] = $objFirstCompanie->razonSocial;
-                    $_SESSION['rutUserLogued'] = $objFirstCompanie->rut;
-                }
-
-                if ( isset($_SESSION['companieUserLogued']) ){
-                    $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
-                }else{
-                    $_SESSION['companieUserLogued'] = null;
-                    $args['companieUserLogued'] = null;
-                }
-
-                $args["company"] = null;
-                if ( isset($_SESSION['rutUserLogued']) ){
-                    $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
-
-                    $company = $companiesController->getCompaniesData($_SESSION['rutUserLogued'])->objectResult;
-                    $args["company"] = $company;
-
-                }else{
-                    $_SESSION['rutUserLogued'] = null;
-                    $args['rutUserLogued'] = null;
-                }
-
-
+        foreach ($companiesList as $comp) {
+            switch ($comp->estadoDescripcion) {
+                case 'Emisor habilitado':
+                    $emisorHabilitadoCount++;
+                    break;
+                case 'Pendiente postulación':
+                    $pendientePostulacionCount++;
+                    break;
+                case 'Pendiente aprobación':
+                    $pendienteAprobacionCount++;
+                    break;
+                case 'Pendiente certificación':
+                    $pendienteCertificacionCount++;
+                    break;
+                case 'Pendiente resolución':
+                    $pendienteResolucionCount++;
+                    break;
+                case 'Emisor no habilitado':
+                    $emisorNoHabilitadoCount++;
+                    break;
+                case 'En espera para comenzar':
+                    $enEsperaComenzarCount++;
+                    break;
+                case 'Pendiente usuario':
+                    $pendienteUsuarioCount++;
+                    break;
+                default:
+                    // Handle any other cases here
+                    break;
             }
+            if ( $comp->estado == 6 ){ // Si es Emisor habilitado
+                $expireDateCertificados = null;
+                $expireDateCertificadosSoon = false;
+                $expireCAEsSoon = array();
+                $pocosCaes = null;
+                
+                foreach ($comp->caes as $cae) {
+                    $dateTime = new DateTime($cae->vencimiento);
+                    $date = $dateTime->format('Ymd');
+                    if(!$expireDateCAEs)
+                        $expireDateCAEs = $date;
+                    if (isset($date) && $date != ""){
+                        $caeAux = [
+                            "expireDate" => $expireDateCAEs,
+                            "expireType" => $cae->tipoCFE
+                        ];
+                        // $expireCAEs[] = $caeAux;
+                        $nextMonth = date('Ymd',  strtotime("+ 1 month" , strtotime(date("Ymd"))));
+                        if($date <= $nextMonth){
+                            $expireCAEsSoon[] = $caeAux;
+                        }
+                        if (isset($cae->total) && isset($cae->disponibles)) {
+                            $totalCAEs = $cae->total;
+                            $disponiblesCAEs = $cae->disponibles;
+                            // Verificar si la cantidad disponibles es menos del 10% del total
+                            if ($totalCAEs > 0 && (($disponiblesCAEs / $totalCAEs) < 0.1)) {
+                                // $estimadoPedir = cuantosCaesPedir($empresa->rut, $cae->tipoCFE);
+                                $pocosCaesAux = [
+                                    'tipoCFE' => $cae->tipoCFE,
+                                    // 'usados' => $estimadoPedir->usadosEnDosAños,
+                                    // 'pedir' => $estimadoPedir->cantCaesPedir,
+                                    'disponibles' => $cae->disponibles,
+                                    'total' => $cae->total,
+                                    'disponiblesPorcentaje' => intval((($disponiblesCAEs / $totalCAEs) * 100) , 10)
+                                ];
+                            $pocosCaes[] = $pocosCaesAux;
+                            }
+                        }
+                    }
+                }
 
+                if (isset($comp->certificateExpireDate) && $comp->certificateExpireDate !== "") {
+                    $dateTime = new DateTime($comp->certificateExpireDate);
+                    $certExpireDate = $dateTime->format('Ymd');
+                    
+                    $nextMonth = date('Ymd',  strtotime("+ 1 month" , strtotime(date("Ymd"))));
+                    if($certExpireDate <= $nextMonth){
+                        $expireDateCertificados = $certExpireDate;
+                        $expireDateCertificadosSoon = true;
+                    }
+                }
+                // Sort $expireCAEsSoon array by 'expireDate'
+                usort($expireCAEsSoon, 'compareByExpireDate');
+                
+                $auxComp = [
+                    "rut" => $comp->rut,
+                    "razonSocial" => $comp->razonSocial,
+                    "expireDateCertificados" => $expireDateCertificados,
+                    "pocosCaes" => $pocosCaes,
+                    "expireCAEsSoon" => $expireCAEsSoon,
+                    "expireDateCertificadosSoon" => $expireDateCertificadosSoon
+                ];
+                $companiesHabilitadas[] = $auxComp;
+            }
+        }
+
+        // Store the counts in the $companiesType array
+        $companiesType['Emisor habilitado'] = $emisorHabilitadoCount;
+        $companiesType['Pendiente postulacion'] = $pendientePostulacionCount;
+        $companiesType['Pendiente aprobacion'] = $pendienteAprobacionCount;
+        $companiesType['Pendiente certificacion'] = $pendienteCertificacionCount;
+        $companiesType['Pendiente resolucion'] = $pendienteResolucionCount;
+        $companiesType['Emisor no Habilitado'] = $emisorNoHabilitadoCount;
+        $companiesType['En espera para comenzar'] = $enEsperaComenzarCount;
+        $companiesType['Pendiente usuario'] = $pendienteUsuarioCount;
+        $args['companiesType'] = $companiesType;
+
+        $args['companiesList'] = $_SESSION['companiesList'];
+        $args['companiesHabilitadas'] = $companiesHabilitadas;
+
+        
+        // var_dump($args['companiesList']);
+        // var_dump($companiesHabilitadas);
+        // exit;
+        if ( isset($_SESSION['mailUserLogued']) ){
+            return $this->view->render($response, "resumen.twig", $args);
         }else {
             $args['rutUserLogued'] = null;
             $args['mailUserLogued'] = null;
             $args['companieUserLogued'] = null;
         }
-
-        return $this->view->render($response, "companies.twig", $args);
+        return $this->view->render($response, "resumen.twig", $args);
+        // return $response->withRedirect($request->getUri()->getBaseUrl());
     })->setName("Start");
+
+    // Define a custom comparison function for usort()
+    function compareByExpireDate($a, $b) {
+        return strtotime($a['expireDate']) - strtotime($b['expireDate']);
+    }
 };

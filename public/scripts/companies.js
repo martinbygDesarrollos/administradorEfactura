@@ -169,6 +169,36 @@ function verMas(){
 	}
 }
 
+function verMasEmpresasConPocosCAEs(){
+	if($('#btnShowHideEmpresasConPocosCAEs').text() == "Ver más...") {
+		$("#sectionEmpresasConPocosCAEs").removeClass("hide").addClass("show");
+		$('#btnShowHideEmpresasConPocosCAEs').text("Ver menos...")
+	} else {
+		$('#btnShowHideEmpresasConPocosCAEs').text("Ver más...")
+		$("#sectionEmpresasConPocosCAEs").removeClass("show").addClass("hide");
+	}
+}
+
+function verMasEmpresasConCAEsPorVencer(){
+	if($('#btnShowHideEmpresasConCAEsPorVencer').text() == "Ver más...") {
+		$("#sectionEmpresasConCAEsPorVencer").removeClass("hide").addClass("show");
+		$('#btnShowHideEmpresasConCAEsPorVencer').text("Ver menos...")
+	} else {
+		$('#btnShowHideEmpresasConCAEsPorVencer').text("Ver más...")
+		$("#sectionEmpresasConCAEsPorVencer").removeClass("show").addClass("hide");
+	}
+}
+
+function verMasEmpresasConCertificadosPorVencer(){
+	if($('#btnShowHideEmpresasConCertificadosPorVencer').text() == "Ver más...") {
+		$("#sectionEmpresasConCertificadosPorVencer").removeClass("hide").addClass("show");
+		$('#btnShowHideEmpresasConCertificadosPorVencer').text("Ver menos...")
+	} else {
+		$('#btnShowHideEmpresasConCertificadosPorVencer').text("Ver más...")
+		$("#sectionEmpresasConCertificadosPorVencer").removeClass("show").addClass("hide");
+	}
+}
+
 function loadEmisores(ruc){
 	sendAsyncPost("loadEmisores", {ruc:ruc})
 	.then((response)=>{

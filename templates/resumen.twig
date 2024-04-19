@@ -1,0 +1,186 @@
+{% extends "base.twig" %}
+{% block head %}
+{% endblock %}
+{% block content %}
+    {% if mailUserLogued %}
+        <div class="card w-100">
+            <div class="containerTable" id="containerCompanies">
+                <div class="" style="margin-left:0;">
+                    <p id="indexCompanieWork" class="font-weight-bold pl-2">&nbsp;Trabajando con&nbsp;<a href="{{ path_for('Start')}}empresas/{{rutUserLogued}}">{{companieUserLogued}}</a></p>
+                </div>
+                <div style="margin-left:15px;">
+                    {# <br> #}
+                    <span style="font-weight: 500;"> Total de empresas: {{companiesCount}}</span>
+                    <hr>
+                    {# <span class="ml-2"> Total de empresas: {{companiesCount}}</span> #}
+
+                    {% for key, value in companiesType %}
+                        {% if myBool == true %}
+                            {% if loop.index0 is odd %}
+                                <div class="row m-2" style="border-bottom: 0.1rem solid lightgrey;">
+                            {% endif %}
+                            <div class="col-6 pl-0">
+                                <table style="width: 100%;">
+                                    <tbody>
+                                        <tr>
+                                            <td class="col-6 pl-0" style="font-weight: 500;">{{ key }}:</td class="col-6"><td>{{ value }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% if loop.index0 is even or loop.last %}
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            {% if loop.index0 is even %}
+                                <div class="row m-2" style="border-bottom: 0.1rem solid lightgrey;">
+                            {% endif %}
+                            <div class="col-6 pl-0">
+                                <table style="width: 100%;">
+                                    <tbody>
+                                        <tr>
+                                            <td class="col-6 pl-0" style="font-weight: 500;">{{ key }}:</td class="col-6"><td>{{ value }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% if loop.index0 is odd or loop.last %}
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    <hr style="margin-top: 2rem;">
+                    {% set EmpresasConPocosCAEs = 0 %}
+                    {% set EmpresasConCAEsPorVencer = 0 %}
+                    {% set EmpresasConCertificadosPorVencer = 0 %}
+                    {% for comp in companiesHabilitadas %}
+                        {% if comp.pocosCaes is not null %}
+                            {% set EmpresasConPocosCAEs = EmpresasConPocosCAEs + 1 %}
+                        {% endif %}
+                        {% if comp.expireCAEsSoon|length > 0 %}
+                            {% set EmpresasConCAEsPorVencer = EmpresasConCAEsPorVencer + 1 %}
+                        {% endif %}
+                        {% if comp.expireDateCertificadosSoon == true %}
+                            {% set EmpresasConCertificadosPorVencer = EmpresasConCertificadosPorVencer + 1 %}
+                        {% endif %}
+                    {% endfor %}
+                    <span style="font-weight: 500;"> Total empresas con pocos CAEs: {{ EmpresasConPocosCAEs }}</span>
+                    {% if EmpresasConPocosCAEs > 0 %}
+                        <button id="btnShowHideEmpresasConPocosCAEs" onclick="verMasEmpresasConPocosCAEs()" style="border:none; background-color: transparent; padding: 0; color: #50adff;" >Ver más...</button>
+                    {% endif %}
+                    <div id="sectionEmpresasConPocosCAEs" class="hide">
+                        <div class="col-12 pl-0">
+                            {% set hasPocosCAEs = false %}
+                            {% for comp in companiesHabilitadas %}
+                                {% if comp.pocosCaes is not null %}
+                                    {% set hasPocosCAEs = true %}
+                                    {% if loop.first %}
+                                        <table class="" style="width: 100%;">
+                                            <thead>
+                                                <tr style="background-color: #e7e7e7">
+                                                    <th class="col-3 pl-0">RUT</th>
+                                                    <th class="col-6">Razon Social</th>
+                                                    <th class="col-3">Disponibles(%) </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                    {% endif %}
+                                    <tr>
+                                        <td class="pl-0">{{ comp.rut }}</td>
+                                        <td class="pl-3 pr-3"><a href="{{ path_for('Start')}}empresas/{{ comp.rut }}">{{ comp.razonSocial }}</a></td>
+                                        <td class="pl-3 pr-3">{{ comp.pocosCaes[0].disponiblesPorcentaje }} %</td>
+                                    </tr>   
+                                {% endif %}
+                            {% endfor %}
+                            {% if hasPocosCAEs %}
+                                </tbody>
+                            </table>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <hr>
+                    <span style="font-weight: 500;"> Empresas con CAEs por vencer: {{ EmpresasConCAEsPorVencer }}</span>
+                    {% if EmpresasConCAEsPorVencer > 0 %}
+                        <button id="btnShowHideEmpresasConCAEsPorVencer" onclick="verMasEmpresasConCAEsPorVencer()" style="border:none; background-color: transparent; padding: 0; color: #50adff;" >Ver más...</button>
+                    {% endif %}
+                    <div id="sectionEmpresasConCAEsPorVencer" class="hide">
+                        <div class="col-12 pl-0">
+                            {% set hasExpireCAEsSoon = false %}
+                            {% for comp in companiesHabilitadas %}
+                                {% if comp.expireCAEsSoon|length > 0 %}
+                                    {% set hasExpireCAEsSoon = true %}
+                                    {% if loop.first %}
+                                        <table class="" style="width: 100%;">
+                                            <thead>
+                                                <tr style="background-color: #e7e7e7">
+                                                    <th class="col-3 pl-0">RUT</th>
+                                                    <th class="col-9">Razon Social</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                    {% endif %}
+                                    <tr>
+                                        <td class="pl-0">{{ comp.rut }}</td>
+                                        <td class="pl-3 pr-3"> <a href="{{ path_for('Start')}}empresas/{{ comp.rut }}">{{ comp.razonSocial }}</a></td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            {% if hasExpireCAEsSoon %}
+                                </tbody>
+                            </table>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <hr>
+                    <span style="font-weight: 500;"> Empresas con Certificados por vencer: {{ EmpresasConCertificadosPorVencer }}</span>
+                    {% if EmpresasConCertificadosPorVencer > 0 %}
+                        <button id="btnShowHideEmpresasConCertificadosPorVencer" onclick="verMasEmpresasConCertificadosPorVencer()" style="border:none; background-color: transparent; padding: 0; color: #50adff;" >Ver más...</button>
+                    {% endif %}
+                    <div id="sectionEmpresasConCertificadosPorVencer" class="hide">
+                        <div class="col-12 pl-0">
+                            {% set hasExpireCertificadosSoon = false %}
+                            {% for comp in companiesHabilitadas %}
+                                {% if comp.expireDateCertificadosSoon %}
+                                    {% if hasExpireCertificadosSoon == false %}
+                                        <table class="" style="width: 100%;">
+                                            <thead>
+                                                <tr style="background-color: #e7e7e7">
+                                                    <th class="col-3 pl-0">RUT</th>
+                                                    <th class="col-6">Razon Social</th>
+                                                    <th class="col-3">Vencimiento</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                        {% set hasExpireCertificadosSoon = true %}
+                                    {% endif %}
+                                    <tr>
+                                        <td class="pl-0">{{ comp.rut }}</td>
+                                        <td class="pl-3 pr-3"><a href="{{ path_for('Start')}}empresas/{{ comp.rut }}">{{ comp.razonSocial }}</a></td>
+                                        <td class="pl-3 pr-3">{{ comp.expireDateCertificados }}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            {% if hasExpireCertificadosSoon %}
+                                </tbody>
+                            </table>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <h3 class="text-template-background font-italic text-center">ADMINISTRADOR de EFACTURA</h3>
+    {% endif %}
+{% block script %}
+<script type="text/javascript" src="{{ path_for('Start') }}scripts/companies.js{{ version }}"></script>
+<script type="text/javascript" src="{{ path_for('Start') }}scripts/utils.js{{ version }}"></script>
+<script type="text/javascript" >
+
+	$(document).ready(()=>{
+		//loadCompanies();
+	})
+
+</script>
+{% endblock %}
+{% endblock %}
