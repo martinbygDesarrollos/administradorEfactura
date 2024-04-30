@@ -127,7 +127,18 @@ function searchClientes() {
 	}
 }
 
+function mostrarLoader(valor){
+	if(valor){
+		$('.loaderback').css('display', 'block')
+		$('.loader').css('display', 'block')
+	} else {
+		$('.loaderback').css('display', 'none')
+		$('.loader').css('display', 'none')
+	}
+}
+
 function showModalCustomer(document){
+	mostrarLoader(true)
 	rutSelected = $("#textRutCompanieSelected").text();
 	sendAsyncPost("loadCustomer", {rut: rutSelected, document: document})
 	.then((response)=>{
@@ -139,6 +150,7 @@ function showModalCustomer(document){
 			else 
 				$(":checkbox[id^='inputSendAuto']").prop("checked", false);
 			$("#modalShowCustomer").attr("data-documentType", response.objectResult.documentType)
+			mostrarLoader(false)
 			$('#modalShowCustomer').modal();
 		} else if ( response.result == 0 ){
 			// window.location.href = getSiteURL() + "cerrar-session";
