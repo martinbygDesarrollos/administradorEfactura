@@ -433,8 +433,8 @@ function createNewContact(value, target, modal){
 	$("#" + target).toggleClass("hide");
 }
 
-function nameUpdated(value, idButton){
-	if(value.length >= 1)
+function infoUpdated(doc, name, idButton){
+	if(doc.length >= 1 && name.length >= 1)
 		$('#' + idButton).attr('disabled', false)
 	else 
 		$('#' + idButton).attr('disabled', true)

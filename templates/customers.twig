@@ -47,11 +47,11 @@
 					</div>
 					<div class="col-5">
 						<label class="" for="nameCustomer"> Nombre </label>
-						<input class="form-control" id="nameCustomer" type="text" onkeyup="nameUpdated(this.value, 'modalShowCustomerButton')"/>
+						<input class="form-control" id="nameCustomer" type="text" onkeyup="infoUpdated($('#docCustomer').val() || '', this.value, 'modalShowCustomerButton')"/>
 					</div>
 					<div class="col-5">
 						<label class="" for="docCustomer"> Documento </label>
-						<input class="form-control" readonly id="docCustomer" type="text" />
+						<input class="form-control" readonly id="docCustomer" type="text" onkeyup="infoUpdated(this.value, $('#nameCustomer').val() || '', 'modalShowCustomerButton')"/>
 					</div>
 				</div>
 				<hr>
@@ -117,11 +117,11 @@
 					</div>
 					<div class="col-5">
 						<label class="" for="nameNewCustomer"> Nombre </label>
-						<input class="form-control" id="nameNewCustomer" type="text" onkeyup="nameUpdated(this.value, 'modalNewCustomerButton')" />
+						<input class="form-control" id="nameNewCustomer" type="text" onkeyup="infoUpdated($('#docNewCustomer').val() || '', this.value, 'modalNewCustomerButton')" />
 					</div>
 					<div class="col-5">
 						<label class="" for="docNewCustomer"> Documento </label>
-						<input class="form-control" id="docNewCustomer" type="text" />
+						<input class="form-control" id="docNewCustomer" type="text" onkeyup="infoUpdated(this.value, $('#nameNewCustomer').val() || '', 'modalNewCustomerButton')"/>
 					</div>
 				</div>
 				<hr>
