@@ -154,9 +154,12 @@ function showModalCustomer(document){
 			$('#modalShowCustomer').modal();
 		} else if ( response.result == 0 ){
 			// window.location.href = getSiteURL() + "cerrar-session";
+			mostrarLoader(false)
+		} else {
+			mostrarLoader(false)
 		}
 	})
-	var tr = $('#customersTableBody').find('tr#'+document);
+	// var tr = $('#customersTableBody').find('tr#'+document);
 }
 
 function showModalNewCustomer(){
