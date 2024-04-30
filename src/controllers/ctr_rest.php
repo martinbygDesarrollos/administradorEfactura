@@ -577,6 +577,98 @@ class ctr_rest{
 		return $response;
 	}
 
+	public function loadListCustomers( $rut ){
+
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+		$response->objectResult = new \stdClass();
+
+		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
+		if ( $token->result == 2 ){
+			$tokenRest = $token->objectResult->tokenRest;
+			$petitionResponse = $petitionClass->getListCustomers( $tokenRest, $rut);
+			$petitionResponse = json_decode($petitionResponse);
+			$response->result = 2;
+			$response->objectResult = $petitionResponse;
+		}else return $token;
+
+		return $response;
+	}
+
+	public function loadCustomer($rut, $document){
+
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+		$response->objectResult = new \stdClass();
+
+		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
+		if ( $token->result == 2 ){
+			$tokenRest = $token->objectResult->tokenRest;
+			$petitionResponse = $petitionClass->getCustomer( $tokenRest, $rut, $document );
+			$petitionResponse = json_decode($petitionResponse);
+			$response->result = 2;
+			$response->objectResult = $petitionResponse;
+		}else return $token;
+
+		return $response;
+	}
+
+	public function saveCustomer($rut, $customer, $document){
+
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+		$response->objectResult = new \stdClass();
+
+		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
+		if ( $token->result == 2 ){
+			$tokenRest = $token->objectResult->tokenRest;
+			$petitionResponse = $petitionClass->saveCustomer( $tokenRest, $rut, $customer, $document );
+			$petitionResponse = json_decode($petitionResponse);
+			$response->result = 2;
+			$response->objectResult = $petitionResponse;
+		}else return $token;
+
+		return $response;
+	}
+
+	public function newCustomer($rut, $customer){
+		// var_dump($customer);
+
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+		$response->objectResult = new \stdClass();
+
+		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
+		if ( $token->result == 2 ){
+			$tokenRest = $token->objectResult->tokenRest;
+			$petitionResponse = $petitionClass->newCustomer( $tokenRest, $rut, $customer );
+			$petitionResponse = json_decode($petitionResponse);
+			// var_dump($petitionResponse);
+			// exit;
+			// if($petitionResponse->resultado->codigo != 200){
+			// 	$response->result = 0;
+			// } else {
+			$response->result = 2;
+			// }
+			$response->objectResult = $petitionResponse;
+		}else return $token;
+		// var_dump($response);
+		// exit;
+		return $response;
+	}
+
 	public function loadUser( $rut, $email ){
 
 		$petitionClass = new sendPetition();

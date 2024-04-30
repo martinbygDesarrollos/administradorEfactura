@@ -39,6 +39,28 @@ class sendPetition{
 		return $thisClass->prepareAndSendCurl("GET", "users/".$rut, $token, null);
 	}
 
+	public function getListCustomers( $token, $rut){
+		$thisClass = new sendPetition();
+
+		return $thisClass->prepareAndSendCurl("GET", "customers/".$rut, $token, null);
+	}
+
+	public function getCustomer( $token, $rut, $document ){
+		$thisClass = new sendPetition();
+
+		return $thisClass->prepareAndSendCurl("GET", "customers/" . $rut . "/".$document , $token, null);
+	}
+
+	public function saveCustomer( $token, $rut, $customer, $document ){
+		$thisClass = new sendPetition();
+		return $thisClass->prepareAndSendCurl("PUT", "customers/" . $rut . "/".$document , $token, $customer);
+	}
+
+	public function newCustomer( $token, $rut, $customer){
+		$thisClass = new sendPetition();
+		return $thisClass->prepareAndSendCurl("POST", "customers/" . $rut , $token, $customer);
+	}
+
 	public function getUser( $token, $rut, $email){
 		$thisClass = new sendPetition();
 

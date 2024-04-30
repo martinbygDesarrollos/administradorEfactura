@@ -44,6 +44,39 @@ return function (App $app){
         }else return $response->withRedirect($request->getUri()->getBaseUrl());
     });
 
+    // $app->get('/email/{rut}', function ($request, $response, $args) use ($container, $companiesController){
+    //     $args['version'] = FECHA_ULTIMO_PUSH;
+    //     $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
+    //     $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
+    //     // $args['permisos'] = $_SESSION['permissionsUserLogued'];
+    //     if ( isset($_SESSION['mailUserLogued']) ){
+
+    //         $company = $companiesController->getCompaniesData($args['rut'])->objectResult;
+    //         // $idSucPrincipal = -1;
+    //         // $sucursalesNew = array();
+    //         // foreach ($company->sucursales as $key => $value) {
+    //         //     if($value->isPrincipal)
+    //         //         $idSucPrincipal = $value->codDGI;
+    //         //     else{
+    //         //         if ($value->codDGI == $idSucPrincipal)
+    //         //             continue;
+    //         //     }
+    //         //     $sucursalesNew[] = $value;
+    //         // }
+    //         // $company->sucursales = $sucursalesNew;
+    //         $args["company"] = $company;
+
+    //         $args['files'] = false;
+    //         if (count(scandir(dirname(dirname(__DIR__)) . "/public/files/")) > 2) {
+    //             $args['files'] = true;
+    //         }
+
+    //         // var_dump($company->objectResult->giros);
+    //         // exit;
+    //         return $this->view->render($response, "companyDetail.twig", $args);
+    //     }else return $response->withRedirect($request->getUri()->getBaseUrl());
+    // });
+
     $app->get('/empresas', function ($request, $response, $args) use ($container, $companiesController){
         $args['version'] = FECHA_ULTIMO_PUSH;
         if ( isset($_SESSION['mailUserLogued']) ){
@@ -624,6 +657,83 @@ return function (App $app){
             return json_encode($response);
 
         }else return json_encode(["result"=>0]);
+    });
+
+    $app->post('/loadListCustomers', function ($request, $response, $args) use ($companiesController){
+        $response = new \stdClass();
+
+        if ( $_SESSION['mailUserLogued'] ){
+
+            $data = $request->getParams();
+            $rut = $data['rut'];
+			
+            $customersResponse = $companiesController->loadListCustomers($rut);
+			
+            if ( $customersResponse->result == 2 ){
+				$response->result = 2;
+				$response->objectResult = $customersResponse->objectResult;
+				return json_encode($response);
+				
+            }else
+                return json_encode($response);
+        } else return json_encode(["result"=>0]);
+    });
+
+    $app->post('/loadCustomer', function ($request, $response, $args) use ($companiesController){
+        $response = new \stdClass();
+
+        if ( $_SESSION['mailUserLogued'] ){
+
+            $data = $request->getParams();
+            $rut = $data['rut'];
+            $document = $data['document'];
+            $customersResponse = $companiesController->loadCustomer($rut, $document);
+			
+            if ( $customersResponse->result == 2 ){
+				$response->result = 2;
+				$response->objectResult = $customersResponse->objectResult;
+				return json_encode($response);
+            } else
+                return json_encode($response);
+        } else return json_encode(["result"=>0]);
+    });
+
+    $app->post('/saveCustomer', function ($request, $response, $args) use ($companiesController){
+        $response = new \stdClass();
+
+        if ( $_SESSION['mailUserLogued'] ){
+
+            $data = $request->getParams();
+            $rut = $data['rut'];
+            $customer = $data['data'];
+            $saveCustomerResponse = $companiesController->saveCustomer($rut, $customer);
+			
+            if ( $saveCustomerResponse->result == 2 ){
+				$response->result = 2;
+				$response->objectResult = $saveCustomerResponse->objectResult;
+				return json_encode($response);
+            }else
+                return json_encode($response);
+        } else return json_encode(["result"=>0]);
+    });
+
+    $app->post('/newCustomer', function ($request, $response, $args) use ($companiesController){
+        $response = new \stdClass();
+
+        if ( $_SESSION['mailUserLogued'] ){
+
+            $data = $request->getParams();
+            $rut = $data['rut'];
+            $customer = $data['data'];
+            $saveCustomerResponse = $companiesController->newCustomer($rut, $customer);
+			// var_dump($saveCustomerResponse);
+            if ( $saveCustomerResponse->result == 2 ){
+				$response->result = 2;
+				$response->objectResult = $saveCustomerResponse->objectResult;
+				// return json_encode($response);
+            } else return json_encode($saveCustomerResponse);
+            return json_encode($response);
+        } else return json_encode(["result"=>0]);
     });
 
 }

@@ -1,6 +1,7 @@
 <?php
 
 require_once '../src/class/utils.php';
+require_once '../src/utils/validate.php';
 require_once 'ctr_rest.php';
 
 
@@ -434,6 +435,65 @@ class ctr_companies{
 
 		return $expireInfo;
 	}
+
+	public function loadListCustomers($rut){
+		$restController = new ctr_rest();
+
+		$responseCustomers = $restController->loadListCustomers( $rut );
+		
+		return $responseCustomers;
+	}
+
+	public function loadCustomer($rut, $document){
+		$restController = new ctr_rest();
+
+		$responseCustomers = $restController->loadCustomer($rut, $document);
+		
+		return $responseCustomers;
+	}
+
+	public function saveCustomer($rut, $customer){
+		$restController = new ctr_rest();
+		if($customer['notificationMethods'][0] == "0")
+			$customer['notificationMethods'] = [];
+		else
+			$customer['notificationMethods'] = [1];
+
+		if(!isset($customer['contacts']))
+			$customer['contacts'] = [];
+		$responseCustomers = $restController->saveCustomer($rut, $customer, $customer['document']);
+		
+		return $responseCustomers;
+	}
+
+	public function newCustomer($rut, $customer){
+		$restController = new ctr_rest();
+		$validate = new validate();
+		if($customer['notificationMethods'][0] == "0")
+			$customer['notificationMethods'] = [];
+		else
+			$customer['notificationMethods'] = [1];
+
+		if(!isset($customer['contacts']))
+			$customer['contacts'] = [];
+
+		// echo "LLEGA AL BASICO";
+		if( strlen($customer['document']) < 9 && $validate->validateCI($customer['document'])){
+			// echo "ES CI";
+			$customer['documentType'] = 3; // 2 es RUT 3 es CI
+		} else if (strlen($customer['document']) > 10 && strlen($customer['document']) < 13 && $validate->validateRUT($customer['document'])->result == 2){
+			// echo "ES RUT";
+			$customer['documentType'] = 2; // 2 es RUT 3 es CI
+		} else {
+			// echo "ES ERROR";
+			return ["result"=>0];
+		}
+		// echo $customer['documentType'];
+		$responseCustomers = $restController->newCustomer($rut, $customer);
+		
+		return $responseCustomers;
+	}
+
 }
 
 

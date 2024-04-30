@@ -1,20 +1,27 @@
 <div class="tab-pane fade" id="customers-data" role="tabpanel">
-	<div class="containerTable">
+	<div class="containerTable customers" style="max-height: 30%;">
 		
 		<div class="d-flex flex-row mb-2">
 			<div class="col">
-				<label class="col-3 col-form-label" style="min-width:222px; max-width:222px; font-weight: 700"> Clientes: </label>
+				<label class="col-3 col-form-label pl-0" style="min-width:222px; max-width:222px; font-weight: 700"> Clientes: </label>
+			</div>
+			<div >
+				<input type="text" class="form__field" placeholder="Buscar cliente" style="height: 2.5rem;" id="clientesSearchBar" onkeyup="evaluateSearch();" />
+			</div>
+			<div class="mr-3">
+				<button style="background-color: transparent; border: none; height: 33px; width:33px; line-height: 44px;" id="clientesSearchButton" onclick="searchClientes()">
+					<i class="fas fa-search"></i>
+				</button>
 			</div>
 			<button onclick="showModalNewCustomer()" type="button" class="btn btn-success align-self-right mr-2"> <i class="fas fa-plus"></i> Nuevo</button>
 		</div>
 		<br>
-		<table class="table">
+		<table id="customersTable " class="table">
 			<thead>
 				<tr>
-					<th class="col-1"></th>
-					<th class="col-3">Nombre</th>
-					<th class="col-3">Documento</th>
-					<th class="col-3">Correo</th>
+					<th class="col-4">Nombre</th>
+					<th class="col-2">Documento</th>
+					<th class="col-4">Correo</th>
 					<th class="col-2">Teléfono</th>
 				</tr>
 			</thead>
@@ -22,5 +29,144 @@
 				
 			</tbody>
 		</table>
+	</div>
+</div>
+<div class="modal fade" id="modalShowCustomer" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-documentType="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header background-template-color">
+				<span class="modal-title text-white">Cliente</span>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true"> </span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row w-100" style="justify-content: space-between;">
+					<div class="image col-2" style="display: flex; justify-content: center; align-items: center; ">
+						<i  class="fas fa-address-book fa-4x text-template-background" ></i>
+					</div>
+					<div class="col-5">
+						<label class="" for="nameCustomer"> Nombre </label>
+						<input class="form-control" id="nameCustomer" type="text" onkeyup="nameUpdated(this.value, 'modalShowCustomerButton')"/>
+					</div>
+					<div class="col-5">
+						<label class="" for="docCustomer"> Documento </label>
+						<input class="form-control" readonly id="docCustomer" type="text" />
+					</div>
+				</div>
+				<hr>
+				<div  class="mr-2 ml-2">
+					<div class="row w-100" style="justify-content: space-between; margin-left: 0; margin-right: 0; align-items: center;">
+						<div>
+							<label class="" for="nameCustomer" style="font-weight: 500;"> Contactos </label>
+						</div>
+						<div>
+							<input style="display: none;" list="listContacts" id="contactInput" type="text">
+							<button id="btnNewContact" type="button" title="Nuevo contacto" class="btn btn-success shadow-sm" onclick="loadOptions('listContacts', 'modalCustomerBody')" tabindex="5" style="border-radius: 50%;"><i class="fas fa-plus"></i></button>
+							<datalist class="form-control hide" style="display: block; position: absolute; z-index: 999; height: auto; width: auto;" id="listContacts"></datalist>
+						</div>
+					</div>
+					<hr>
+					<div class="w-100" id="modalCustomerBody">
+						<div class="row mt-2" style="align-items: center; ">
+							<div class="col-4">
+								<label for="correoCustomer"> Correo electrónico </label>
+							</div>
+							<div class="col-8" style="display: flex; flex-wrap: nowrap;">
+								<input class="form-control" id="correoCustomer" type="text" />
+								<button onclick="this.parentNode.parentNode.remove()" type="button" title="Eliminar contacto" class="btn btn-warning shadow-sm ml-2" tabindex="5" style="border-radius: 50%;"><i class="fas fa-trash"></i></button>
+							</div>
+						</div>
+					</div>
+					<hr>
+					<div class="w-100" id="modalCustomerBodyFooter">
+						<div class="" style="display: flex; flex-wrap: nowrap;">
+							<div class="checkboxOverride">
+								<input type="checkbox" name="" id="inputSendAuto" >
+								<label for="inputSendAuto"></label>
+							</div>
+
+							<label style="margin: auto; margin-left: 0.5rem;" class="form-check-label" for="inputSendAuto">
+								Enviar comprobantes por correo electrónico de forma automática
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer d-flex justify-content-between">
+				<button type="button" class="btn btn-danger shadow-sm" tabindex="5" data-dismiss="modal">Cancelar</button>
+				<button id="modalShowCustomerButton" type="button" class="btn btn-success shadow-sm" onclick="saveCustomer()" tabindex="4">Guardar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modalNewCustomer" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-documentType="">
+	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header background-template-color">
+				<span class="modal-title text-white">Nuevo Cliente</span>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true"> </span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row w-100" style="justify-content: space-between;">
+					<div class="image col-2" style="display: flex; justify-content: center; align-items: center; ">
+						<i  class="fas fa-address-book fa-4x text-template-background" ></i>
+					</div>
+					<div class="col-5">
+						<label class="" for="nameNewCustomer"> Nombre </label>
+						<input class="form-control" id="nameNewCustomer" type="text" onkeyup="nameUpdated(this.value, 'modalNewCustomerButton')" />
+					</div>
+					<div class="col-5">
+						<label class="" for="docNewCustomer"> Documento </label>
+						<input class="form-control" id="docNewCustomer" type="text" />
+					</div>
+				</div>
+				<hr>
+				<div  class="mr-2 ml-2">
+					<div class="row w-100" style="justify-content: space-between; margin-left: 0; margin-right: 0; align-items: center;">
+						<div>
+							<label class="" for="btnNewContactNewCustomer" style="font-weight: 500;"> Contactos </label>
+						</div>
+						<div>
+							<input style="display: none;" list="listContactsNewCustomer" id="contactInputNewCustomer" type="text">
+							<button id="btnNewContactNewCustomer" type="button" title="Nuevo contacto" class="btn btn-success shadow-sm" onclick="loadOptions('listContactsNewCustomer', 'modalCustomerBodyNewCustomer')" tabindex="5" style="border-radius: 50%;"><i class="fas fa-plus"></i></button>
+							<datalist class="form-control hide" style="display: block; position: absolute; z-index: 999; height: auto; width: auto;" id="listContactsNewCustomer"></datalist>
+						</div>
+					</div>
+					<hr>
+					<div class="w-100" id="modalCustomerBodyNewCustomer">
+						<div class="row mt-2" style="align-items: center; ">
+							<div class="col-4">
+								<label for="correoCustomerNewCustomer"> Correo electrónico </label>
+							</div>
+							<div class="col-8" style="display: flex; flex-wrap: nowrap;">
+								<input class="form-control" id="correoCustomerNewCustomer" type="text" />
+								<button onclick="this.parentNode.parentNode.remove()" type="button" title="Eliminar contacto" class="btn btn-warning shadow-sm ml-2" tabindex="5" style="border-radius: 50%;"><i class="fas fa-trash"></i></button>
+							</div>
+						</div>
+					</div>
+					<hr>
+					<div class="w-100" id="modalNewCustomerBodyFooter">
+						<div class="" style="display: flex; flex-wrap: nowrap;">
+							<div class="checkboxOverride">
+								<input type="checkbox" name="" id="inputSendAutoNewCustomer" >
+								<label for="inputSendAutoNewCustomer"></label>
+							</div>
+
+							<label style="margin: auto; margin-left: 0.5rem;" class="form-check-label" for="inputSendAutoNewCustomer">
+								Enviar comprobantes por correo electrónico de forma automática
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer d-flex justify-content-between">
+				<button type="button" class="btn btn-danger shadow-sm" tabindex="5" data-dismiss="modal">Cancelar</button>
+				<button disabled="true" id="modalNewCustomerButton" type="button" class="btn btn-success shadow-sm" onclick="newCustomer()" tabindex="4">Guardar</button>
+			</div>
+		</div>
 	</div>
 </div>

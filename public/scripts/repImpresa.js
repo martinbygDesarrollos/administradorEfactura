@@ -3,12 +3,12 @@ $("#formUpdateRepImpresa").on( "submit", function( event ) {
 	event.preventDefault();
 
 	if(infoAdicionalIsChanged){
-		if ($("#idTextareaInfoAdicional").val() != ""){
-			saveInfoAdicional($("#idTextareaInfoAdicional").val())
-			.then((response)=>{
-				showMessage(response.result, response.message);
-			})
-		}
+		// if ($("#idTextareaInfoAdicional").val() != ""){
+		saveInfoAdicional($("#idTextareaInfoAdicional").val() || "")
+		.then((response)=>{
+			showMessage(response.result, response.message);
+		})
+		// }
 	}
 
 	if (dataColorBranches){
@@ -52,7 +52,7 @@ $('#modalPreviewVoucher').on('show.bs.modal', function (e) {
 	let colorPrecio = $("#inputCompColorPrecioColor").val();
 	let totalColor = $("#inputCompColorTextoTotalColor").val();
 	let lineStyle = $("#inputCompColorDetailLineStyle").val() || "solid";
-	let infoAdicional = $("#idTextareaInfoAdicional").val() || " ";
+	let infoAdicional = $("#idTextareaInfoAdicional").val() || "";
 	let detailLineColor = $("#inputCompColorDetailLineColor").val();
 
 	let colorPrincipal = $("#inputCompColorPrincipal").val();

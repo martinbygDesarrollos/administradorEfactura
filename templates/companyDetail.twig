@@ -14,7 +14,7 @@
 				<a class="btn " data-toggle="pill" href="#importar-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Importación emitidos</a>
 				<a class="btn " data-toggle="pill" href="#importar-receipt" role="tab" aria-controls="v-pills-profile" aria-selected="false">Importación recibidos</a>
 				<a class="btn " data-toggle="pill" href="#users-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Usuarios</a>
-				<!--a class="btn " data-toggle="pill" href="#customers-data" role="tab" aria-controls="v-pills-profile" aria-selected="false" onclick="loadCustomers()" >Clientes</a-->
+				<a class="btn " data-toggle="pill" href="#customers-data" role="tab" aria-controls="v-pills-profile" aria-selected="false" >Clientes</a>
 			</div>
 		</div>
 		{# {{giros}} #}
@@ -65,7 +65,9 @@
 				{% include("users.twig") %}
 
 				<!-- CLIENTES -->
-				{% include("customers.twig") %}
+				{# <div class="containerCustomers" style="max-height: 80vh;"> #}
+					{% include("customers.twig") %}
+				{# </div> #}
 			</div>
 		</div>
 	</div>
@@ -82,15 +84,19 @@
 <script type="text/javascript" src="{{ path_for('Start') }}scripts/customers.js{{ version }}"></script>
 
 <script type="text/javascript">
-	$(document).ready(()=>{
+	$(document).ready(() => {
 		branchSelected = $("#selectBranchCompanieDetails").val();
 		rutSelected = $("#textRutCompanieSelected").text();
 		loadBranchCompanieData(branchSelected, rutSelected);
 		loadCaesDetailsCompanies(rutSelected);
 		loadUsersCompanie(rutSelected);
-		// console.log()
-		// var_dump($company->objectResult->giros);
-            // exit;
+		loadCustomers();
+		
+		$('.containerTable.customers').on('scroll', function() {
+			if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight - 10) {
+				updateTable('customersTableBody');
+			}
+		});
 	});
 </script>
 {% endblock %}

@@ -306,20 +306,20 @@ function loadUsersCompanie(  rut  ){
 
 function createRowsToUsersTable(users) {
 	users.forEach(function(user) {
-		appendRow(user);
+		appendRowUser(user);
 	})
 	
 }
 
-function appendRow(user){
+function appendRowUser(user){
 	// const randomColor = Math.floor(Math.random()*16777215).toString(16);
 	let colors = ["#a89e9d", "#7ab4c2", "#37a398"];//#a89e9d
 	let randomColor = colors[Math.floor(Math.random() * colors.length)];
-	let row = '<tr>';
+	let row = '<tr class="trUser" onclick="showModalUser(\''+ user.email +'\')">';
 	let firstLetter = user.name.charAt(0);
 
 	let td0 = '<td class="w-10" id="tdImgUser"> <div class="img-user" style="background-color:' + randomColor + '">' + firstLetter +  '</div> </td>';
-	let td1 = '<td class="w-20"> <label class="showModalUser" onclick="showModalUser(\''+ user.email +'\')">' + user.name + '</label> </td>';
+	let td1 = '<td class="w-20"> <label class="showModalUser" >' + user.name + '</label> </td>';
 	let td2 = '<td class="w-40"> <a href="mailto:'+ user.email +'">' + user.email + '</a> </td>';
 	let td3 = '<td class="w-15">';
 	if(user.active){
