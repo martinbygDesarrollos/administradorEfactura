@@ -419,7 +419,7 @@ class ctr_companies{
 					$totalCAEs = $cae->total;
 					$disponiblesCAEs = $cae->disponibles;
 					// Verificar si la cantidad disponibles es menos del 10% del total
-					if ($totalCAEs > 0 && (($disponiblesCAEs / $totalCAEs) < 0.9999)) {
+					if ($totalCAEs > 0 && (($disponiblesCAEs / $totalCAEs) < 0.1)) {
 						$estimadoPedir = $this->cuantosCaesPedir($empresa->rut, $cae->tipoCFE);
 						$pocosCaes[] = array(
 							'tipoCFE' => $cae->tipoCFE,
