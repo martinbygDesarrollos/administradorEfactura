@@ -44,38 +44,18 @@ return function (App $app){
         }else return $response->withRedirect($request->getUri()->getBaseUrl());
     });
 
-    // $app->get('/email/{rut}', function ($request, $response, $args) use ($container, $companiesController){
-    //     $args['version'] = FECHA_ULTIMO_PUSH;
-    //     $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
-    //     $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
-    //     // $args['permisos'] = $_SESSION['permissionsUserLogued'];
-    //     if ( isset($_SESSION['mailUserLogued']) ){
+    $app->get('/email/{rut}', function ($request, $response, $args) use ($container, $companiesController){
 
-    //         $company = $companiesController->getCompaniesData($args['rut'])->objectResult;
-    //         // $idSucPrincipal = -1;
-    //         // $sucursalesNew = array();
-    //         // foreach ($company->sucursales as $key => $value) {
-    //         //     if($value->isPrincipal)
-    //         //         $idSucPrincipal = $value->codDGI;
-    //         //     else{
-    //         //         if ($value->codDGI == $idSucPrincipal)
-    //         //             continue;
-    //         //     }
-    //         //     $sucursalesNew[] = $value;
-    //         // }
-    //         // $company->sucursales = $sucursalesNew;
-    //         $args["company"] = $company;
+            $data = $companiesController->createMailgetCaes($args['rut']);
+            $mensaje = "Buenos días Solicitamos CAEs para la empresa " . $data->razonSocial . "  -  " . $data->rut . "<br><br><br>";
+            foreach ($data->caes as $cae) {
+                // $mensaje .= $cae['tipoCFEText'] . "\t-\t" . $cae['pedir'] . "<br>";
+                $mensaje .= $cae['tipoCFEText'] . "<span style='white-space: pre;'>\t-\t</span>" . $cae['pedir'] . "<br>";
+            }
 
-    //         $args['files'] = false;
-    //         if (count(scandir(dirname(dirname(__DIR__)) . "/public/files/")) > 2) {
-    //             $args['files'] = true;
-    //         }
-
-    //         // var_dump($company->objectResult->giros);
-    //         // exit;
-    //         return $this->view->render($response, "companyDetail.twig", $args);
-    //     }else return $response->withRedirect($request->getUri()->getBaseUrl());
-    // });
+            $mensaje .= "<br><br><br>Desde ya muchas gracias <br>Saludos";
+            return $mensaje;
+    });
 
     $app->get('/empresas', function ($request, $response, $args) use ($container, $companiesController){
         $args['version'] = FECHA_ULTIMO_PUSH;

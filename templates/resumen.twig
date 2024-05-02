@@ -87,7 +87,7 @@
                                             <tbody>
                                     {% endif %}
                                     <tr class="companyTD">
-                                        <td class="pl-0">{{ comp.rut }}</td>
+                                        <td class="pl-0">{{ comp.rut }} <a href="{{ path_for('Start')}}email/{{ comp.rut }}" target="_blank" title="Obtener mail pre-formateado para pedido de CAEs"> <i class="fas fa-pen-nib"></i> </a></td>
                                         <td class="pl-3 pr-3"><a href="{{ path_for('Start')}}empresas/{{ comp.rut }}">{{ comp.razonSocial }}</a></td>
                                         <td class="pl-3 pr-3">{{ comp.pocosCaes[0].disponiblesPorcentaje }} %</td>
                                     </tr>   
@@ -122,7 +122,7 @@
                                             <tbody>
                                     {% endif %}
                                     <tr class="companyTD">
-                                        <td class="pl-0">{{ comp.rut }}</td>
+                                        <td class="pl-0">{{ comp.rut }} <a href="{{ path_for('Start')}}email/{{ comp.rut }}" target="_blank" title="Obtener mail pre-formateado para pedido de CAEs"> <i class="fas fa-pen-nib"></i> </a></td>
                                         <td class="pl-3 pr-3"> <a href="{{ path_for('Start')}}empresas/{{ comp.rut }}">{{ comp.razonSocial }}</a></td>
                                     </tr>
                                 {% endif %}
