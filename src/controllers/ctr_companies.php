@@ -489,7 +489,7 @@ class ctr_companies{
 		while($usadosEnDosAños > $cantCaesPedir){
 			$cantCaesPedir += 500;
 		};
-		$cantCaesPedir = ( round($usadosEnDosAños / 500) * 500 ) == 0 ? 500 : round($usadosEnDosAños / 500) * 500;
+		// $cantCaesPedir = ( round($usadosEnDosAños / 500) * 500 ) == 0 ? 500 : round($usadosEnDosAños / 500) * 500;
 	
 		$response->cantCaesPedir = $cantCaesPedir;
 		$response->usadosEnDosAños = $usadosEnDosAños;
