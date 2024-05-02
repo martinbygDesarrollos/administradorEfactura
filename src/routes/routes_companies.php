@@ -45,16 +45,24 @@ return function (App $app){
     });
 
     $app->get('/email/{rut}', function ($request, $response, $args) use ($container, $companiesController){
-
             $data = $companiesController->createMailgetCaes($args['rut']);
             $mensaje = "Buenos días Solicitamos CAEs para la empresa " . $data->razonSocial . "  -  " . $data->rut . "<br><br><br>";
             foreach ($data->caes as $cae) {
-                // $mensaje .= $cae['tipoCFEText'] . "\t-\t" . $cae['pedir'] . "<br>";
-                $mensaje .= $cae['tipoCFEText'] . "<span style='white-space: pre;'>\t-\t</span>" . $cae['pedir'] . "<br>";
+                $formattedPedir = number_format($cae['pedir'], 0, '.', '.'); // Format number with thousands separator
+                $mensaje .= $cae['tipoCFEText'] . "<span style='white-space: pre;'>       -       </span>" . $formattedPedir . "<br>";
             }
-
             $mensaje .= "<br><br><br>Desde ya muchas gracias <br>Saludos";
             return $mensaje;
+            // $mensaje = "<p>Buenos días Solicitamos CAEs para la empresa " . $data->razonSocial . "  -  " . $data->rut . "</p><br><br><br>";
+            // $mensaje .= "<table>";
+            // foreach ($data->caes as $cae) {
+            //     $formattedPedir = number_format($cae['pedir'], 0, '.', '.'); // Format number with thousands separator
+            //     $mensaje .= "<tr><td>{$cae['tipoCFEText']}</td><td style='text-align:right;'>{$formattedPedir}</td></tr>";
+            // }
+            // $mensaje .= "</table>";
+            
+            // $mensaje .= "<br><br><br><p>Desde ya muchas gracias <br>Saludos</p>";
+            // return $mensaje;
     });
 
     $app->get('/empresas', function ($request, $response, $args) use ($container, $companiesController){
