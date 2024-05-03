@@ -59,7 +59,7 @@ function appendRowCustomer(customer, estado, index){
 	if(correos != '')
 		td3 += '<a onclick="return false;" href="mailto:' + correos +'">' + correos + '</a> </td>'
 	else
-		td3+= '</td>'
+		td3+= '<a onclick="return false;"> </a></td>'
 
 	if(telefonos != '')
 		td4 +=  telefonos + '</a> </td>';
@@ -330,7 +330,7 @@ function newCustomer(){
 				console.log(response);
 				message = "Error. Ya existe un cliente con ese documento";
 				$('#modalNewCustomer').modal('hide');
-				showReplyMessage(response.result, message);
+				showReplyMessage(1, message);
 				$('#modalButtonResponseCancel').attr("disabled", true);
 				$( "#modalButtonResponse" ).off( "click");
 				$('#modalButtonResponse').click(function(){
@@ -416,7 +416,7 @@ function appendCustomer(object){
 		object.contacts.forEach(function(contact) {
 			if(contact.contactType == 1)
 				tdCorreo = "<td> <a onclick=\"return false;\" href=\"mailto:" + contact.value + "\">empresa@testttt.com</a> </td>"
-			if(contact.contactType == 5)
+			if(contact.contactType == 5 || contact.contactType == 6)
 				tdTelefono = "<td>" + contact.value + "</td>"
 		})
 	}
