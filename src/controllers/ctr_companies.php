@@ -436,10 +436,12 @@ class ctr_companies{
 				$response->caes = $caes;
 				fclose($file_handle); // Close the file
 			} else {
-				echo "No se pudo abrir el archivo: $file_path";
+				// echo "No se pudo abrir el archivo: $file_path";
+				$response->error = "Error interno del servidor. No se pudo abrir el archivo txt";
 			}
 		} else {
-			echo "El archivo no existe: $file_path";
+			$response->error = "Empresa sin necesidad de pedir CAEs";
+			// echo "El archivo no existe: $file_path";
 		}
 		$response->rut = $rut;
 		return $response;
