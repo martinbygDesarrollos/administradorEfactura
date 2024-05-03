@@ -407,34 +407,41 @@ class ctr_companies{
 		return $restController->saveInfoAdicional($value, $rut);
 	}
 
-	public function createMailgetCaes($rut){
+	public function createMailgetCaes($rut){ // Esta funcion busca un archivo que se genera junto con el cron cuando se envia el mail empresas con CAEs por vencer
 		$response = new \stdClass();
 		$restController = new ctr_rest();
-		$empresa = $restController->getCompanyData( $rut )->objectResult;
-		$response->razonSocial = $empresa->razonSocial;
-		$response->rut = $empresa->rut;
-		if (isset($empresa->caes) && is_array($empresa->caes)) {
-			foreach ($empresa->caes as $cae) {
-				if (isset($cae->total) && isset($cae->disponibles)) {
-					$totalCAEs = $cae->total;
-					$disponiblesCAEs = $cae->disponibles;
-					// Verificar si la cantidad disponibles es menos del 10% del total
-					if ($totalCAEs > 0 && (($disponiblesCAEs / $totalCAEs) < 0.1)) {
-						$estimadoPedir = $this->cuantosCaesPedir($empresa->rut, $cae->tipoCFE);
-						$pocosCaes[] = array(
-							'tipoCFE' => $cae->tipoCFE,
-							'tipoCFEText' => $this->cfeTypeText($cae->tipoCFE),
-							// 'usados' => $estimadoPedir->usadosEnDosAños,
-							'pedir' => $estimadoPedir->cantCaesPedir,
-							// 'disponibles' => $cae->disponibles,
-							// 'total' => $cae->total,
-							// 'disponiblesPorcentaje' => intval((($disponiblesCAEs / $totalCAEs) * 100) , 10)
-						);
-						$response->caes = $pocosCaes;
-					}
+		$file_path = URL_FILES . $rut . '.txt';
+		if (file_exists($file_path)) {
+			$file_handle = fopen($file_path, 'r'); // Open the file in read mode
+			if ($file_handle) {
+				$first_line = fgets($file_handle);
+				$response->razonSocial = $first_line;
+				// echo htmlspecialchars("EMPRESA: " . $first_line) . "<br>";
+				$second_line = fgets($file_handle);
+				$num_loops = intval($second_line);
+				$caes = array();
+				for ($i = 1; $i <= $num_loops; $i++) {
+					$line = fgets($file_handle);
+					$parts = explode(',', $line);
+					
+					$tipoCFE = trim($parts[0]);
+					$pedir = trim($parts[1]);
+		
+					$caes[] = array(
+						'tipoCFE' => $tipoCFE,
+						'tipoCFEText' => $this->cfeTypeText($tipoCFE),
+						'pedir' => $pedir
+					);
 				}
+				$response->caes = $caes;
+				fclose($file_handle); // Close the file
+			} else {
+				echo "No se pudo abrir el archivo: $file_path";
 			}
+		} else {
+			echo "El archivo no existe: $file_path";
 		}
+		$response->rut = $rut;
 		return $response;
 	}
 
@@ -464,63 +471,6 @@ class ctr_companies{
 			default: return "";
 		}
     }
-
-	function cuantosCaesPedir($rut, $type){
-
-		$response = new stdClass();
-		$response->cantCaesPedir = 0;
-		$response->usadosEnDosAños = 0;
-	
-		define("FROM", date("YmdHis", strtotime("-2 year", strtotime(date("YmdHis")))));
-		define("TO", date("YmdHis"));
-		define("PAGE_SIZE", 500);
-	
-		$emitidos = $this->enviarConsulta("company/$rut/cfe/emitidos?From=".FROM."&To=".TO."&Type=$type&PageSize=".PAGE_SIZE);
-		$usadosEnDosAños = count($emitidos);
-	
-		if ( count($emitidos) == PAGE_SIZE ){
-			do {
-				$lastId = end($emitidos)->id;
-				$emitidos = $this->enviarConsulta("company/$rut/cfe/emitidos?LastId=".$lastId."&From=".FROM."&To=".TO."&Type=$type&PageSize=".PAGE_SIZE);
-				$usadosEnDosAños += count($emitidos);
-			} while (count($emitidos) === PAGE_SIZE);
-		}
-		$cantCaesPedir = 500;
-		while($usadosEnDosAños > $cantCaesPedir){
-			$cantCaesPedir += 500;
-		};
-		// $cantCaesPedir = ( round($usadosEnDosAños / 500) * 500 ) == 0 ? 500 : round($usadosEnDosAños / 500) * 500;
-	
-		$response->cantCaesPedir = $cantCaesPedir;
-		$response->usadosEnDosAños = $usadosEnDosAños;
-		return $response;
-	}
-
-	function enviarConsulta($path){
-		//CONEXIÓN BD
-		$connection = new mysqli(DB_HOST, DB_USR, DB_PASS, DB_DB) or die("No se puede conectar con la Base de Datos");
-		$connection->set_charset("utf8");
-		if($connection){
-			$query = $connection->prepare("SELECT tokenRest FROM `usuarios` WHERE correo = 'guillermo@gargano.com.uy'");
-			$query->execute();
-			$result = $query->get_result();
-			$tokenRest = $result->fetch_object()->tokenRest;
-		}
-	
-	
-		$opciones = array('http' =>
-			array(
-				'method'  => 'GET',
-				'header'  => array("Accept: aplication/json", "Authorization: Bearer " . $tokenRest),
-			)
-		);
-	
-		$contexto = stream_context_create($opciones);
-		$resultado = file_get_contents(URL_REST.$path, false, $contexto);//rest companies
-		$resultCompanies = json_decode($resultado);
-	
-		return $resultCompanies;
-	}
 
 	public function expireColorWarning($expireDate){
 		$expireInfo = new stdClass();
