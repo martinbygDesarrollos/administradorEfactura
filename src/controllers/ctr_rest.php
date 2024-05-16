@@ -669,6 +669,69 @@ class ctr_rest{
 		return $response;
 	}
 
+	public function getEmitidos( $rut, $lastId ){
+
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+		$response->objectResult = new \stdClass();
+
+		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
+		if ( $token->result == 2 ){
+			$tokenRest = $token->objectResult->tokenRest;
+			$petitionResponse = $petitionClass->getEmitidos( $tokenRest, $rut, $lastId);
+			$petitionResponse = json_decode($petitionResponse);
+			$response->result = 2;
+			$response->objectResult->emitidos = $petitionResponse;
+		}else return $token;
+
+		return $response;
+	}
+
+	public function getRecibidos( $rut, $lastId ){
+
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+		$response->objectResult = new \stdClass();
+
+		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
+		if ( $token->result == 2 ){
+			$tokenRest = $token->objectResult->tokenRest;
+			$petitionResponse = $petitionClass->getRecibidos( $tokenRest, $rut, $lastId);
+			$petitionResponse = json_decode($petitionResponse);
+			$response->result = 2;
+			$response->objectResult->recibidos = $petitionResponse;
+		}else return $token;
+
+		return $response;
+	}
+
+	public function getCFE($rut, $RUTEmisor, $tipoCFE, $serieCFE, $numeroCFE){
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+		$response->objectResult = new \stdClass();
+
+		$token = $usersController->getTokenUserLogued($_SESSION['rutUserLogued']);
+		if ( $token->result == 2 ){
+			$tokenRest = $token->objectResult->tokenRest;
+			// $petitionResponse = $petitionClass->getCFE($tokenRest, $rut, $tipoCFE, $serieCFE, $numeroCFE);
+			$petitionResponse = $petitionClass->consultarCFE($tokenRest, $rut, $tipoCFE, $serieCFE, $RUTEmisor, $numeroCFE, 1, "text/html;template=A5Vertical");
+			$petitionResponse = json_decode($petitionResponse);
+			$response->result = 2;
+			$response->objectResult = $petitionResponse;
+		}else return $token;
+
+		return $response;
+	}
+
 	public function loadUser( $rut, $email ){
 
 		$petitionClass = new sendPetition();

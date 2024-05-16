@@ -559,6 +559,30 @@ class ctr_companies{
 		return $responseCustomers;
 	}
 
+	public function getEmitidos($rut, $lastId){
+		$restController = new ctr_rest();
+		if($lastId == "") $lastId = null;
+		$responseEmitidos = $restController->getEmitidos( $rut, $lastId );
+		
+		return $responseEmitidos;
+	}
+
+	public function getRecibidos($rut, $lastId){
+		$restController = new ctr_rest();
+		if($lastId == "") $lastId = null;
+		$responseRecibidos = $restController->getRecibidos( $rut, $lastId );
+		
+		return $responseRecibidos;
+	}
+	
+	public function getCFE($rut, $RUTEmisor, $tipoCFE, $serieCFE, $numeroCFE){
+		$restController = new ctr_rest();
+
+		$responseCFE = $restController->getCFE($rut, $RUTEmisor, $tipoCFE, $serieCFE, $numeroCFE);
+		
+		return $responseCFE;
+	}
+
 }
 
 

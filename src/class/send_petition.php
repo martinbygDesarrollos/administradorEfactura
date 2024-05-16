@@ -61,6 +61,41 @@ class sendPetition{
 		return $thisClass->prepareAndSendCurl("POST", "customers/" . $rut , $token, $customer);
 	}
 
+	public function getEmitidos( $token, $rut, $lastId = null){
+		$thisClass = new sendPetition();
+		$lastId = $lastId ? "?LastId=$lastId" . "&" : "?";
+		
+		return $thisClass->prepareAndSendCurl("GET", "company/".$rut."/cfe/emitidos" . $lastId . "PageSize=30", $token, null);
+	}
+
+	public function getRecibidos( $token, $rut, $lastId = null){
+		$thisClass = new sendPetition();
+		$lastId = $lastId ? "?LastId=$lastId" . "&" : "?";
+		
+		return $thisClass->prepareAndSendCurl("GET", "company/".$rut."/cfe/received" . $lastId . "PageSize=30", $token, null);
+	}
+
+	public function getCFE($token, $rut, $tipoCFE, $serieCFE, $numeroCFE){
+		$thisClass = new sendPetition();
+
+		// return $thisClass->prepareAndSendCurl("GET", "company/" . $rut . "/cfe?seriecfe=" . $serieCFE . "&numerocfe=" . $numeroCFE . "&conrepresentacionimpresa=1&formatorepresentacionimpresa=application%2Fjson;template=a4&tipocfe=" . $tipoCFE, $token, null);
+		return $thisClass->prepareAndSendCurl("GET", "company/" . $rut . "/cfe?ConRepresentacionImpresa=1&FormatoRepresentacionImpresa=application%2Fjson&NumeroCFE=" . $numeroCFE . "&SerieCFE=" . $serieCFE . "&TipoCFE=" . $tipoCFE, $token, null);
+	}
+
+	public function consultarCFE($token, $rut, $tipoCFE, $serieCFE, $rutEmisor, $numeroCFE, $repImpresa, $formatImpresion){
+		$thisClass = new sendPetition();
+		// $rutEmisor = null;
+		// $repImpresa = 1;
+		// $formatImpresion = "text/html;template=A5Vertical";
+		if(is_null($rutEmisor) || $rutEmisor == "")
+			$rutEmisor = "";
+		else
+			$rutEmisor = '&RUTEmisor=' . $rutEmisor;
+
+		$url = "company/" . $rut . "/cfe?tipocfe=". $tipoCFE . "&seriecfe=" . $serieCFE . "&numerocfe=" . $numeroCFE . "&conrepresentacionimpresa=" . $repImpresa . "&formatorepresentacionimpresa=" . $formatImpresion . $rutEmisor;
+		return $thisClass->prepareAndSendCurl("GET", $url, $token, null);
+	}
+
 	public function getUser( $token, $rut, $email){
 		$thisClass = new sendPetition();
 

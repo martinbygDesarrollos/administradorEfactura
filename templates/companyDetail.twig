@@ -5,16 +5,18 @@
 		<div class="card-header bg-light">
 			<div class="nav d-flex nav-pills bordered" id="v-pills-tab" role="tablist" aria-orientation="horizontal">
 				{# <a class="btn  active" data-toggle="pill" href="#branch-data" role="tab" aria-controls="v-pills-profile" aria-selected="true">Principal</a> #}
-				<a class="btn active" data-toggle="pill" href="#sucursales-data" role="tab" aria-controls="v-pills-profile" aria-selected="true">Sucursales</a>
-				<a class="btn" data-toggle="pill" href="#colors-data" role="tab" aria-controls="v-pills-profile" aria-selected="false" onclick="getColorsInfo()">Rep. impresa</a>
-				<a class="btn" data-toggle="pill" href="#caes-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">CAES</a>
-				<a class="btn " data-toggle="pill" href="#resoluciones-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Resoluciones</a>
-				<a class="btn " data-toggle="pill" href="#facturacion-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Facturación</a>
+				<a class="btn active mt-2" data-toggle="pill" href="#sucursales-data" role="tab" aria-controls="v-pills-profile" aria-selected="true">Sucursales</a>
+				<a class="btn mt-2" data-toggle="pill" href="#colors-data" role="tab" aria-controls="v-pills-profile" aria-selected="false" onclick="getColorsInfo()">Rep. impresa</a>
+				<a class="btn mt-2" data-toggle="pill" href="#caes-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">CAES</a>
+				<a class="btn mt-2" data-toggle="pill" href="#resoluciones-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Resoluciones</a>
+				<a class="btn mt-2" data-toggle="pill" href="#facturacion-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Facturación</a>
+				<a class="btn mt-2" data-toggle="pill" href="#importar-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Importación emitidos</a>
+				<a class="btn mt-2" data-toggle="pill" href="#importar-receipt" role="tab" aria-controls="v-pills-profile" aria-selected="false">Importación recibidos</a>
+				<a class="btn mt-2" data-toggle="pill" href="#users-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Usuarios</a>
+				<a class="btn mt-2" data-toggle="pill" href="#customers-data" role="tab" aria-controls="v-pills-profile" aria-selected="false" >Clientes</a>
+				<a class="btn mt-2" data-toggle="pill" href="#emitidos-data" role="tab" aria-controls="v-pills-profile" aria-selected="false" onclick="$('#emitidosTableBody tr').remove();getEmitidos(null)">Emitidos</a>
+				<a class="btn mt-2" data-toggle="pill" href="#recibidos-data" role="tab" aria-controls="v-pills-profile" aria-selected="false" onclick="$('#emitidosTableBody tr').remove();getRecibidos(null)">Recibidos</a>
 				<!--a class="btn " data-toggle="pill" href="#estadisticas-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Estadísticas</a-->
-				<a class="btn " data-toggle="pill" href="#importar-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Importación emitidos</a>
-				<a class="btn " data-toggle="pill" href="#importar-receipt" role="tab" aria-controls="v-pills-profile" aria-selected="false">Importación recibidos</a>
-				<a class="btn " data-toggle="pill" href="#users-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Usuarios</a>
-				<a class="btn " data-toggle="pill" href="#customers-data" role="tab" aria-controls="v-pills-profile" aria-selected="false" >Clientes</a>
 			</div>
 		</div>
 		{# {{giros}} #}
@@ -67,6 +69,12 @@
 				<!-- CLIENTES -->
 				{# <div class="containerCustomers" style="max-height: 80vh;"> #}
 					{% include("customers.twig") %}
+
+				<!-- EMITIDOS -->
+					{% include("emitidos.twig") %}
+
+				<!-- RECIBIDOS -->
+					{% include("recibidos.twig") %}
 				{# </div> #}
 			</div>
 		</div>
@@ -82,9 +90,13 @@
 <script type="text/javascript" src="{{ path_for('Start') }}scripts/importCfeReceipt.js{{ version }}"></script>
 <script type="text/javascript" src="{{ path_for('Start') }}scripts/repImpresa.js{{ version }}"></script>
 <script type="text/javascript" src="{{ path_for('Start') }}scripts/customers.js{{ version }}"></script>
+<script type="text/javascript" src="{{ path_for('Start') }}scripts/emitidos.js{{ version }}"></script>
+<script type="text/javascript" src="{{ path_for('Start') }}scripts/recibidos.js{{ version }}"></script>
 
 <script type="text/javascript">
 	$(document).ready(() => {
+		lastIdEmitidos = null;
+		lastIdRecibidos = null;
 		branchSelected = $("#selectBranchCompanieDetails").val();
 		rutSelected = $("#textRutCompanieSelected").text();
 		loadBranchCompanieData(branchSelected, rutSelected);
@@ -95,6 +107,18 @@
 		$('.containerTable.customers').on('scroll', function() {
 			if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight - 10) {
 				updateTable('customersTableBody');
+			}
+		});
+
+		$('.containerTable.emitidos').on('scroll', function() {
+			if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight - 10) {
+				getEmitidos(lastIdEmitidos);
+			}
+		});
+
+		$('.containerTable.recibidos').on('scroll', function() {
+			if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight - 10) {
+				getEmitidos(lastIdRecibidos);
 			}
 		});
 	});

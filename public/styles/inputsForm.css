@@ -25,7 +25,7 @@
 .form__field:focus {
   padding-bottom: 0.3rem;
   border-width: 0.1rem;
-  border-image: linear-gradient(to right, $primary,$secondary);
+  border-image: linear-gradient(to right, primary,secondary);
   border-image-slice: 1;
 }
 
@@ -151,6 +151,6 @@
 
 
 
-.modal-dialog{
-  max-width: 50%;
-}
+/* .modal-dialog{ */
+  /* max-width: 50%; */
+/* } */

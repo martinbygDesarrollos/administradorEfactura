@@ -59,7 +59,7 @@ return function (App $app){
             }
             return $mensaje;
     });
-
+    
     $app->get('/empresas', function ($request, $response, $args) use ($container, $companiesController){
         $args['version'] = FECHA_ULTIMO_PUSH;
         if ( isset($_SESSION['mailUserLogued']) ){
@@ -716,6 +716,69 @@ return function (App $app){
 				// return json_encode($response);
             } else return json_encode($saveCustomerResponse);
             return json_encode($response);
+        } else return json_encode(["result"=>0]);
+    });
+
+    $app->post('/getEmitidos', function ($request, $response, $args) use ($companiesController){
+        $response = new \stdClass();
+
+        if ( $_SESSION['mailUserLogued'] ){
+
+            $data = $request->getParams();
+            $rut = $data['rut'];
+            $lastId = $data['lastId'];
+            $emitidosResponse = $companiesController->getEmitidos($rut, $lastId);
+			
+            if ( $emitidosResponse->result == 2 ){
+				$response->result = 2;
+				$response->objectResult = $emitidosResponse->objectResult;
+				return json_encode($response);
+            }else
+                return json_encode($response);
+        } else return json_encode(["result"=>0]);
+    });
+
+    $app->post('/getRecibidos', function ($request, $response, $args) use ($companiesController){
+        $response = new \stdClass();
+
+        if ( $_SESSION['mailUserLogued'] ){
+
+            $data = $request->getParams();
+            $rut = $data['rut'];
+            $lastId = $data['lastId'];
+            $recibidosResponse = $companiesController->getRecibidos($rut, $lastId);
+			
+            if ( $recibidosResponse->result == 2 ){
+				$response->result = 2;
+				$response->objectResult = $recibidosResponse->objectResult;
+				return json_encode($response);
+            }else
+                return json_encode($response);
+        } else return json_encode(["result"=>0]);
+    });
+
+    $app->post('/getCFE', function ($request, $response, $args) use ($companiesController){
+        $response = new \stdClass();
+        if ( $_SESSION['mailUserLogued'] ){
+            
+            $data = $request->getParams();
+            // var_dump($data);
+            $rut = $data['rut'];
+            $tipoCFE = $data['tipoCFE'];
+            $serieCFE = $data['serieCFE'];
+            $numeroCFE = $data['numeroCFE'];
+            $RUTEmisor = null;
+            if(isset($data['RUTEmisor']))
+                $RUTEmisor = $data['RUTEmisor'];
+            
+            $cfeResponse = $companiesController->getCFE($rut, $RUTEmisor, $tipoCFE, $serieCFE, $numeroCFE);
+			
+            if ( $cfeResponse->result == 2 ){
+				$response->result = 2;
+				$response->objectResult = $cfeResponse->objectResult;
+				return json_encode($response);
+            }else
+                return json_encode($response);
         } else return json_encode(["result"=>0]);
     });
 
