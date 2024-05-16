@@ -15,7 +15,7 @@
 				<a class="btn mt-2" data-toggle="pill" href="#users-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Usuarios</a>
 				<a class="btn mt-2" data-toggle="pill" href="#customers-data" role="tab" aria-controls="v-pills-profile" aria-selected="false" >Clientes</a>
 				<a class="btn mt-2" data-toggle="pill" href="#emitidos-data" role="tab" aria-controls="v-pills-profile" aria-selected="false" onclick="$('#emitidosTableBody tr').remove();getEmitidos(null)">Emitidos</a>
-				<a class="btn mt-2" data-toggle="pill" href="#recibidos-data" role="tab" aria-controls="v-pills-profile" aria-selected="false" onclick="$('#emitidosTableBody tr').remove();getRecibidos(null)">Recibidos</a>
+				<a class="btn mt-2" data-toggle="pill" href="#recibidos-data" role="tab" aria-controls="v-pills-profile" aria-selected="false" onclick="$('#recibidosTableBody tr').remove();getRecibidos(null)">Recibidos</a>
 				<!--a class="btn " data-toggle="pill" href="#estadisticas-data" role="tab" aria-controls="v-pills-profile" aria-selected="false">Estadísticas</a-->
 			</div>
 		</div>
@@ -118,7 +118,7 @@
 
 		$('.containerTable.recibidos').on('scroll', function() {
 			if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight - 10) {
-				getEmitidos(lastIdRecibidos);
+				getRecibidos(lastIdRecibidos);
 			}
 		});
 	});
