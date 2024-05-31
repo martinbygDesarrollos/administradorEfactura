@@ -264,7 +264,7 @@ a[aria-selected="true"]{
     cursor: pointer;
 }
 
-#modalShowCustomer input[type="checkbox"], input[type="checkbox"] {
+#modalShowCustomer input[type="checkbox"], #modalShowCustomer input[type="checkbox"] {
     visibility: hidden;
 }
 
