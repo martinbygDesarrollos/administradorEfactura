@@ -48,7 +48,8 @@ return function (App $app){
             $data = $companiesController->createMailgetCaes($args['rut']);
             $mensaje = "";
             if(isset($data->error))
-                $mensaje = $data->error;
+                // $mensaje = $data->error;
+                $mensaje = "";
             else {
                 $mensaje = "Buenos días Solicitamos CAEs para la empresa " . $data->razonSocial . "  -  " . $data->rut . "<br><br><br>";
                 foreach ($data->caes as $cae) {
