@@ -1,6 +1,6 @@
 <?php
-require_once '../src/config.php';
-// require_once '/homeX/sigecom/public_html/administradorEfactura/src/config.php';
+// require_once '../src/config.php';
+require_once '/homeX/sigecom/public_html/administradorEfactura/src/config.php';
 
 
 $resultCompanies = enviarConsulta('companies');
