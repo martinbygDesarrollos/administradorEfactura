@@ -2,14 +2,14 @@
 {% block head %}
 {% endblock %}
 {% block content %}
-{% if mailUserLogued %}
+{% if sistemSession %}
 <div class="card w-100">
 	<div class="containerTable" id="containerCompanies">
 		<table class="table">
 			<thead>
 				<div class="d-flex justify-content-between">
 					<div class="">
-						<p id="indexCompanieWork" class="font-weight-bold pl-2">&nbsp;Trabajando con&nbsp;<a href="{{ path_for('Start')}}empresas/{{rutUserLogued}}">{{companieUserLogued}}</a></p>
+						<p id="indexCompanieWork" class="font-weight-bold pl-2">&nbsp;Trabajando con&nbsp;<a href="{{ path_for('Start')}}empresas/{{sistemSession.rutUserLogued}}">{{sistemSession.companieUserLogued}}</a></p>
 					</div>
 					<div class="col-5">
 						<div class="form__group field">

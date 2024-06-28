@@ -5,60 +5,91 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 
 require_once '../src/controllers/ctr_users.php';
+// require_once '../src/controllers/ctr_companies.php';
 
 return function (App $app){
     $container = $app->getContainer();
 
     $usersController = new ctr_users();
+    // $companiesController = new ctr_companies();
 
 	$app->get('/iniciar-sesion', function ($request, $response, $args) use ($container){
-
 		return $this->view->render($response, "signIn.twig", $args);
 	})->setName("SignIn");
 
-	$app->get('/cerrar-session', function ($request, $response, $args){
-		$_SESSION['mailUserLogued'] = null;
-		$_SESSION['rutUserLogued'] = null;
-		$_SESSION['companieUserLogued'] = null;
-		$_SESSION['companiesList'] = null;
-		$_SESSION['lastID'] = null;
+	// $app->get('/cerrar-session', function ($request, $response, $args) use ($container, $usersController){
+    //     if ( $_SESSION['mailUserLogued'] ){
+    //         $responseCall = $usersController->logout($_SESSION['mailUserLogued']);
+    //         if($responseCall->result == 2){
+    //             $_SESSION['mailUserLogued'] = null;
+    //             $_SESSION['rutUserLogued'] = null;
+    //             $_SESSION['companieUserLogued'] = null;
+    //             $_SESSION['companiesList'] = null;
+    //             $_SESSION['lastID'] = null;
+    //         }
+    //     }
+	// 	return $response->withRedirect($request->getUri()->getBaseUrl());
+	// })->setName("SignOut");
+
+    $app->get('/cerrar-session', function ($request, $response, $args) use ($container, $usersController) {
+        $responseCurrentSession = $usersController->validateSession();
+		if($responseCurrentSession->result == 2){
+            $responseLogout = $usersController->logout();
+            // if($responseLogout->result == 2)
+            // session_destroy();
+        }
 		return $response->withRedirect($request->getUri()->getBaseUrl());
 	})->setName("SignOut");
+
 
 ////////////////////////////////////////////////////////////////////////////////////7
 
 	$app->post('/login', function ($request, $response, $args) use ($usersController){
-		$data = $request->getParams();
-		$correo = $data['correo'];
-		$contra = $data['contra'];
-
-		$result = $usersController->login($correo, $contra);
-		return json_encode($result);
-	});
+        $responseCurrentSession = $usersController->validateSession();
+		// return json_encode($responseCurrentSession->message);
+		if($responseCurrentSession->result != 2){ // O sea que no hay session seteada (Si devuelve 0)
+            // var_dump($responseCurrentSession);
+            $data = $request->getParams();
+            $correo = $data['correo'];
+            $contra = $data['contra'];
+            $force = (strtolower($data['force']) === "false") ? false : true;
+            // $responseCall = $companiesController->getCompanies($correo);
+            // var_dump($responseCall);
+            // exit;
+            // if($responseCall->result == 2){
+            $result = $usersController->login($correo, $contra, $force);
+            // exit;
+            return json_encode($result);
+            // }
+		} else {
+            //SI hay una session
+            return json_encode($responseCurrentSession);
+        }
+    });
 
 	$app->post('/loadListUser', function ($request, $response, $args) use ($usersController){ // ARREGLARRRR
         $response = new \stdClass();
-
-        if ( $_SESSION['mailUserLogued'] ){
-
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+        // if ( $_SESSION['mailUserLogued'] ){
             $data = $request->getParams();
             $rut = $data['rut'];
-			
             $usersResponse = $usersController->loadListUser($rut);
-			
             if ( $usersResponse->result == 2 ){
 				$response->result = 2;
 				$response->objectResult = $usersResponse->objectResult;
 				return json_encode($response);
-				
-            }else
-                return json_encode($response);
+            }else {
+                return json_encode($usersResponse);
+            }
         }else return json_encode(["result"=>0]);
     });
 
 	$app->post('/loadUserDetails', function ($request, $response, $args) use ($usersController){
         $response = new \stdClass();
-        if ( $_SESSION['mailUserLogued'] ){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+        // if ( $_SESSION['mailUserLogued'] ){
 
             $data = $request->getParams();
             $rut = $data['rut'];
@@ -79,7 +110,9 @@ return function (App $app){
 	
 	$app->post('/updateUser', function ($request, $response, $args) use ($usersController){
         $response = new \stdClass();
-        if ( $_SESSION['mailUserLogued'] ){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+        // if ( $_SESSION['mailUserLogued'] ){
 
             $data = $request->getParams();
             $rut = $data['rut'];
@@ -111,7 +144,9 @@ return function (App $app){
 
 	$app->post('/newUser', function ($request, $response, $args) use ($usersController){
         // $response = new \stdClass();
-        if ( $_SESSION['mailUserLogued'] ){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+        // if ( $_SESSION['mailUserLogued'] ){
             $data = $request->getParams();
             $rut = $data['rut'];
             $email = $data['email'];
@@ -124,7 +159,9 @@ return function (App $app){
     });
 	
 	$app->post('/updatePassword', function ($request, $response, $args) use ($usersController){
-        if ( $_SESSION['mailUserLogued'] ){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+        // if ( $_SESSION['mailUserLogued'] ){
             $data = $request->getParams();
             $rut = $data['rut'];
             $email = $data['email'];

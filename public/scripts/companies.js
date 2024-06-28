@@ -356,6 +356,7 @@ function loadBranchCompanieData( value, rut  ){
 
 function loadUserDetails( email ){
 	rutSelected = $("#textRutCompanieSelected").text();
+	mostrarLoader(true)
 	sendAsyncPost("loadUserDetails", {email: email, rut: rutSelected})
 	.then((response)=>{
 		if ( response.result == 2 ){
@@ -406,8 +407,13 @@ function loadUserDetails( email ){
 				$('#modalUserState').addClass('user-state inactivo');
 				$('#modalUserState').text("INACTIVO")
 			}
-		}else if ( response.result == 0 ){
+			mostrarLoader(false)
+			$('#modalShowUser').modal();
+		} else if ( response.result == 0 ){
+			mostrarLoader(false)
 			// window.location.href = getSiteURL() + "cerrar-session";
+		} else {
+			mostrarLoader(false)
 		}
 	})
 }
@@ -452,7 +458,7 @@ function changeUserState(){
 
 function showModalUser(email){
 	loadUserDetails(email);
-	$('#modalShowUser').modal();
+	// $('#modalShowUser').modal();
 }
 
 function showModalNewUser(){

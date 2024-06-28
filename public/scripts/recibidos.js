@@ -8,10 +8,11 @@ function getRecibidos(lastId){
 	sendAsyncPost("getRecibidos", {rut: rutSelected, lastId : lastId})
 	.then((response)=>{
 		if ( response.result == 2 ){
-			createRowsToRecibidosTable(response.objectResult.recibidos);
-            lastItem = response.objectResult.recibidos[response.objectResult.recibidos.length - 1];
-            lastIdRecibidos = lastItem.id
-            
+            if(response.objectResult.recibidos.length > 0) {
+                createRowsToRecibidosTable(response.objectResult.recibidos);
+                lastItem = response.objectResult.recibidos[response.objectResult.recibidos.length - 1];
+                lastIdRecibidos = lastItem.id
+            }
 		} else if ( response.result == 0 ){
 		// 	// window.location.href = getSiteURL() + "cerrar-session";
 		}

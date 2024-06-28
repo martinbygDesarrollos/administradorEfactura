@@ -31,14 +31,14 @@
 				<button id="sidebarCollapse" type="button" class="btn background-template-color text-template-color m-2"></button>
 				<a type="button" href="{{ path_for('Start') }}" class="btn background-template-color text-template-color m-2"><i class="fas fa-home"></i></a>
 			</div>
-			{% if mailUserLogued %}
+			{% if sistemSession %}
 			<div class="d-flex">
-				<h6 class="text-template-background font-italic mt-3 notShowMobile">{{mailUserLogued}}</h6>
+				<h6 class="text-template-background font-italic mt-3 notShowMobile">{{sistemSession.email}}</h6>
 				<a href="{{path_for('SignOut')}}" class="btn btn-danger text-white shadow-sm m-2" data-toggle="tooltip" data-placement="top" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></a>
 			</div>
-			{%else%}
+			{% else %}
 			<a href="{{path_for('SignIn')}}" class="btn btn-success text-white shadow-sm m-2" data-toggle="tooltip" data-placement="top" title="Iniciar sesión"><i class="fas fa-sign-in-alt"></i></a>
-			{%endif%}
+			{% endif %}
 		</div>
 		<div class="container-fluid">
 			<div class="row justify-content-center">
@@ -58,6 +58,15 @@
 			<span aria-hidden="true">&times;</span>
 		</button>
 		<div id="snackbarText"></div>
+	</div>
+	<div id="snackbarWithAction" class="fade">
+		<button type="button" class="close" accesskey="x" aria-label="Close" id="snackbarWithActionClose">
+			<span aria-hidden="true">&times;</span>
+		</button>
+		<div id="snackbarWithActionText" style="display: inline-block;"></div>
+		<button id="snackbarWithActionButton" style="border: none; background: transparent; text-decoration: underline;">
+			Iniciar sesion aquí
+		</button>
 	</div>
 	<div id="modalResponse" class="modal" tabindex="-1" role="dialog">
 		<div class="modal-dialog" role="document">
@@ -81,7 +90,7 @@
 	<script type="text/javascript" src="{{ path_for('Start') }}scripts/sendPost.js{{ version }}"></script>
 	<script type="text/javascript" src="{{ path_for('Start') }}scripts/utils.js{{ version }}"></script>
 	<script type="text/javascript">
-		console.log("calcular opcion del menu activada");
+		{# console.log("calcular opcion del menu activada"); #}
 		if ( window.location.href.includes("cliente") ){
 			$("#nav-link-companie").removeClass("active");
 			$("#nav-link-partner").removeClass("active");

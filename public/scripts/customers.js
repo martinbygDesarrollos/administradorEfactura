@@ -6,9 +6,10 @@ function loadCustomers(){
 	sendAsyncPost("loadListCustomers", {rut: rutSelected})
 	.then((response)=>{
 		if ( response.result == 2 ){
-			$("#customersTableBody tr").remove();
-			createRowsToCustomersTable(response.objectResult.customers, 20);
-	
+			if(response.objectResult.customers) {
+				$("#customersTableBody tr").remove();
+				createRowsToCustomersTable(response.objectResult.customers, 20);
+			}
 		} else if ( response.result == 0 ){
 			// window.location.href = getSiteURL() + "cerrar-session";
 		}

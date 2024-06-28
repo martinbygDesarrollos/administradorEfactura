@@ -22,8 +22,13 @@ class sendPetition{
 
 	public function getCompanies($token){
 		$thisClass = new sendPetition();
-
+		
 		return $thisClass->prepareAndSendCurl("GET", "companies", $token, null);
+	}
+	
+	public function getCountEmitidos($token, $rut, $FROM, $TO, $CFE){
+		$thisClass = new sendPetition();
+		return $thisClass->prepareAndSendCurl("GET", "company/$rut/cfe/emitidos/count?From=".$FROM."&To=".$TO."&Type=$CFE", $token, null);
 	}
 
 

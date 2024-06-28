@@ -7,11 +7,11 @@ require_once 'ctr_rest.php';
 
 class ctr_companies{
 
-	public function getCompanies(){
+	public function getCompanies($email){
 		$companieController = new ctr_companies();
 		$restController = new ctr_rest();
 		$utilClass = new utils();
-		$responseCompanies = $restController->getCompanies();
+		$responseCompanies = $restController->getCompanies($email);
 
 
 		foreach ($responseCompanies->listResult as $key => $value) { //recorriendo empresas
@@ -410,44 +410,288 @@ class ctr_companies{
 	public function createMailgetCaes($rut){ // Esta funcion busca un archivo que se genera junto con el cron cuando se envia el mail empresas con CAEs por vencer
 		$response = new \stdClass();
 		$restController = new ctr_rest();
-		$file_path = URL_FILES . $rut . '.txt';
-		if (file_exists($file_path)) {
-			$file_handle = fopen($file_path, 'r'); // Open the file in read mode
-			if ($file_handle) {
-				$first_line = fgets($file_handle);
-				$response->razonSocial = $first_line;
-				// echo htmlspecialchars("EMPRESA: " . $first_line) . "<br>";
-				$second_line = fgets($file_handle);
-				$num_loops = intval($second_line);
-				$caes = array();
-				for ($i = 1; $i <= $num_loops; $i++) {
-					$line = fgets($file_handle);
-					$parts = explode(',', $line);
-					
-					$tipoCFE = trim($parts[0]);
-					$pedir = trim($parts[1]);
-		
-					$caes[] = array(
-						'tipoCFE' => $tipoCFE,
-						'tipoCFEText' => $this->cfeTypeText($tipoCFE),
-						'pedir' => $pedir
-					);
+		$companieDetails = $restController->getCompanyData( $rut )->objectResult;
+		// var_dump($companieDetails);
+		// echo "<br>";
+		$caesParaPedir = $this->whichCaesToOrder($companieDetails);
+		// var_dump($caesParaPedir);
+		// exit;
+		if (count($caesParaPedir) > 0) {
+			$caes = [];
+			foreach ($caesParaPedir as $cae){
+				$TO = date("YmdHis");
+				
+				$expireThisMonthBool = $this->venceEsteMes($cae);
+				$dateMinusTwoYears = null;
+				$monthsLeft = 0;
+				$hoy = new DateTime(); // Current date
+				$expireDate = new DateTime($cae->vencimiento); // Target date
+				
+				if($expireThisMonthBool == true) {// Si expira este mes los meses para el calculo son 24, calculo simple
+					$dateMinusTwoYears = (clone $hoy)->modify('-2 years');
+				} else { // En este caso debo calcular los meses desde la ultima vez que se pidio
+					$interval = $hoy->diff($expireDate, true);
+					$monthsLeft = $interval->y * 12 + $interval->m;
+					$dateMinusTwoYears = (clone $expireDate)->modify('-2 years');
 				}
-				$response->caes = $caes;
-				fclose($file_handle); // Close the file
-			} else {
-				// echo "No se pudo abrir el archivo: $file_path";
-				$response->error = "Error interno del servidor. No se pudo abrir el archivo txt";
+				
+				$FROM = $dateMinusTwoYears->format('YmdHis');
+
+				$responseEmitidos = $restController->getCountEmitidos( $rut, $FROM, $TO, $cae->tipoCFE )->objectResult;
+				// var_dump($rut);
+				// var_dump($FROM);
+				// var_dump($TO);
+				// var_dump($cae->tipoCFE);
+				// var_dump($responseEmitidos);
+				// exit;
+				$usados = isset($responseEmitidos->cfeCount) ? $responseEmitidos->cfeCount : 0;
+		
+				$mesesTranscurridos = 24 - $monthsLeft;
+				$usadosPorMes = $usados / $mesesTranscurridos;
+				$cantCaesPedir = $usadosPorMes * 1.1 * 24;
+				if($cantCaesPedir <= 100 )
+					$cantCaesPedir = 100;
+				else
+					$cantCaesPedir = (int)ceil($cantCaesPedir / 100) * 100;
+				$caes[] = (object) ['tipoCFE' => $cae->tipoCFE, 'pedir' => $cantCaesPedir, 'usados' => $usados, 'usadosPorMes' => $usadosPorMes, 'razon' => $cae->razon, 'vencimiento' => $cae->vencimiento, 'tipoCFEText' => $this->cfeTypeText($cae->tipoCFE) ];
 			}
-		} else {
-			$response->error = "Empresa sin necesidad de pedir CAEs";
-			// echo "El archivo no existe: $file_path";
+			$response->caes = $caes;
 		}
 		$response->rut = $rut;
+		$response->razonSocial = $companieDetails->razonSocial;
 		return $response;
 	}
 
-	function cfeTypeText($typeCode) {
+	public function venceEsteMes($cae){ // calcula si vence dentro de los proximo 30 dias
+		if (isset($cae->vencimiento) && $cae->vencimiento != ""){
+			// echo substr($cae->vencimiento, 0, 10);
+			$dateTime = new DateTime(substr($cae->vencimiento, 0, 10));
+			$date = $dateTime->format('Ymd');
+			$nextMonth = date('Ymd', strtotime("+1 month"));
+			if($date <= $nextMonth){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public function quedanPocos($cae){ // calcula si quedan menos del 10%
+		$totalCAEs = $cae->total;
+		$disponiblesCAEs = $cae->disponibles;
+		if ($totalCAEs > 0 && (($disponiblesCAEs / $totalCAEs) < 0.1)) {
+			return true;
+		}
+		return false;
+	}
+	
+	public function findByTipoCFE($caes, $tipoCFE) {
+		$filtered = array_filter($caes, function($cae) use ($tipoCFE) {
+			return $cae->tipoCFE == $tipoCFE;
+		});
+		// Return the first item found or null if none found
+		return !empty($filtered) ? array_values($filtered)[0] : null;
+	}
+
+	public function gruposIncompleto($companieDetails){ // calcula por grupo si faltan miembros (Ej grupo basico = 101,102,103,111,112,113)
+		$grupos = [];
+		if(isset($companieDetails->dgiResolutionEFac) && $companieDetails->dgiResolutionEFac != ""){
+			$requiredTipos = [101, 102, 103, 111, 112, 113];
+			$foundTipos = [];
+			foreach ($companieDetails->caes as $cae) {
+				if (in_array($cae->tipoCFE, $requiredTipos)) {
+					$foundTipos[] = $cae->tipoCFE;
+				}
+			}
+			// Ensure all required tipos are found
+			foreach ($requiredTipos as $tipo) {
+				if (!in_array($tipo, $foundTipos)) {
+					$grupos[] = "dgiResolutionEFac";
+				}
+			}
+		}
+		if(isset($companieDetails->dgiResolutionERes) && $companieDetails->dgiResolutionERes != ""){
+			$required = 182;
+			$found = false;
+			foreach ($companieDetails->caes as $cae) {
+				if ($cae->tipoCFE == $required) {
+					$found = true;
+					break;
+				}
+			}
+			if (!$found) {
+				$grupos[] = "dgiResolutionERes";
+			}
+		}
+		if(isset($companieDetails->dgiResolutionERem) && $companieDetails->dgiResolutionERem != ""){
+			$required = 181;
+			$found = false;
+			foreach ($companieDetails->caes as $cae) {
+				if ($cae->tipoCFE == $required) {
+					$found = true;
+					break;
+				}
+			}
+			if (!$found) {
+				$grupos[] = "dgiResolutionERem";
+			}
+		}
+		if(isset($companieDetails->dgiResolutionEFacExp) && $companieDetails->dgiResolutionEFacExp != ""){
+			$requiredTipos = [121, 122, 123, 124];
+			$foundTipos = [];
+			foreach ($companieDetails->caes as $cae) {
+				if (in_array($cae->tipoCFE, $requiredTipos)) {
+					$foundTipos[] = $cae->tipoCFE;
+				}
+			}
+			// Ensure all required tipos are found
+			foreach ($requiredTipos as $tipo) {
+				if (!in_array($tipo, $foundTipos)) {
+					$grupos[] = "dgiResolutionEFacExp";
+				}
+			}
+		}
+		if(isset($companieDetails->dgiResolutionCtaAjena) && $companieDetails->dgiResolutionCtaAjena != ""){
+			$requiredTipos = [131, 132, 133, 141, 142, 143];
+			$foundTipos = [];
+			foreach ($companieDetails->caes as $cae) {
+				if (in_array($cae->tipoCFE, $requiredTipos)) {
+					$foundTipos[] = $cae->tipoCFE;
+				}
+			}
+			// Ensure all required tipos are found
+			foreach ($requiredTipos as $tipo) {
+				if (!in_array($tipo, $foundTipos)) {
+					$grupos[] = "dgiResolutionCtaAjena";
+				}
+			}
+		}
+		if(isset($companieDetails->dgiResolutionEBolEntrada) && $companieDetails->dgiResolutionEBolEntrada != ""){
+			$requiredTipos = [151, 152, 153];
+			$foundTipos = [];
+			foreach ($companieDetails->caes as $cae) {
+				if (in_array($cae->tipoCFE, $requiredTipos)) {
+					$foundTipos[] = $cae->tipoCFE;
+				}
+			}
+			// Ensure all required tipos are found
+			foreach ($requiredTipos as $tipo) {
+				if (!in_array($tipo, $foundTipos)) {
+					$grupos[] = "dgiResolutionEBolEntrada";
+				}
+			}
+		}
+		return $grupos;
+	}
+
+	public function whichCaesToOrder($companieDetails) {
+		$pedirCAEs = [];
+		$pedirResolutionEFac = false;
+		$pedirResolutionERes = false;
+		$pedirResolutionERem = false;
+		$pedirResolutionEFacExp = false;
+		$pedirResolutionCtaAjena = false;
+		$pedirResolutionEBolEntrada = false;
+		
+		$modifiedCaes = [];
+	
+		if(count($companieDetails->caes) <= 0){
+			$pedirResolutionEFac = true;
+			$pedirResolutionERes = true;
+			$pedirResolutionERem = true;
+			$pedirResolutionEFacExp = true;
+			$pedirResolutionCtaAjena = true;
+			$pedirResolutionEBolEntrada = true;
+			foreach ($companieDetails->caes as $cae) {
+				$cae->razon = 'NO QUEDAN';
+				$modifiedCaes[] = $cae;
+			}
+		} else {
+			foreach ($companieDetails->caes as $cae) { // verificar los caes por grupo (si vence este mes o quedan pocos del grupo y la empresa tiene la resolucion pido todo el grupo)
+				// var_dump($cae);
+				// echo "<br>";
+				if ($this->venceEsteMes($cae) || $this->quedanPocos($cae)) {
+					// echo "VENCE AHORA O POCOS <br>";
+					if($this->venceEsteMes($cae)) // DE NUEVO
+						$cae->razon = 'VENCE PRONTO';
+					else
+						$cae->razon = 'QUEDAN POCOS';
+	
+					if ($cae->tipoCFE == 101 || $cae->tipoCFE == 102 || $cae->tipoCFE == 103 || $cae->tipoCFE == 111 || $cae->tipoCFE == 112 || $cae->tipoCFE == 113)
+						$pedirResolutionEFac = true;
+					else if ($cae->tipoCFE == 182)
+						$pedirResolutionERes = true;
+					else if ($cae->tipoCFE == 181)
+						$pedirResolutionERem = true;
+					else if ($cae->tipoCFE == 121 || $cae->tipoCFE == 122 || $cae->tipoCFE == 123 || $cae->tipoCFE == 124 )
+						$pedirResolutionEFacExp = true;
+					else if ($cae->tipoCFE == 131 || $cae->tipoCFE == 132 || $cae->tipoCFE == 133 || $cae->tipoCFE == 141 || $cae->tipoCFE == 142 || $cae->tipoCFE == 143)
+						$pedirResolutionCtaAjena = true;
+					else if ($cae->tipoCFE == 151 || $cae->tipoCFE == 152 || $cae->tipoCFE == 153)
+						$pedirResolutionEBolEntrada = true;
+					$modifiedCaes[] = $cae;
+				}// else {
+					// echo "NO VENCE <br>";
+				// }
+			}
+			$grupoIncompleto = $this->gruposIncompleto($companieDetails);
+			if(count($grupoIncompleto) > 0){ // verifico que si falta algun cae de los grupos
+				if (in_array("dgiResolutionEFac", $grupoIncompleto)) {
+					$pedirResolutionEFac = true;
+				}
+				if (in_array("dgiResolutionERes", $grupoIncompleto)) {
+					$pedirResolutionERes = true;
+				}
+				if (in_array("dgiResolutionERem", $grupoIncompleto)) {
+					$pedirResolutionERem = true;
+				}
+				if (in_array("dgiResolutionEFacExp", $grupoIncompleto)) {
+					$pedirResolutionEFacExp = true;
+				}
+				if (in_array("dgiResolutionCtaAjena", $grupoIncompleto)) {
+					$pedirResolutionCtaAjena = true;
+				}
+				if (in_array("dgiResolutionEBolEntrada", $grupoIncompleto)) {
+					$pedirResolutionEBolEntrada = true;
+				}
+			}
+		}
+		if(isset($companieDetails->dgiResolutionEFac) && $companieDetails->dgiResolutionEFac != "" && $pedirResolutionEFac){ // Debe tener las 6 basicas
+			$pedirCAEs[] = ($cae = $this->findByTipoCFE($modifiedCaes, 101)) ? $cae : (object) ['tipoCFE' => 101, 'vencimiento' => date('Y-m-d'), 'razon' => 'NO QUEDAN', 'disponibles' => 0, 'total' => 0];
+			$pedirCAEs[] = ($cae = $this->findByTipoCFE($modifiedCaes, 102)) ? $cae : (object) ['tipoCFE' => 102, 'vencimiento' => date('Y-m-d'), 'razon' => 'NO QUEDAN', 'disponibles' => 0, 'total' => 0];
+			$pedirCAEs[] = ($cae = $this->findByTipoCFE($modifiedCaes, 103)) ? $cae : (object) ['tipoCFE' => 103, 'vencimiento' => date('Y-m-d'), 'razon' => 'NO QUEDAN', 'disponibles' => 0, 'total' => 0];
+			$pedirCAEs[] = ($cae = $this->findByTipoCFE($modifiedCaes, 111)) ? $cae : (object) ['tipoCFE' => 111, 'vencimiento' => date('Y-m-d'), 'razon' => 'NO QUEDAN', 'disponibles' => 0, 'total' => 0];
+			$pedirCAEs[] = ($cae = $this->findByTipoCFE($modifiedCaes, 112)) ? $cae : (object) ['tipoCFE' => 112, 'vencimiento' => date('Y-m-d'), 'razon' => 'NO QUEDAN', 'disponibles' => 0, 'total' => 0];
+			$pedirCAEs[] = ($cae = $this->findByTipoCFE($modifiedCaes, 113)) ? $cae : (object) ['tipoCFE' => 113, 'vencimiento' => date('Y-m-d'), 'razon' => 'NO QUEDAN', 'disponibles' => 0, 'total' => 0];
+		}
+		if(isset($companieDetails->dgiResolutionERes) && $companieDetails->dgiResolutionERes != "" && $pedirResolutionERes){ // Debe tener la de Resguardo
+			$pedirCAEs[] = ($cae = $this->findByTipoCFE($modifiedCaes, 182)) ? $cae : (object) ['tipoCFE' => 182, 'vencimiento' => date('Y-m-d'), 'razon' => 'NO QUEDAN',  'disponibles' => 0, 'total' => 0];
+		}
+		if(isset($companieDetails->dgiResolutionERem) && $companieDetails->dgiResolutionERem != "" && $pedirResolutionERem){ // Debe tener la de Remito
+			$pedirCAEs[] = ($cae = $this->findByTipoCFE($modifiedCaes, 181)) ? $cae : (object) ['tipoCFE' => 181, 'vencimiento' => date('Y-m-d'), 'razon' => 'NO QUEDAN',  'disponibles' => 0, 'total' => 0];
+		}
+		if(isset($companieDetails->dgiResolutionEFacExp) && $companieDetails->dgiResolutionEFacExp != "" && $pedirResolutionEFacExp){ // Debe tener las 4 de Exportacion
+			$pedirCAEs[] = ($cae = $this->findByTipoCFE($modifiedCaes, 121)) ? $cae : (object) ['tipoCFE' => 121, 'vencimiento' => date('Y-m-d'), 'razon' => 'NO QUEDAN', 'disponibles' => 0, 'total' => 0];
+			$pedirCAEs[] = ($cae = $this->findByTipoCFE($modifiedCaes, 122)) ? $cae : (object) ['tipoCFE' => 122, 'vencimiento' => date('Y-m-d'), 'razon' => 'NO QUEDAN', 'disponibles' => 0, 'total' => 0];
+			$pedirCAEs[] = ($cae = $this->findByTipoCFE($modifiedCaes, 123)) ? $cae : (object) ['tipoCFE' => 123, 'vencimiento' => date('Y-m-d'), 'razon' => 'NO QUEDAN', 'disponibles' => 0, 'total' => 0];
+			$pedirCAEs[] = ($cae = $this->findByTipoCFE($modifiedCaes, 124)) ? $cae : (object) ['tipoCFE' => 124, 'vencimiento' => date('Y-m-d'), 'razon' => 'NO QUEDAN', 'disponibles' => 0, 'total' => 0];
+		}
+		if(isset($companieDetails->dgiResolutionCtaAjena) && $companieDetails->dgiResolutionCtaAjena != "" && $pedirResolutionCtaAjena){ // Debe tener las 6 de Cuenta Ajena
+			$pedirCAEs[] = ($cae = $this->findByTipoCFE($modifiedCaes, 131)) ? $cae : (object) ['tipoCFE' => 131, 'vencimiento' => date('Y-m-d'), 'razon' => 'NO QUEDAN', 'disponibles' => 0, 'total' => 0];
+			$pedirCAEs[] = ($cae = $this->findByTipoCFE($modifiedCaes, 132)) ? $cae : (object) ['tipoCFE' => 132, 'vencimiento' => date('Y-m-d'), 'razon' => 'NO QUEDAN', 'disponibles' => 0, 'total' => 0];
+			$pedirCAEs[] = ($cae = $this->findByTipoCFE($modifiedCaes, 133)) ? $cae : (object) ['tipoCFE' => 133, 'vencimiento' => date('Y-m-d'), 'razon' => 'NO QUEDAN', 'disponibles' => 0, 'total' => 0];
+			$pedirCAEs[] = ($cae = $this->findByTipoCFE($modifiedCaes, 141)) ? $cae : (object) ['tipoCFE' => 141, 'vencimiento' => date('Y-m-d'), 'razon' => 'NO QUEDAN', 'disponibles' => 0, 'total' => 0];
+			$pedirCAEs[] = ($cae = $this->findByTipoCFE($modifiedCaes, 142)) ? $cae : (object) ['tipoCFE' => 142, 'vencimiento' => date('Y-m-d'), 'razon' => 'NO QUEDAN', 'disponibles' => 0, 'total' => 0];
+			$pedirCAEs[] = ($cae = $this->findByTipoCFE($modifiedCaes, 143)) ? $cae : (object) ['tipoCFE' => 143, 'vencimiento' => date('Y-m-d'), 'razon' => 'NO QUEDAN', 'disponibles' => 0, 'total' => 0];
+		}
+		if(isset($companieDetails->dgiResolutionEBolEntrada) && $companieDetails->dgiResolutionEBolEntrada != "" && $pedirResolutionEBolEntrada){ // Debe tener las 3 de Boleta de entrada
+			$pedirCAEs[] = ($cae = $this->findByTipoCFE($modifiedCaes, 151)) ? $cae : (object) ['tipoCFE' => 151, 'vencimiento' => date('Y-m-d'), 'razon' => 'NO QUEDAN', 'disponibles' => 0, 'total' => 0];
+			$pedirCAEs[] = ($cae = $this->findByTipoCFE($modifiedCaes, 152)) ? $cae : (object) ['tipoCFE' => 152, 'vencimiento' => date('Y-m-d'), 'razon' => 'NO QUEDAN', 'disponibles' => 0, 'total' => 0];
+			$pedirCAEs[] = ($cae = $this->findByTipoCFE($modifiedCaes, 153)) ? $cae : (object) ['tipoCFE' => 153, 'vencimiento' => date('Y-m-d'), 'razon' => 'NO QUEDAN', 'disponibles' => 0, 'total' => 0];
+		}
+		return $pedirCAEs;
+	}
+
+	public function cfeTypeText($typeCode) {
 		switch ($typeCode) {
 			case 101: return "e-Ticket";
 			case 102: return "Nota de Crédito de e-Ticket ";

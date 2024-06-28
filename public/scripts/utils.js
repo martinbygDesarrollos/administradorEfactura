@@ -46,28 +46,28 @@ function dateTypeHtml( date ){ // entrada 2023-02-04T23:24:21.142-03:00 salida 0
 
 
 function showMessage(result, message){
-	console.log("funcion de los mensajes");
+	// console.log("funcion de los mensajes");
 	// Get the snackbar DIV
 	var x = document.getElementById("snackbar");
-	console.log(x)
+	// console.log(x)
 	var y = document.getElementById("snackbarText");
 	// Add the "show" class to DIV
 	y.textContent = message;
 
 	if (result == 0){
-		console.log("result 0");
+		// console.log("result 0");
 		x.className = "show";
 		x.style = "background-color: #F44336DD;";
 
 	}
 	else if( result == 1 ){
-		console.log("result 1");
+		// console.log("result 1");
 		x.className = "show";
 		x.style = "background-color: #FF9800DD;";
 		setTimeout(function(){ x.className = "fade" }, 30000);
 	}
 	else if( result == 2 ){
-		console.log("result 2");
+		// console.log("result 2");
 		x.className = "show";
 		x.style = "background-color: #4CAF50DD;";
 		setTimeout(function(){ x.className = "fade"; x.style = ""; }, 10000);
@@ -75,13 +75,69 @@ function showMessage(result, message){
 
 
 	$('#snackbarButton').click(function(){
-		console.log(x);
+		// console.log(x);
 		x.className = "fade";
 		x.style = "";
 	});
 }
 
+function showMessageWithAction(result, message, correo, contra){
+	// console.log("funcion de los mensajes");
+	// Get the snackbar DIV
+	var x = document.getElementById("snackbarWithAction");
+	// console.log(x)
+	var y = document.getElementById("snackbarWithActionText");
 
+	// var z = document.getElementById("snackbarWithActionButton");
+	// Add the "show" class to DIV
+	y.textContent = message;
+
+	if (result == 0){
+		// console.log("result 0");
+		x.className = "show";
+		x.style = "background-color: #F44336DD;";
+
+	}
+	else if( result == 1 ){
+		// console.log("result 1");
+		x.className = "show";
+		x.style = "background-color: #FF9800DD; z-index: 999;";
+		setTimeout(function(){ x.className = "fade" }, 30000);
+	}
+	else if( result == 2 ){
+		// console.log("result 2");
+		x.className = "show";
+		x.style = "background-color: #4CAF50DD;";
+		// z.style = ;
+		setTimeout(function(){ x.className = "fade"; x.style = ""; }, 10000);
+	}
+
+	$('#snackbarWithActionButton').click(function(){
+		sendAsyncPost("login", {correo: correo, contra: contra, force: true})
+		.then(( response )=>{
+			if(response.result == 2){
+				// document.getElementById("buttonConfirm").disabled = false;
+				window.location.href = getSiteURL();
+			}else if ( response.result == 0 ){
+				// document.getElementById("buttonConfirm").disabled = false;
+				window.location.href = getSiteURL() + "cerrar-session";
+			}else{
+				// document.getElementById("buttonConfirm").disabled = false;
+				// showMessage(response.result, response.message);
+				showMessageWithAction(response.result, response.message, correo, contra);
+			}
+		})
+		// console.log(x);
+		x.className = "fade";
+		x.style = "";
+	});
+
+	$('#snackbarWithActionClose').click(function(){
+		// console.log(x);
+		x.className = "fade";
+		x.style = "";
+	});
+}
 
 
 

@@ -5,18 +5,25 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 
 require_once '../src/controllers/ctr_companies.php';
+require_once '../src/controllers/ctr_users.php';
 
 return function (App $app){
     $container = $app->getContainer();
     $companiesController = new ctr_companies();
+    $usersController = new ctr_users();
 
     //ver el perfil/info detallada de la empresa
-    $app->get('/empresas/{rut}', function ($request, $response, $args) use ($container, $companiesController){
-        $args['version'] = FECHA_ULTIMO_PUSH;
-        $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
-        $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
-        $args['permisos'] = $_SESSION['permissionsUserLogued'];
-        if ( isset($_SESSION['mailUserLogued']) ){
+    $app->get('/empresas/{rut}', function ($request, $response, $args) use ($container, $companiesController, $usersController){
+        $responseCurrentSession = $usersController->validateSession();
+		if($responseCurrentSession->result == 2){
+            $args['sistemSession'] = $responseCurrentSession->currentSession;
+            $args['version'] = FECHA_ULTIMO_PUSH;
+            // $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
+            // $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
+            // $args['permisos'] = $_SESSION['permissionsUserLogued'];
+            // if ( isset($_SESSION['mailUserLogued']) ){
+            // $validateSession = $usersController->validateSession($_SESSION['mailUserLogued'], $_SESSION['tokenLocal']);
+            // if ( $validateSession->result == 2 ){
 
             $company = $companiesController->getCompaniesData($args['rut'])->objectResult;
             // $idSucPrincipal = -1;
@@ -41,7 +48,7 @@ return function (App $app){
             // var_dump($company->objectResult->giros);
             // exit;
             return $this->view->render($response, "companyDetail.twig", $args);
-        }else return $response->withRedirect($request->getUri()->getBaseUrl());
+        } else return $response->withRedirect($request->getUri()->getBaseUrl());
     });
 
     $app->get('/email/{rut}', function ($request, $response, $args) use ($container, $companiesController){
@@ -53,75 +60,83 @@ return function (App $app){
             else {
                 $mensaje = "Buenos días Solicitamos CAEs para la empresa " . $data->razonSocial . "  -  " . $data->rut . "<br><br><br>";
                 foreach ($data->caes as $cae) {
-                    $formattedPedir = number_format($cae['pedir'], 0, '.', '.'); // Format number with thousands separator
-                    $mensaje .= $cae['tipoCFEText'] . "<span style='white-space: pre;'>       -       </span>" . $formattedPedir . "<br>";
+                    $formattedPedir = number_format($cae->pedir, 0, '.', '.'); // Format number with thousands separator
+                    $numberLength = strlen($formattedPedir);
+                    $spaces = str_repeat(' ', 10 - $numberLength); // Adjust '10' based on desired total width
+                    $mensaje .= "<p style=\" font-family: monospace; font-size: large;\">" . $formattedPedir . "<span style='white-space: pre;'>" . $spaces . " - </span>" . $cae->tipoCFEText . "</p>";
                 }
                 $mensaje .= "<br><br><br>Desde ya muchas gracias <br>Saludos";
             }
             return $mensaje;
     });
     
-    $app->get('/empresas', function ($request, $response, $args) use ($container, $companiesController){
+    $app->get('/empresas', function ($request, $response, $args) use ($container, $companiesController, $usersController){
         $args['version'] = FECHA_ULTIMO_PUSH;
-        if ( isset($_SESSION['mailUserLogued']) ){
-            $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
-            if( isset($_SESSION['companiesList'] ) ){
+        $responseCurrentSession = $usersController->validateSession();
+        if ( $responseCurrentSession->result == 2 ){
+        // if ( isset($_SESSION['mailUserLogued']) ){
+            // $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
+            $args['sistemSession'] = $responseCurrentSession->currentSession;
+            // if( isset($_SESSION['companiesList'] ) ){
                 //aca cargar companies
-                $_SESSION['lastID'] = 0;
+                // $_SESSION['lastID'] = 0;
                 //$args['companiesList'] = $_SESSION['companiesList'];
-                if ( !isset($_SESSION['companieUserLogued']) && !isset($_SESSION['rutUserLogued'])){
-                    $objFirstCompanie = array_pop(array_reverse($_SESSION['companiesList']));
+                // if ( !isset($_SESSION['companieUserLogued']) && !isset($_SESSION['rutUserLogued'])){
+                //     $objFirstCompanie = array_pop(array_reverse($_SESSION['companiesList']));
 
-                    $_SESSION['companieUserLogued'] = $objFirstCompanie->razonSocial;
-                    $_SESSION['rutUserLogued'] = $objFirstCompanie->rut;
-                }
-                if ( isset($_SESSION['companieUserLogued']) ){
-                    $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
-                }else{
-                    $_SESSION['companieUserLogued'] = null;
-                    $args['companieUserLogued'] = null;
-                }
-                $args["company"] = null;
-                if ( isset($_SESSION['rutUserLogued']) ){
-                    $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
-                    $company = $companiesController->getCompaniesData($_SESSION['rutUserLogued'])->objectResult;
-                    $args["company"] = $company;
-                }else{
-                    $_SESSION['rutUserLogued'] = null;
-                    $args['rutUserLogued'] = null;
-                }
-            }else{
-                //aca cargar companies
-                $_SESSION['companiesList'] = $companiesController->getCompanies()->listResult;
-                $_SESSION['lastID'] = 0;
-                //$args['companiesList'] = $_SESSION['companiesList'];
-                if ( !isset($_SESSION['companieUserLogued']) && !isset($_SESSION['rutUserLogued'])){
-                    $objFirstCompanie = array_pop(array_reverse($_SESSION['companiesList']));
+                //     $_SESSION['companieUserLogued'] = $objFirstCompanie->razonSocial;
+                //     $_SESSION['rutUserLogued'] = $objFirstCompanie->rut;
+                // }
+                // if ( isset($_SESSION['companieUserLogued']) ){
+                //     $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
+                // }else{
+                //     $_SESSION['companieUserLogued'] = null;
+                //     $args['companieUserLogued'] = null;
+                // }
+                // $args["company"] = null;
+                $company = $companiesController->getCompaniesData($responseCurrentSession->currentSession->rutUserLogued)->objectResult;
+                $args["company"] = $company;
+                // if ( isset($_SESSION['rutUserLogued']) ){
+                //     $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
+                //     $company = $companiesController->getCompaniesData($_SESSION['rutUserLogued'])->objectResult;
+                //     $args["company"] = $company;
+                // }else{
+                //     $_SESSION['rutUserLogued'] = null;
+                //     $args['rutUserLogued'] = null;
+                // }
+            // }else{
+            //     //aca cargar companies
+            //     $_SESSION['companiesList'] = $companiesController->getCompanies()->listResult;
+            //     $_SESSION['lastID'] = 0;
+            //     //$args['companiesList'] = $_SESSION['companiesList'];
+            //     if ( !isset($_SESSION['companieUserLogued']) && !isset($_SESSION['rutUserLogued'])){
+            //         $objFirstCompanie = array_pop(array_reverse($_SESSION['companiesList']));
 
-                    $_SESSION['companieUserLogued'] = $objFirstCompanie->razonSocial;
-                    $_SESSION['rutUserLogued'] = $objFirstCompanie->rut;
-                }
-                if ( isset($_SESSION['companieUserLogued']) ){
-                    $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
-                }else{
-                    $_SESSION['companieUserLogued'] = null;
-                    $args['companieUserLogued'] = null;
-                }
-                $args["company"] = null;
-                if ( isset($_SESSION['rutUserLogued']) ){
-                    $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
+            //         $_SESSION['companieUserLogued'] = $objFirstCompanie->razonSocial;
+            //         $_SESSION['rutUserLogued'] = $objFirstCompanie->rut;
+            //     }
+            //     if ( isset($_SESSION['companieUserLogued']) ){
+            //         $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
+            //     }else{
+            //         $_SESSION['companieUserLogued'] = null;
+            //         $args['companieUserLogued'] = null;
+            //     }
+            //     $args["company"] = null;
+            //     if ( isset($_SESSION['rutUserLogued']) ){
+            //         $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
 
-                    $company = $companiesController->getCompaniesData($_SESSION['rutUserLogued'])->objectResult;
-                    $args["company"] = $company;
-                }else{
-                    $_SESSION['rutUserLogued'] = null;
-                    $args['rutUserLogued'] = null;
-                }
-            }
+            //         $company = $companiesController->getCompaniesData($_SESSION['rutUserLogued'])->objectResult;
+            //         $args["company"] = $company;
+            //     }else{
+            //         $_SESSION['rutUserLogued'] = null;
+            //         $args['rutUserLogued'] = null;
+            //     }
+            // }
         } else {
-            $args['rutUserLogued'] = null;
-            $args['mailUserLogued'] = null;
-            $args['companieUserLogued'] = null;
+            // $args['rutUserLogued'] = null;
+            // $args['mailUserLogued'] = null;
+            // $args['companieUserLogued'] = null;
+            return $response->withRedirect($request->getUri()->getBaseUrl());
         }
         return $this->view->render($response, "companies.twig", $args);
     })->setName("Empresas");
@@ -187,9 +202,10 @@ return function (App $app){
     */
 
     //cambiar los datos de sesion del usuario
-    $app->post('/companies', function ($request, $response, $args) use ($container, $companiesController){
-
-        if ( $_SESSION['mailUserLogued'] ){
+    $app->post('/companies', function ($request, $response, $args) use ($container, $companiesController, $usersController){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+        // if ( $_SESSION['mailUserLogued'] ){
             $response = new \stdClass();
             $data = $request->getParams();
             $rut = $data['rut'];
@@ -197,19 +213,30 @@ return function (App $app){
 
 
             $company = $companiesController->getCompaniesData($rut);
-            $_SESSION['companieUserLogued'] = $company->objectResult->razonSocial;
-            $_SESSION['rutUserLogued'] = $company->objectResult->rut;
+            // $_SESSION['companieUserLogued'] = $company->objectResult->razonSocial;
+            // $_SESSION['rutUserLogued'] = $company->objectResult->rut;
+            // $_SESSION['sistemSession']['companieUserLogued'] = $company->objectResult->razonSocial;
+            // $_SESSION['sistemSession']['rutUserLogued'] = $company->objectResult->rut;
+            $objectSession = $responseCurrentSession->currentSession;
+            $objectSession->rutUserLogued = $company->objectResult->rut;
+            $objectSession->companieUserLogued = $company->objectResult->razonSocial;
+            $_SESSION['sistemSession'] = $objectSession;
+            // var_dump($_SESSION['sistemSession']);
+            // return json_encode($_SESSION['sistemSession']);
+            // exit;
             // var_dump($company->objectResult->giros);
             // exit;
             return json_encode($company);
-        }else return json_encode(["result"=>0]);
+        }else return json_encode($responseCurrentSession);
     });
 
 
 
-    $app->post('/loadCompanies', function ($request, $response, $args) use ($container, $companiesController){
-
-        if ( $_SESSION['mailUserLogued'] ){
+    $app->post('/loadCompanies', function ($request, $response, $args) use ($container, $companiesController, $usersController){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+            $companiesList = $responseCurrentSession->currentSession->companies;
+        // if ( $_SESSION['mailUserLogued'] ){
             $response = new \stdClass();
             $response->result = 2;
 
@@ -230,7 +257,7 @@ return function (App $app){
 
             if ( isset($namecompanie) && $namecompanie != "" ){
 
-                foreach ( $_SESSION['companiesList'] as $key => $value) {
+                foreach ( $companiesList as $key => $value) {
                    $pos = strpos($value->razonSocial, $namecompanie);
                    $pos1 = strpos($value->razonSocial, $namecompanieup);
                    $pos2 = strpos($value->rut, $namecompanie);
@@ -262,7 +289,7 @@ return function (App $app){
             }
             else if ( isset($arrayStatus) && count($arrayStatus) >0 ){
 
-                foreach ( $_SESSION['companiesList'] as $key => $value) {
+                foreach ( $companiesList as $key => $value) {
                     foreach ($arrayStatus as $valStatus) {
                         $posStatus = strpos($value->estado, $valStatus);
 
@@ -285,10 +312,10 @@ return function (App $app){
 
             }
             else{
-                $response->companiesList = array_slice($_SESSION['companiesList'],$lastid,15);
+                $response->companiesList = array_slice($companiesList,$lastid,15);
 
-                if ($lastid + 15 > count($_SESSION['companiesList'])){
-                    $lastid = count($_SESSION['companiesList']);
+                if ($lastid + 15 > count($companiesList)){
+                    $lastid = count($companiesList);
                 } else
                     $lastid = $lastid + 15;
             }
@@ -306,9 +333,11 @@ return function (App $app){
 
 
 
-    $app->post('/loadCompaniesByName', function ($request, $response, $args) use ($container, $companiesController){
-
-        if ( $_SESSION['mailUserLogued'] ){
+    $app->post('/loadCompaniesByName', function ($request, $response, $args) use ($container, $companiesController, $usersController){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+            $companiesList = $responseCurrentSession->currentSession->companies;
+        // if ( $_SESSION['mailUserLogued'] ){
             $response = new \stdClass();
             $response->result = 2;
 
@@ -320,7 +349,7 @@ return function (App $app){
 
             if ( isset($namecompanie) && $namecompanie != "" ){
 
-                foreach ( $_SESSION['companiesList'] as $key => $value) {
+                foreach ( $companiesList as $key => $value) {
                    $pos = strpos($value->razonSocial, $namecompanie);
                    $pos1 = strpos($value->razonSocial, $namecompanieup);
                    $pos2 = strpos($value->rut, $namecompanie);
@@ -335,14 +364,16 @@ return function (App $app){
 
             $response->companiesList = $companies;
             return json_encode($response);
-        }else json_encode(["result"=>0]);
+        }else json_encode($responseCurrentSession);
     });
 
 
 
-    $app->post('/loadCompaniesByStatus', function ($request, $response, $args) use ($container, $companiesController){
-
-        if ( $_SESSION['mailUserLogued'] ){
+    $app->post('/loadCompaniesByStatus', function ($request, $response, $args) use ($container, $companiesController, $usersController){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+            $companiesList = $responseCurrentSession->currentSession->companies;
+        // if ( $_SESSION['mailUserLogued'] ){
             $response = new \stdClass();
             $response->result = 2;
 
@@ -354,7 +385,7 @@ return function (App $app){
 
             if ( isset($namecompanie) && $namecompanie != "" ){
 
-                foreach ( $_SESSION['companiesList'] as $key => $value) {
+                foreach ( $companiesList as $key => $value) {
                    $pos = strpos($value->razonSocial, $namecompanie);
                    $pos1 = strpos($value->razonSocial, $namecompanieup);
                    $pos2 = strpos($value->rut, $namecompanie);
@@ -369,17 +400,18 @@ return function (App $app){
 
             $response->companiesList = $companies;
             return json_encode($response);
-        }else json_encode(["result"=>0]);
+        }else json_encode($responseCurrentSession);
     });
 
 
 
 
 
-    $app->post('/loadBranchData', function ($request, $response, $args) use ($container, $companiesController){
+    $app->post('/loadBranchData', function ($request, $response, $args) use ($container, $companiesController, $usersController){
         $response = new \stdClass();
-
-        if ( $_SESSION['mailUserLogued'] ){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+        // if ( $_SESSION['mailUserLogued'] ){
 
             $data = $request->getParams();
             $branchCode = $data['branch'];
@@ -398,15 +430,16 @@ return function (App $app){
                 }
             }else
                 return json_encode($companie);
-        }else return json_encode(["result"=>0]);
+        }else return json_encode($responseCurrentSession);
     });
 
 
 
-    $app->post('/getCaesByCompanie', function ($request, $response, $args) use ($container, $companiesController){
+    $app->post('/getCaesByCompanie', function ($request, $response, $args) use ($container, $companiesController, $usersController){
         $response = new \stdClass();
-
-        if ( $_SESSION['mailUserLogued'] ){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+        // if ( $_SESSION['mailUserLogued'] ){
 
             $data = $request->getParams();
             $rut = $data['companie'];
@@ -423,17 +456,20 @@ return function (App $app){
                 return json_encode($response);
             }else
                 return json_encode($companie);
-        }else return json_encode(["result"=>0]);
+        }else return json_encode($responseCurrentSession);
     });
 
-    $app->post('/deleteBranch', function ($request, $response, $args) use ($container, $companiesController){
+    $app->post('/deleteBranch', function ($request, $response, $args) use ($container, $companiesController, $usersController){
         $response = new \stdClass();
-        if ( $_SESSION['mailUserLogued'] ){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+            $currentSession = $responseCurrentSession->currentSession;
+        // if ( $_SESSION['mailUserLogued'] ){
             $data = $request->getParams();
             $branch = $data['branch'];
             // No lo uso? uso el de la SESSION?
             $companie = $data['companie'];
-            $rut = $_SESSION['rutUserLogued'];
+            $rut = $currentSession->rutUserLogued;//$_SESSION['rutUserLogued'];
 
             $responseDeleteBranch = $companiesController->deleteCompanieBranch($rut, $branch);
             if ( $responseDeleteBranch->result == 2 ) {
@@ -444,15 +480,18 @@ return function (App $app){
                 $response->message = $responseDeleteBranch->message;
             }
             return json_encode($response);
-        } else return json_encode(["result"=>0]);
+        } else return json_encode($responseCurrentSession);
     });
 
-    $app->post('/setPrincipalCompanieBranch', function ($request, $response, $args) use ($container, $companiesController){
-        if ( $_SESSION['mailUserLogued'] ){
+    $app->post('/setPrincipalCompanieBranch', function ($request, $response, $args) use ($container, $companiesController, $usersController){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+            $currentSession = $responseCurrentSession->currentSession;
+        // if ( $_SESSION['mailUserLogued'] ){
             $response = new \stdClass();
             $data = $request->getParams();
             $branch = $data['branch'];
-            $rut = $_SESSION['rutUserLogued'];
+            $rut = $currentSession->rutUserLogued;
 
             $company = $companiesController->getCompaniesData($rut)->objectResult;
             $sucPrincipal = new \stdClass();
@@ -470,14 +509,17 @@ return function (App $app){
             $response = $companiesController->setExistingBranchLikePrincipal($sucPrincipal, $newSucPrincipal, $rut);
             
             return json_encode($response);
-        } else return json_encode(["result"=>0]);
+        } else return json_encode($responseCurrentSession);
     });
 
-    $app->post('/newCompanieBranch', function ($request, $response, $args) use ($container, $companiesController){
-        if ( $_SESSION['mailUserLogued'] ){
+    $app->post('/newCompanieBranch', function ($request, $response, $args) use ($container, $companiesController, $usersController){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+            $currentSession = $responseCurrentSession->currentSession;
+        // if ( $_SESSION['mailUserLogued'] ){
             $response = new \stdClass();
             $data = $request->getParams();
-            $rut = $_SESSION['rutUserLogued'];
+            $rut = $currentSession->rutUserLogued;
             $newCodDGI = $data['codDGI'];
             $company = $companiesController->getCompaniesData($rut)->objectResult;
             $sucPrincipal = new \stdClass();
@@ -516,137 +558,151 @@ return function (App $app){
                 $response->message = "Error. No se pudo crear la nueva sucursal";
             }
             return json_encode($response);
-        } else return json_encode(["result"=>0]);
+        } else return json_encode($responseCurrentSession);
     });
 
 
 
 
     //editar los datos basicos de la sucursal
-    $app->post('/changeCompanieData', function ($request, $response, $args) use ($container, $companiesController){
-
-        if ( $_SESSION['mailUserLogued'] ){
+    $app->post('/changeCompanieData', function ($request, $response, $args) use ($container, $companiesController, $usersController){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+        // if ( $_SESSION['mailUserLogued'] ){
             $response = new \stdClass();
 
             $data = $request->getParams();
             $response = $companiesController->changeCompanieData($data);
             return json_encode($response);
 
-        }else return json_encode(["result"=>0]);
+        }else return json_encode($responseCurrentSession);
     });
 
 
 
-    $app->post('/changeCompanieColor', function ($request, $response, $args) use ($container, $companiesController){
-
-        if ( $_SESSION['mailUserLogued'] ){
+    $app->post('/changeCompanieColor', function ($request, $response, $args) use ($container, $companiesController, $usersController){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+        // if ( $_SESSION['mailUserLogued'] ){
             $response = new \stdClass();
 
             $data = $request->getParams();
             $response = $companiesController->changeCompanieColors($data);
             return json_encode($response);
 
-        }else return json_encode(["result"=>0]);
+        }else return json_encode($responseCurrentSession);
     });
 
 
     //cambiar estado de la empresa
-    $app->post('/changeStatusCompanie', function ($request, $response, $args) use ($container, $companiesController){
-
-        if ( $_SESSION['mailUserLogued'] ){
+    $app->post('/changeStatusCompanie', function ($request, $response, $args) use ($container, $companiesController, $usersController){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+        // if ( $_SESSION['mailUserLogued'] ){
             $response = new \stdClass();
 
             $data = $request->getParams();
             $newStatus = $data['newStatus'];
-            $rut = $_SESSION['rutUserLogued'];
-
+            // $rut = $_SESSION['rutUserLogued'];
+            $rut = $responseCurrentSession->currentSession->rutUserLogued;
 
             $response = $companiesController->changeStatusCompanie($newStatus, $rut);
             return json_encode($response);
 
-        }else return json_encode(["result"=>0]);
+        }else return json_encode($responseCurrentSession);
     });
 
 
 
 
-    $app->post('/loadResolutions', function ($request, $response, $args) use ($container, $companiesController){
-
-        if ( $_SESSION['mailUserLogued'] ){
+    $app->post('/loadResolutions', function ($request, $response, $args) use ($container, $companiesController, $usersController){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+        // if ( $_SESSION['mailUserLogued'] ){
             $response = new \stdClass();
 
             $data = $request->getParams();
-            $rut = $_SESSION['rutUserLogued'];
-
+            // $rut = $_SESSION['rutUserLogued'];
+            $rut = $responseCurrentSession->currentSession->rutUserLogued;
             $response = $companiesController->loadResolutions($rut, $data);
             return json_encode($response);
 
-        }else return json_encode(["result"=>0]);
+        }else return json_encode($responseCurrentSession);
     });
 
     //esta es para obtener los colores y demás que estan guardados actualmente
-    $app->post('/representacionimpresa', function ($request, $response, $args) use ($companiesController){
-
-        if ( $_SESSION['mailUserLogued'] ){
+    $app->post('/representacionimpresa', function ($request, $response, $args) use ($companiesController, $usersController){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+        // if ( $_SESSION['mailUserLogued'] ){
             $response = new \stdClass();
-            $rut = $_SESSION['rutUserLogued'];
+            // $rut = $_SESSION['rutUserLogued'];
+            $rut = $responseCurrentSession->currentSession->rutUserLogued;
+            // var_dump($responseCurrentSession->currentSession->rutUserLogued);
+            // exit;
             $sucursal = $request->getParams()['sucursal'];
             $response = $companiesController->getRepresentacionImpresa($rut, $sucursal);
             return json_encode($response);
 
-        }else return json_encode(["result"=>0]);
+        }else return json_encode($responseCurrentSession);
     });
 
     //esta es para MODIFICAR los colores y demás de la rep. impresa
-    $app->put('/representacionimpresa', function ($request, $response, $args) use ($companiesController){
-
-        if ( $_SESSION['mailUserLogued'] ){
+    $app->put('/representacionimpresa', function ($request, $response, $args) use ($companiesController, $usersController){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+        // if ( $_SESSION['mailUserLogued'] ){
             $response = new \stdClass();
-            $rut = $_SESSION['rutUserLogued'];
+            // $rut = $_SESSION['rutUserLogued'];
+            $rut = $responseCurrentSession->currentSession->rutUserLogued;
             $data = $request->getParams()["data"];
             $response = $companiesController->updateRepresentacionImpresa($rut, $data);
             return json_encode($response);
 
-        }else return json_encode(["result"=>0]);
+        }else return json_encode($responseCurrentSession);
     });
 
 
 
-    $app->post('/enabledDisabledCompanie', function ($request, $response, $args) use ($companiesController){
-
-        if ( $_SESSION['mailUserLogued'] ){
+    $app->post('/enabledDisabledCompanie', function ($request, $response, $args) use ($companiesController, $usersController){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+            $currentSession = $responseCurrentSession->currentSession;
+        // if ( $_SESSION['mailUserLogued'] ){
             $response = new \stdClass();
 
             $value = $request->getParams()['value'];
             $response = $companiesController->enabledDisabledCompanie($value);
 
-            $company = $companiesController->getCompaniesData($_SESSION['rutUserLogued'])->objectResult;
+            $company = $companiesController->getCompaniesData($currentSession->rutUserLogued)->objectResult;
             $args["company"] = $company;
             //return $this->view->render($response, "companyDetail.twig", $args);
             return json_encode($response);
 
-        }else return json_encode(["result"=>0]);
+        }else return json_encode($responseCurrentSession);
     });
 
 
 
-    $app->post('/saveInfoAdicional', function ($request, $response, $args) use ($companiesController){
-
-        if ( $_SESSION['mailUserLogued'] ){
+    $app->post('/saveInfoAdicional', function ($request, $response, $args) use ($companiesController, $usersController){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+        // if ( $_SESSION['mailUserLogued'] ){
             $response = new \stdClass();
-            $rut = $_SESSION['rutUserLogued'];
+            $rut = $responseCurrentSession->currentSession->rutUserLogued;//$_SESSION['rutUserLogued'];
             $info = $request->getParams()['info'];
 
             $response = $companiesController->saveInfoAdicional($info, $rut);
             return json_encode($response);
 
-        }else return json_encode(["result"=>0]);
+        }else return json_encode($responseCurrentSession);
     });
 
-    $app->post('/loadListCustomers', function ($request, $response, $args) use ($companiesController){
+    $app->post('/loadListCustomers', function ($request, $response, $args) use ($companiesController, $usersController){
         $response = new \stdClass();
-
-        if ( $_SESSION['mailUserLogued'] ){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+        // if ( $_SESSION['mailUserLogued'] ){
 
             $data = $request->getParams();
             $rut = $data['rut'];
@@ -660,13 +716,14 @@ return function (App $app){
 				
             }else
                 return json_encode($response);
-        } else return json_encode(["result"=>0]);
+        } else return json_encode($responseCurrentSession);
     });
 
-    $app->post('/loadCustomer', function ($request, $response, $args) use ($companiesController){
+    $app->post('/loadCustomer', function ($request, $response, $args) use ($companiesController, $usersController){
         $response = new \stdClass();
-
-        if ( $_SESSION['mailUserLogued'] ){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+        // if ( $_SESSION['mailUserLogued'] ){
 
             $data = $request->getParams();
             $rut = $data['rut'];
@@ -679,13 +736,14 @@ return function (App $app){
 				return json_encode($response);
             } else
                 return json_encode($response);
-        } else return json_encode(["result"=>0]);
+        } else return json_encode($responseCurrentSession);
     });
 
-    $app->post('/saveCustomer', function ($request, $response, $args) use ($companiesController){
+    $app->post('/saveCustomer', function ($request, $response, $args) use ($companiesController, $usersController){
         $response = new \stdClass();
-
-        if ( $_SESSION['mailUserLogued'] ){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+        // if ( $_SESSION['mailUserLogued'] ){
 
             $data = $request->getParams();
             $rut = $data['rut'];
@@ -698,13 +756,14 @@ return function (App $app){
 				return json_encode($response);
             }else
                 return json_encode($response);
-        } else return json_encode(["result"=>0]);
+        } else return json_encode($responseCurrentSession);
     });
 
-    $app->post('/newCustomer', function ($request, $response, $args) use ($companiesController){
+    $app->post('/newCustomer', function ($request, $response, $args) use ($companiesController, $usersController){
         $response = new \stdClass();
-
-        if ( $_SESSION['mailUserLogued'] ){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+        // if ( $_SESSION['mailUserLogued'] ){
 
             $data = $request->getParams();
             $rut = $data['rut'];
@@ -717,13 +776,14 @@ return function (App $app){
 				// return json_encode($response);
             } else return json_encode($saveCustomerResponse);
             return json_encode($response);
-        } else return json_encode(["result"=>0]);
+        } else return json_encode($responseCurrentSession);
     });
 
-    $app->post('/getEmitidos', function ($request, $response, $args) use ($companiesController){
+    $app->post('/getEmitidos', function ($request, $response, $args) use ($companiesController, $usersController){
         $response = new \stdClass();
-
-        if ( $_SESSION['mailUserLogued'] ){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+        // if ( $_SESSION['mailUserLogued'] ){
 
             $data = $request->getParams();
             $rut = $data['rut'];
@@ -736,13 +796,14 @@ return function (App $app){
 				return json_encode($response);
             }else
                 return json_encode($response);
-        } else return json_encode(["result"=>0]);
+        } else return json_encode($responseCurrentSession);
     });
 
-    $app->post('/getRecibidos', function ($request, $response, $args) use ($companiesController){
+    $app->post('/getRecibidos', function ($request, $response, $args) use ($companiesController, $usersController){
         $response = new \stdClass();
-
-        if ( $_SESSION['mailUserLogued'] ){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+        // if ( $_SESSION['mailUserLogued'] ){
 
             $data = $request->getParams();
             $rut = $data['rut'];
@@ -755,12 +816,14 @@ return function (App $app){
 				return json_encode($response);
             }else
                 return json_encode($response);
-        } else return json_encode(["result"=>0]);
+        } else return json_encode($responseCurrentSession);
     });
 
-    $app->post('/getCFE', function ($request, $response, $args) use ($companiesController){
+    $app->post('/getCFE', function ($request, $response, $args) use ($companiesController, $usersController){
         $response = new \stdClass();
-        if ( $_SESSION['mailUserLogued'] ){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+        // if ( $_SESSION['mailUserLogued'] ){
             
             $data = $request->getParams();
             // var_dump($data);
@@ -780,7 +843,7 @@ return function (App $app){
 				return json_encode($response);
             }else
                 return json_encode($response);
-        } else return json_encode(["result"=>0]);
+        } else return json_encode($responseCurrentSession);
     });
 
 }

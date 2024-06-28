@@ -4,10 +4,12 @@ use Slim\App;
 use Slim\Http\Response;
 
 require_once 'controllers/ctr_companies.php';
+require_once 'controllers/ctr_users.php';
 
 return function (App $app) {
     $container = $app->getContainer();
     $companiesController = new ctr_companies();
+    $usersController = new ctr_users();
 
     $routesUsers = require_once __DIR__ . "/../src/routes/routes_users.php";
     $routesCompanies = require_once __DIR__ . "/../src/routes/routes_companies.php";
@@ -105,184 +107,327 @@ return function (App $app) {
     //     return $this->view->render($response, "companies.twig", $args);
     // })->setName("Start");
 
-    $app->get('/', function ($request, $response, $args) use ($container, $companiesController) {
-        $args['version'] = FECHA_ULTIMO_PUSH;
-        $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
-        $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
-        $args["company"] = null;
-        if ( isset($_SESSION['rutUserLogued']) ){
-            $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
+    // $app->get('/', function ($request, $response, $args) use ($container, $companiesController) {
+    //     $args['version'] = FECHA_ULTIMO_PUSH;
+    //     $args['mailUserLogued'] = $_SESSION['mailUserLogued'];
+    //     $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
+    //     $args["company"] = null;
+    //     if ( isset($_SESSION['rutUserLogued']) ){
+    //         $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
             
-            $company = $companiesController->getCompaniesData($_SESSION['rutUserLogued'])->objectResult;
-            $args["company"] = $company;
+    //         $company = $companiesController->getCompaniesData($_SESSION['rutUserLogued'])->objectResult;
+    //         $args["company"] = $company;
             
-        }else{
-            $_SESSION['rutUserLogued'] = null;
-            $args['rutUserLogued'] = null;
-        }
-        $companiesList = $companiesController->getCompanies()->listResult;
-        if( !isset($_SESSION['companiesList'] ) ){
-            //aca cargar companies
-            $_SESSION['companiesList'] = $companiesList;
-        }
-        $args['companiesCount'] = count($companiesList);
-        $companiesType = array();
-        $companiesHabilitadas = array();
-        $emisorHabilitadoCount = 0;
-        $pendientePostulacionCount = 0;
-        $pendienteAprobacionCount = 0;
-        $pendienteCertificacionCount = 0;
-        $pendienteResolucionCount = 0;
-        $emisorNoHabilitadoCount = 0;
-        $enEsperaComenzarCount = 0;
-        $pendienteUsuarioCount = 0;
+    //     }else{
+    //         $_SESSION['rutUserLogued'] = null;
+    //         $args['rutUserLogued'] = null;
+    //     }
+    //     $companiesList = $companiesController->getCompanies()->listResult;
+    //     if( !isset($_SESSION['companiesList'] ) ){
+    //         //aca cargar companies
+    //         $_SESSION['companiesList'] = $companiesList;
+    //     }
+    //     $args['companiesCount'] = count($companiesList);
+    //     $companiesType = array();
+    //     $companiesHabilitadas = array();
+    //     $emisorHabilitadoCount = 0;
+    //     $pendientePostulacionCount = 0;
+    //     $pendienteAprobacionCount = 0;
+    //     $pendienteCertificacionCount = 0;
+    //     $pendienteResolucionCount = 0;
+    //     $emisorNoHabilitadoCount = 0;
+    //     $enEsperaComenzarCount = 0;
+    //     $pendienteUsuarioCount = 0;
 
-        foreach ($companiesList as $comp) {
-            switch ($comp->estadoDescripcion) {
-                case 'Emisor habilitado':
-                    $emisorHabilitadoCount++;
-                    break;
-                case 'Pendiente postulación':
-                    $pendientePostulacionCount++;
-                    break;
-                case 'Pendiente aprobación':
-                    $pendienteAprobacionCount++;
-                    break;
-                case 'Pendiente certificación':
-                    $pendienteCertificacionCount++;
-                    break;
-                case 'Pendiente resolución':
-                    $pendienteResolucionCount++;
-                    break;
-                case 'Emisor no habilitado':
-                    $emisorNoHabilitadoCount++;
-                    break;
-                case 'En espera para comenzar':
-                    $enEsperaComenzarCount++;
-                    break;
-                case 'Pendiente usuario':
-                    $pendienteUsuarioCount++;
-                    break;
-                default:
-                    // Handle any other cases here
-                    break;
-            }
-            if ( $comp->estado == 6 ){ // Si es Emisor habilitado
-                $expireDateCertificados = null;
-                $expireDateCertificadosSoon = false;
-                $expireCAEsSoon = array();
-                $pocosCaes = null;
+    //     foreach ($companiesList as $comp) {
+    //         switch ($comp->estadoDescripcion) {
+    //             case 'Emisor habilitado':
+    //                 $emisorHabilitadoCount++;
+    //                 break;
+    //             case 'Pendiente postulación':
+    //                 $pendientePostulacionCount++;
+    //                 break;
+    //             case 'Pendiente aprobación':
+    //                 $pendienteAprobacionCount++;
+    //                 break;
+    //             case 'Pendiente certificación':
+    //                 $pendienteCertificacionCount++;
+    //                 break;
+    //             case 'Pendiente resolución':
+    //                 $pendienteResolucionCount++;
+    //                 break;
+    //             case 'Emisor no habilitado':
+    //                 $emisorNoHabilitadoCount++;
+    //                 break;
+    //             case 'En espera para comenzar':
+    //                 $enEsperaComenzarCount++;
+    //                 break;
+    //             case 'Pendiente usuario':
+    //                 $pendienteUsuarioCount++;
+    //                 break;
+    //             default:
+    //                 // Handle any other cases here
+    //                 break;
+    //         }
+    //         if ( $comp->estado == 6 ){ // Si es Emisor habilitado
+    //             $expireDateCertificados = null;
+    //             $expireDateCertificadosSoon = false;
+    //             $expireCAEsSoon = array();
+    //             $pocosCaes = null;
                 
-                foreach ($comp->caes as $cae) {
-                    $dateTime = new DateTime($cae->vencimiento);
-                    $date = $dateTime->format('Ymd');
-                    if(!$expireDateCAEs)
-                        $expireDateCAEs = $date;
-                    if (isset($date) && $date != ""){
-                        $caeAux = [
-                            "expireDate" => $expireDateCAEs,
-                            "expireType" => $cae->tipoCFE
-                        ];
-                        // $expireCAEs[] = $caeAux;
-                        $nextMonth = date('Ymd',  strtotime("+ 1 month" , strtotime(date("Ymd"))));
-                        if($date <= $nextMonth){
-                            $expireCAEsSoon[] = $caeAux;
-                        }
-                        if (isset($cae->total) && isset($cae->disponibles)) {
-                            $totalCAEs = $cae->total;
-                            $disponiblesCAEs = $cae->disponibles;
-                            // Verificar si la cantidad disponibles es menos del 10% del total
-                            if ($totalCAEs > 0 && (($disponiblesCAEs / $totalCAEs) < 0.1)) {
-                                // $estimadoPedir = cuantosCaesPedir($empresa->rut, $cae->tipoCFE);
-                                $pocosCaesAux = [
-                                    'tipoCFE' => $cae->tipoCFE,
-                                    // 'usados' => $estimadoPedir->usadosEnDosAños,
-                                    // 'pedir' => $estimadoPedir->cantCaesPedir,
-                                    'disponibles' => $cae->disponibles,
-                                    'total' => $cae->total,
-                                    'disponiblesPorcentaje' => intval((($disponiblesCAEs / $totalCAEs) * 100) , 10)
-                                ];
-                            $pocosCaes[] = $pocosCaesAux;
-                            }
-                        }
-                    }
-                }
+    //             foreach ($comp->caes as $cae) {
+    //                 $dateTime = new DateTime($cae->vencimiento);
+    //                 $date = $dateTime->format('Ymd');
+    //                 if(!$expireDateCAEs)
+    //                     $expireDateCAEs = $date;
+    //                 if (isset($date) && $date != ""){
+    //                     $caeAux = [
+    //                         "expireDate" => $expireDateCAEs,
+    //                         "expireType" => $cae->tipoCFE
+    //                     ];
+    //                     // $expireCAEs[] = $caeAux;
+    //                     $nextMonth = date('Ymd',  strtotime("+ 1 month" , strtotime(date("Ymd"))));
+    //                     if($date <= $nextMonth){
+    //                         $expireCAEsSoon[] = $caeAux;
+    //                     }
+    //                     if (isset($cae->total) && isset($cae->disponibles)) {
+    //                         $totalCAEs = $cae->total;
+    //                         $disponiblesCAEs = $cae->disponibles;
+    //                         // Verificar si la cantidad disponibles es menos del 10% del total
+    //                         if ($totalCAEs > 0 && (($disponiblesCAEs / $totalCAEs) < 0.1)) {
+    //                             // $estimadoPedir = cuantosCaesPedir($empresa->rut, $cae->tipoCFE);
+    //                             $pocosCaesAux = [
+    //                                 'tipoCFE' => $cae->tipoCFE,
+    //                                 // 'usados' => $estimadoPedir->usadosEnDosAños,
+    //                                 // 'pedir' => $estimadoPedir->cantCaesPedir,
+    //                                 'disponibles' => $cae->disponibles,
+    //                                 'total' => $cae->total,
+    //                                 'disponiblesPorcentaje' => intval((($disponiblesCAEs / $totalCAEs) * 100) , 10)
+    //                             ];
+    //                         $pocosCaes[] = $pocosCaesAux;
+    //                         }
+    //                     }
+    //                 }
+    //             }
 
-                if (isset($comp->certificateExpireDate) && $comp->certificateExpireDate !== "") {
-                    $dateTime = new DateTime($comp->certificateExpireDate);
-                    $certExpireDate = $dateTime->format('Ymd');
+    //             if (isset($comp->certificateExpireDate) && $comp->certificateExpireDate !== "") {
+    //                 $dateTime = new DateTime($comp->certificateExpireDate);
+    //                 $certExpireDate = $dateTime->format('Ymd');
                     
-                    $nextMonth = date('Ymd',  strtotime("+ 1 month" , strtotime(date("Ymd"))));
-                    if($certExpireDate <= $nextMonth){
-                        $expireDateCertificados = substr($certExpireDate, 6, 2) . "/" . substr($certExpireDate, 4, 2) . "/" . substr($certExpireDate, 0, 4) ;
-                        $expireDateCertificadosSoon = true;
-                    }
-                }
-                // Sort $expireCAEsSoon array by 'expireDate'
-                usort($expireCAEsSoon, 'compareByExpireDate');
+    //                 $nextMonth = date('Ymd',  strtotime("+ 1 month" , strtotime(date("Ymd"))));
+    //                 if($certExpireDate <= $nextMonth){
+    //                     $expireDateCertificados = substr($certExpireDate, 6, 2) . "/" . substr($certExpireDate, 4, 2) . "/" . substr($certExpireDate, 0, 4) ;
+    //                     $expireDateCertificadosSoon = true;
+    //                 }
+    //             }
+    //             // Sort $expireCAEsSoon array by 'expireDate'
+    //             usort($expireCAEsSoon, 'compareByExpireDate');
                 
-                $auxComp = [
-                    "rut" => $comp->rut,
-                    "razonSocial" => $comp->razonSocial,
-                    "expireDateCertificados" => $expireDateCertificados,
-                    "pocosCaes" => $pocosCaes,
-                    "expireCAEsSoon" => $expireCAEsSoon,
-                    "expireDateCertificadosSoon" => $expireDateCertificadosSoon
-                ];
-                $companiesHabilitadas[] = $auxComp;
-            }
-        }
+    //             $auxComp = [
+    //                 "rut" => $comp->rut,
+    //                 "razonSocial" => $comp->razonSocial,
+    //                 "expireDateCertificados" => $expireDateCertificados,
+    //                 "pocosCaes" => $pocosCaes,
+    //                 "expireCAEsSoon" => $expireCAEsSoon,
+    //                 "expireDateCertificadosSoon" => $expireDateCertificadosSoon
+    //             ];
+    //             $companiesHabilitadas[] = $auxComp;
+    //         }
+    //     }
 
-        // Store the counts in the $companiesType array
-        $companiesType['Emisor habilitado'] = $emisorHabilitadoCount;
-        $companiesType['Pendiente postulacion'] = $pendientePostulacionCount;
-        $companiesType['Pendiente aprobacion'] = $pendienteAprobacionCount;
-        $companiesType['Pendiente certificacion'] = $pendienteCertificacionCount;
-        $companiesType['Pendiente resolucion'] = $pendienteResolucionCount;
-        $companiesType['Emisor no Habilitado'] = $emisorNoHabilitadoCount;
-        $companiesType['En espera para comenzar'] = $enEsperaComenzarCount;
-        $companiesType['Pendiente usuario'] = $pendienteUsuarioCount;
-        $args['companiesType'] = $companiesType;
+    //     // Store the counts in the $companiesType array
+    //     $companiesType['Emisor habilitado'] = $emisorHabilitadoCount;
+    //     $companiesType['Pendiente postulacion'] = $pendientePostulacionCount;
+    //     $companiesType['Pendiente aprobacion'] = $pendienteAprobacionCount;
+    //     $companiesType['Pendiente certificacion'] = $pendienteCertificacionCount;
+    //     $companiesType['Pendiente resolucion'] = $pendienteResolucionCount;
+    //     $companiesType['Emisor no Habilitado'] = $emisorNoHabilitadoCount;
+    //     $companiesType['En espera para comenzar'] = $enEsperaComenzarCount;
+    //     $companiesType['Pendiente usuario'] = $pendienteUsuarioCount;
+    //     $args['companiesType'] = $companiesType;
 
-        $args['companiesList'] = $_SESSION['companiesList'];
-        $args['companiesHabilitadas'] = $companiesHabilitadas;
+    //     $args['companiesList'] = $_SESSION['companiesList'];
+    //     $args['companiesHabilitadas'] = $companiesHabilitadas;
 
         
-        // var_dump($args['companiesList']);
-        // var_dump($companiesHabilitadas);
-        // exit;
-        if( isset($_SESSION['companiesList'] ) ){
-            if ( !isset($_SESSION['companieUserLogued']) && !isset($_SESSION['rutUserLogued'])){
-                $objFirstCompanie = array_pop(array_reverse($_SESSION['companiesList']));
+    //     // var_dump($args['companiesList']);
+    //     // var_dump($companiesHabilitadas);
+    //     // exit;
+    //     if( isset($_SESSION['companiesList'] ) ){
+    //         if ( !isset($_SESSION['companieUserLogued']) && !isset($_SESSION['rutUserLogued'])){
+    //             $objFirstCompanie = array_pop(array_reverse($_SESSION['companiesList']));
 
-                $_SESSION['companieUserLogued'] = $objFirstCompanie->razonSocial;
-                $_SESSION['rutUserLogued'] = $objFirstCompanie->rut;
-            }
-            if ( isset($_SESSION['companieUserLogued']) ){
-                $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
-            }else{
-                $_SESSION['companieUserLogued'] = null;
-                $args['companieUserLogued'] = null;
-            }
-            $args["company"] = null;
-            if ( isset($_SESSION['rutUserLogued']) ){
-                $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
-                $company = $companiesController->getCompaniesData($_SESSION['rutUserLogued'])->objectResult;
+    //             $_SESSION['companieUserLogued'] = $objFirstCompanie->razonSocial;
+    //             $_SESSION['rutUserLogued'] = $objFirstCompanie->rut;
+    //         }
+    //         if ( isset($_SESSION['companieUserLogued']) ){
+    //             $args['companieUserLogued'] = $_SESSION['companieUserLogued'];
+    //         }else{
+    //             $_SESSION['companieUserLogued'] = null;
+    //             $args['companieUserLogued'] = null;
+    //         }
+    //         $args["company"] = null;
+    //         if ( isset($_SESSION['rutUserLogued']) ){
+    //             $args['rutUserLogued'] = $_SESSION['rutUserLogued'];
+    //             $company = $companiesController->getCompaniesData($_SESSION['rutUserLogued'])->objectResult;
+    //             $args["company"] = $company;
+    //         }else{
+    //             $_SESSION['rutUserLogued'] = null;
+    //             $args['rutUserLogued'] = null;
+    //         }
+    //     } else {
+    //         $args['rutUserLogued'] = null;
+    //         $args['mailUserLogued'] = null;
+    //         $args['companieUserLogued'] = null;
+    //     }
+    //     // if ( isset($_SESSION['mailUserLogued']) ){
+    //     //     return $this->view->render($response, "resumen.twig", $args);
+    //     // }
+    //     return $this->view->render($response, "resumen.twig", $args);
+    //     // return $response->withRedirect($request->getUri()->getBaseUrl());
+    // })->setName("Start");
+
+    $app->get('/', function ($request, $response, $args) use ($container, $companiesController, $usersController) {
+        if(isset($_SESSION['sistemSession'])){
+            // var_dump($_SESSION['sistemSession']);
+            // exit;
+            $responseCurrentSession = $usersController->validateSession();
+            $args['version'] = FECHA_ULTIMO_PUSH;
+            if($responseCurrentSession->result == 2){
+                $args['sistemSession'] = $responseCurrentSession->currentSession;
+                $company = $companiesController->getCompaniesData($responseCurrentSession->currentSession->rutUserLogued)->objectResult;
                 $args["company"] = $company;
-            }else{
-                $_SESSION['rutUserLogued'] = null;
-                $args['rutUserLogued'] = null;
+                $companiesList = $responseCurrentSession->currentSession->companies;
+                $args['companiesCount'] = count($companiesList);
+                $companiesType = array();
+                $companiesHabilitadas = array();
+                $emisorHabilitadoCount = 0;
+                $pendientePostulacionCount = 0;
+                $pendienteAprobacionCount = 0;
+                $pendienteCertificacionCount = 0;
+                $pendienteResolucionCount = 0;
+                $emisorNoHabilitadoCount = 0;
+                $enEsperaComenzarCount = 0;
+                $pendienteUsuarioCount = 0;
+
+                foreach ($companiesList as $comp) {
+                    switch ($comp->estadoDescripcion) {
+                        case 'Emisor habilitado':
+                            $emisorHabilitadoCount++;
+                            break;
+                        case 'Pendiente postulación':
+                            $pendientePostulacionCount++;
+                            break;
+                        case 'Pendiente aprobación':
+                            $pendienteAprobacionCount++;
+                            break;
+                        case 'Pendiente certificación':
+                            $pendienteCertificacionCount++;
+                            break;
+                        case 'Pendiente resolución':
+                            $pendienteResolucionCount++;
+                            break;
+                        case 'Emisor no habilitado':
+                            $emisorNoHabilitadoCount++;
+                            break;
+                        case 'En espera para comenzar':
+                            $enEsperaComenzarCount++;
+                            break;
+                        case 'Pendiente usuario':
+                            $pendienteUsuarioCount++;
+                            break;
+                        default:
+                            // Handle any other cases here
+                            break;
+                    }
+                    if ( $comp->estado == 6 ){ // Si es Emisor habilitado
+                        $expireDateCertificados = null;
+                        $expireDateCertificadosSoon = false;
+                        $expireCAEsSoon = array();
+                        $pocosCaes = null;
+                        
+                        foreach ($comp->caes as $cae) {
+                            $dateTime = new DateTime($cae->vencimiento);
+                            $date = $dateTime->format('Ymd');
+                            if(!$expireDateCAEs)
+                                $expireDateCAEs = $date;
+                            if (isset($date) && $date != ""){
+                                $caeAux = [
+                                    "expireDate" => $expireDateCAEs,
+                                    "expireType" => $cae->tipoCFE
+                                ];
+                                // $expireCAEs[] = $caeAux;
+                                $nextMonth = date('Ymd',  strtotime("+ 1 month" , strtotime(date("Ymd"))));
+                                if($date <= $nextMonth){
+                                    $expireCAEsSoon[] = $caeAux;
+                                }
+                                if (isset($cae->total) && isset($cae->disponibles)) {
+                                    $totalCAEs = $cae->total;
+                                    $disponiblesCAEs = $cae->disponibles;
+                                    // Verificar si la cantidad disponibles es menos del 10% del total
+                                    if ($totalCAEs > 0 && (($disponiblesCAEs / $totalCAEs) < 0.1)) {
+                                        // $estimadoPedir = cuantosCaesPedir($empresa->rut, $cae->tipoCFE);
+                                        $pocosCaesAux = [
+                                            'tipoCFE' => $cae->tipoCFE,
+                                            // 'usados' => $estimadoPedir->usadosEnDosAños,
+                                            // 'pedir' => $estimadoPedir->cantCaesPedir,
+                                            'disponibles' => $cae->disponibles,
+                                            'total' => $cae->total,
+                                            'disponiblesPorcentaje' => intval((($disponiblesCAEs / $totalCAEs) * 100) , 10)
+                                        ];
+                                    $pocosCaes[] = $pocosCaesAux;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (isset($comp->certificateExpireDate) && $comp->certificateExpireDate !== "") {
+                            $dateTime = new DateTime($comp->certificateExpireDate);
+                            $certExpireDate = $dateTime->format('Ymd');
+                            
+                            $nextMonth = date('Ymd',  strtotime("+ 1 month" , strtotime(date("Ymd"))));
+                            if($certExpireDate <= $nextMonth){
+                                $expireDateCertificados = substr($certExpireDate, 6, 2) . "/" . substr($certExpireDate, 4, 2) . "/" . substr($certExpireDate, 0, 4) ;
+                                $expireDateCertificadosSoon = true;
+                            }
+                        }
+                        // Sort $expireCAEsSoon array by 'expireDate'
+                        usort($expireCAEsSoon, 'compareByExpireDate');
+                        
+                        $auxComp = [
+                            "rut" => $comp->rut,
+                            "razonSocial" => $comp->razonSocial,
+                            "expireDateCertificados" => $expireDateCertificados,
+                            "pocosCaes" => $pocosCaes,
+                            "expireCAEsSoon" => $expireCAEsSoon,
+                            "expireDateCertificadosSoon" => $expireDateCertificadosSoon
+                        ];
+                        $companiesHabilitadas[] = $auxComp;
+                    }
+                }
+
+                // Store the counts in the $companiesType array
+                $companiesType['Emisor habilitado'] = $emisorHabilitadoCount;
+                $companiesType['Pendiente postulacion'] = $pendientePostulacionCount;
+                $companiesType['Pendiente aprobacion'] = $pendienteAprobacionCount;
+                $companiesType['Pendiente certificacion'] = $pendienteCertificacionCount;
+                $companiesType['Pendiente resolucion'] = $pendienteResolucionCount;
+                $companiesType['Emisor no Habilitado'] = $emisorNoHabilitadoCount;
+                $companiesType['En espera para comenzar'] = $enEsperaComenzarCount;
+                $companiesType['Pendiente usuario'] = $pendienteUsuarioCount;
+                $args['companiesType'] = $companiesType;
+
+                // $args['companiesList'] = $responseCurrentSession->currentSession->companies;
+                $args['companiesHabilitadas'] = $companiesHabilitadas;
+                
+                return $this->view->render($response, "resumen.twig", $args);
+                // return $response->withStatus(302)->withHeader('Location', 'home');
+            } else {
+                return $response->withStatus(302)->withHeader('Location', 'iniciar-sesion');
             }
         } else {
-            $args['rutUserLogued'] = null;
-            $args['mailUserLogued'] = null;
-            $args['companieUserLogued'] = null;
+            return $response->withStatus(302)->withHeader('Location', 'iniciar-sesion');
         }
-        // if ( isset($_SESSION['mailUserLogued']) ){
-        //     return $this->view->render($response, "resumen.twig", $args);
-        // }
-        return $this->view->render($response, "resumen.twig", $args);
-        // return $response->withRedirect($request->getUri()->getBaseUrl());
     })->setName("Start");
 
     // Define a custom comparison function for usort()

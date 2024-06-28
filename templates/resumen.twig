@@ -2,11 +2,11 @@
 {% block head %}
 {% endblock %}
 {% block content %}
-    {% if mailUserLogued %}
+    {% if sistemSession %}
         <div class="card w-100">
             <div class="containerTable" id="containerCompanies">
                 <div class="" style="margin-left:0;">
-                    <p id="indexCompanieWork" class="font-weight-bold pl-2">&nbsp;Trabajando con&nbsp;<a href="{{ path_for('Start')}}empresas/{{rutUserLogued}}">{{companieUserLogued}}</a></p>
+                    <p id="indexCompanieWork" class="font-weight-bold pl-2">&nbsp;Trabajando con&nbsp;<a href="{{ path_for('Start')}}empresas/{{sistemSession.rutUserLogued}}">{{sistemSession.companieUserLogued}}</a></p>
                 </div>
                 <div style="margin-left:15px;">
                     {# <br> #}
