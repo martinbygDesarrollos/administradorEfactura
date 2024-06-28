@@ -370,8 +370,8 @@ $subject = "$numberOfComp empresas con CAE o Certificado por vencer";
 $header  = "MIME-Version: 1.0\r\nContent-type:text/html; charset=UTF-8";
 $body = createMail($tableBodyCert, $tableBodyCaes);
 
-var_dump($body);
-exit;
+// var_dump($body);
+// exit;
 
 $resultSendMail = mail($to, $subject, $body, $header);
 if (!$resultSendMail)
