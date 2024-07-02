@@ -55,43 +55,53 @@ class ctr_users{
 
 		$responseLogin = $restController->login($mail, $password); //hago el login contra 
 		if ( $responseLogin->result == 2 ){ //si los tres datos que recibo son correctos entonces los guardo local
+			// echo "A";
 			// $responseCompanies = $restController->getCompanies($mail);
-			$responseCompanies = $companieController->getCompanies($mail);
 			// var_dump($responseCompanies->listResult);
 			// exit;
 			$token = $responseLogin->token;
 			$responseGetUser = $usersClass->getUserByMail($mail);
 			if ( $responseGetUser->result == 2 ){// Usuario encontrado
-				if(isset($responseGetUser->objectResult->tokenLocal)){ // Usuario ya esta logeado en otra parte
-					if($force) { // No se forza la sesion
+				// echo "B";
+				$responseUpdateToken = $usersClass->updateToken($mail, $token); // actualizo el token de ormen
+				if ( $responseUpdateToken->result == 2 ){
+					$responseCompanies = $companieController->getCompanies($mail);
+					// echo "C";
+					if(isset($responseGetUser->objectResult->tokenLocal)){ // Usuario ya esta logeado en otra parte
+						// echo "D";
+						if($force) { // No se forza la sesion
+							// echo "E";
+							return $usersClass->setNewTokenAndSession($mail, $responseCompanies->listResult);
+							// $responseUpdatedToken = $usersClass->updateTokenLocal($mail, $newTokenLocal);
+							// $response = $usersClass->updateLastActivity($mail); // CAMBIAR ESTO 
+						} else { // forzar iniciar sesion nueva
+							// echo "F";
+							$fechaStr = $responseGetUser->objectResult->tokenFecha;
+							// $date = new DateTime();
+							// $date->modify('-1 day');
+							// $yesterday = $date->format('Ymd');
+							// var_dump($yesterday);
+							$response->result = 1;
+							// if (substr($fechaStr, 0, 8) == date('Ymd')) // HOY
+							// 	$lastActivityDate = 'hoy a las ' . substr($fechaStr, 8, 2) . ":" . substr($fechaStr, 10, 2) . ":" . substr($fechaStr, 12, 2);
+							// else if (substr($fechaStr, 0, 8) == $yesterday)
+							// 	$lastActivityDate = 'ayer a las ' . substr($fechaStr, 8, 2) . ":" . substr($fechaStr, 10, 2) . ":" . substr($fechaStr, 12, 2);
+							// else
+							// 	$lastActivityDate = $this->setFormatBarDateTime($fechaStr);
+							$response->message = "La sesión de $mail se encuentra activa (última actividad el " . substr($fechaStr, 6, 2) . "/" .  substr($fechaStr, 4, 2) . "/" . substr($fechaStr, 0, 4) . " a las " . substr($fechaStr, 8, 2) . ":" . substr($fechaStr, 10, 2) . ":" . substr($fechaStr, 12, 2) . ")";
+							$response->activa = true;
+							return $response;
+						}
+					} else {
 						return $usersClass->setNewTokenAndSession($mail, $responseCompanies->listResult);
-						// $responseUpdatedToken = $usersClass->updateTokenLocal($mail, $newTokenLocal);
-						// $response = $usersClass->updateLastActivity($mail); // CAMBIAR ESTO 
-					} else { // forzar iniciar sesion nueva
-						$fechaStr = $responseGetUser->objectResult->tokenFecha;
-						$date = new DateTime();
-						$date->modify('-1 day');
-						$yesterday = $date->format('Ymd');
- 						// var_dump($yesterday);
-						$response->result = 1;
-						if (substr($fechaStr, 0, 8) == date('Ymd')) // HOY
-							$lastActivityDate = 'hoy a las ' . substr($fechaStr, 8, 2) . ":" . substr($fechaStr, 10, 2) . ":" . substr($fechaStr, 12, 2);
-						else if (substr($fechaStr, 0, 8) == $yesterday)
-							$lastActivityDate = 'ayer a las ' . substr($fechaStr, 8, 2) . ":" . substr($fechaStr, 10, 2) . ":" . substr($fechaStr, 12, 2);
-						else 
-							$lastActivityDate = $this->setFormatBarDateTime($fechaStr);
-						$response->message = "La sesión de $mail se encuentra activa (última actividad el " . substr($fechaStr, 6, 2) . "/" .  substr($fechaStr, 4, 2) . "/" . substr($fechaStr, 0, 4) . " a las " . substr($fechaStr, 8, 2) . ":" . substr($fechaStr, 10, 2) . ":" . substr($fechaStr, 12, 2) . ")";
-						$response->activa = true;
-						return $response;
+						// $response = $usersClass->updateTokenLocal($mail, $newTokenLocal);
+						// if($response->result == 2)
+						// 	$response = $usersClass->updateLastActivity($mail); // CAMBIAR ESTO 
 					}
 				} else {
-					return $usersClass->setNewTokenAndSession($mail, $responseCompanies->listResult);
-					// $response = $usersClass->updateTokenLocal($mail, $newTokenLocal);
-					// if($response->result == 2)
-					// 	$response = $usersClass->updateLastActivity($mail); // CAMBIAR ESTO 
-				}
+					return $responseUpdateToken;
+				} 
 			} else {
-				
 				return $responseGetUser;
 			} 
 		} else {
