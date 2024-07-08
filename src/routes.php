@@ -345,6 +345,8 @@ return function (App $app) {
                         $expireDateCertificadosSoon = false;
                         $expireCAEsSoon = array();
                         $pocosCaes = null;
+                        // $gruposCaes = null; // TEST PARA SABER QUE CAES FALTAN ========================
+                        // $caesHabilitados = null; // TEST PARA SABER QUE CAES FALTAN ========================
                         
                         foreach ($comp->caes as $cae) {
                             $dateTime = new DateTime($cae->vencimiento);
@@ -380,6 +382,54 @@ return function (App $app) {
                                 }
                             }
                         }
+                        // // TEST PARA SABER QUE CAES FALTAN ========================
+                        // $companieDetails = $companiesController->getCompaniesData($comp->rut)->objectResult;
+                        // $caesHabilitados = caesHabilitados($companieDetails);
+                        // if(count($caesHabilitados) > 0){ // verifico que si falta algun cae de los grupos
+                        //     if (in_array("dgiResolutionEFac", $caesHabilitados)) {
+                        //         // $pedirResolutionEFac = true;
+                        //         $gruposCaes[] = 101;
+                        //         $gruposCaes[] = 102;
+                        //         $gruposCaes[] = 103;
+                        //         $gruposCaes[] = 111;
+                        //         $gruposCaes[] = 112;
+                        //         $gruposCaes[] = 113;
+                        //     }
+                        //     if (in_array("dgiResolutionERes", $caesHabilitados)) {
+                        //         // $pedirResolutionERes = true;
+                        //         $gruposCaes[] = 182;
+                        //     }
+                        //     if (in_array("dgiResolutionERem", $caesHabilitados)) {
+                        //         // $pedirResolutionERem = true;
+                        //         $gruposCaes[] = 181;
+                        //     }
+                        //     if (in_array("dgiResolutionEFacExp", $caesHabilitados)) {
+                        //         // $pedirResolutionEFacExp = true;
+                        //         $gruposCaes[] = 121;
+                        //         $gruposCaes[] = 122;
+                        //         $gruposCaes[] = 123;
+                        //         $gruposCaes[] = 124;
+                        //     }
+                        //     if (in_array("dgiResolutionCtaAjena", $caesHabilitados)) {
+                        //         // $pedirResolutionCtaAjena = true;
+                        //         $gruposCaes[] = 131;
+                        //         $gruposCaes[] = 132;
+                        //         $gruposCaes[] = 133;
+                        //         $gruposCaes[] = 141;
+                        //         $gruposCaes[] = 142;
+                        //         $gruposCaes[] = 143;
+                        //     }
+                        //     if (in_array("dgiResolutionEBolEntrada", $caesHabilitados)) {
+                        //         // $pedirResolutionEBolEntrada = true;
+                        //         $gruposCaes[] = 151;
+                        //         $gruposCaes[] = 152;
+                        //         $gruposCaes[] = 153;
+                        //     }
+                        // }
+                        // $hasCaesFaltantes = false;
+                        // if(count($gruposCaes) != count($comp->caes))
+                        //     $hasCaesFaltantes = true;
+                        // // TEST PARA SABER QUE CAES FALTAN ========================
 
                         if (isset($comp->certificateExpireDate) && $comp->certificateExpireDate !== "") {
                             $dateTime = new DateTime($comp->certificateExpireDate);
@@ -401,6 +451,9 @@ return function (App $app) {
                             "pocosCaes" => $pocosCaes,
                             "expireCAEsSoon" => $expireCAEsSoon,
                             "expireDateCertificadosSoon" => $expireDateCertificadosSoon
+                            // "caesHabilitados" => $gruposCaes, // TEST PARA SABER QUE CAES FALTAN ========================
+                            // "caesDisponibles" => $comp->caes, // TEST PARA SABER QUE CAES FALTAN ========================
+                            // "hasCaesFaltantes" => $hasCaesFaltantes // TEST PARA SABER QUE CAES FALTAN ========================
                         ];
                         $companiesHabilitadas[] = $auxComp;
                     }
@@ -434,4 +487,27 @@ return function (App $app) {
     function compareByExpireDate($a, $b) {
         return strtotime($a['expireDate']) - strtotime($b['expireDate']);
     }
+
+    // function caesHabilitados($companieDetails){ // calcula por grupo si faltan miembros (Ej grupo basico = 101,102,103,111,112,113)
+    //     $grupos = [];
+    //     if(isset($companieDetails->dgiResolutionEFac) && $companieDetails->dgiResolutionEFac != ""){
+    //         $grupos[] = "dgiResolutionEFac";
+    //     }
+    //     if(isset($companieDetails->dgiResolutionERes) && $companieDetails->dgiResolutionERes != ""){
+    //         $grupos[] = "dgiResolutionERes";
+    //     }
+    //     if(isset($companieDetails->dgiResolutionERem) && $companieDetails->dgiResolutionERem != ""){
+    //         $grupos[] = "dgiResolutionERem";
+    //     }
+    //     if(isset($companieDetails->dgiResolutionEFacExp) && $companieDetails->dgiResolutionEFacExp != ""){
+    //         $grupos[] = "dgiResolutionEFacExp";
+    //     }
+    //     if(isset($companieDetails->dgiResolutionCtaAjena) && $companieDetails->dgiResolutionCtaAjena != ""){
+    //         $grupos[] = "dgiResolutionCtaAjena";
+    //     }
+    //     if(isset($companieDetails->dgiResolutionEBolEntrada) && $companieDetails->dgiResolutionEBolEntrada != ""){
+    //         $grupos[] = "dgiResolutionEBolEntrada";
+    //     }
+    //     return $grupos;
+    // }
 };

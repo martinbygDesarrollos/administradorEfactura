@@ -8,7 +8,7 @@
                 <div class="" style="margin-left:0;">
                     <p id="indexCompanieWork" class="font-weight-bold pl-2">&nbsp;Trabajando con&nbsp;<a href="{{ path_for('Start')}}empresas/{{sistemSession.rutUserLogued}}">{{sistemSession.companieUserLogued}}</a></p>
                 </div>
-                <div style="margin-left:15px;">
+                <div id="divInfo" style="margin-left:15px;">
                     {# <br> #}
                     <span style="font-weight: 500;"> Total de empresas: {{companiesCount}}</span>
                     <hr>
@@ -51,6 +51,7 @@
                     {% endfor %}
                     <hr style="margin-top: 2rem;">
                     {% set EmpresasConPocosCAEs = 0 %}
+                    {# {% set EmpresasConCAEsFaltantes = 0 %} #}
                     {% set EmpresasConCAEsPorVencer = 0 %}
                     {% set EmpresasConCertificadosPorVencer = 0 %}
                     {% for comp in companiesHabilitadas %}
@@ -63,6 +64,9 @@
                         {% if comp.expireDateCertificadosSoon == true %}
                             {% set EmpresasConCertificadosPorVencer = EmpresasConCertificadosPorVencer + 1 %}
                         {% endif %}
+                        {# {% if comp.hasCaesFaltantes == true %} #}
+                            {# {% set EmpresasConCAEsFaltantes = EmpresasConCAEsFaltantes + 1 %} #}
+                        {# {% endif %} #}
                     {% endfor %}
                     <span style="font-weight: 500;"> Total empresas con pocos CAEs: {{ EmpresasConPocosCAEs }}</span>
                     {% if EmpresasConPocosCAEs > 0 %}
@@ -168,6 +172,9 @@
                             {% endif %}
                         </div>
                     </div>
+                    <hr>
+                    <button class="mt-2" id="buttonMostrarMasDetalles" style="border:none; background-color: transparent; padding: 0; color: #50adff; display: inline-block;" >Mas información</button>
+                    <div id="loading-bar-spinner" class="spinner"><div class="spinner-icon"></div></div>
                 </div>
             </div>
         </div>

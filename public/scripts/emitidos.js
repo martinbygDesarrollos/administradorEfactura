@@ -118,7 +118,7 @@ function showComprobante(RUTEmisor, tipo, serie, numero){
             mostrarLoader(false)
             $("#modalVoucherRecibed").modal();
         } else if ( response.result == 0 ){
-        // 	// window.location.href = getSiteURL() + "cerrar-session";
+        	window.location.href = getSiteURL() + "cerrar-session";
         }
 	})
 }

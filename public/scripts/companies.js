@@ -189,6 +189,16 @@ function verMasEmpresasConCAEsPorVencer(){
 	}
 }
 
+function verMasEmpresasConCAEsFaltantes(){
+	if($('#btnShowHideEmpresasConCAEsFaltantes').text() == "Ver más...") {
+		$("#sectionEmpresasConCAEsFaltantes").removeClass("hide").addClass("show");
+		$('#btnShowHideEmpresasConCAEsFaltantes').text("Ver menos...")
+	} else {
+		$('#btnShowHideEmpresasConCAEsFaltantes').text("Ver más...")
+		$("#sectionEmpresasConCAEsFaltantes").removeClass("show").addClass("hide");
+	}
+}
+
 function verMasEmpresasConCertificadosPorVencer(){
 	if($('#btnShowHideEmpresasConCertificadosPorVencer').text() == "Ver más...") {
 		$("#sectionEmpresasConCertificadosPorVencer").removeClass("hide").addClass("show");
@@ -837,6 +847,144 @@ $('#buttonModalNewSucursal').click(function(){
 	})
 });
 
+$('#buttonMostrarMasDetalles').click(function(){
+	$('#loading-bar-spinner').css('display', 'inline-block')
+	sendAsyncPost("caesFaltantes", null)
+	.then((response)=>{
+		if ( response.result == 2 ){
+			$('#loading-bar-spinner').css('display', 'none')
+			console.log(response.companiesWithCaesFaltantes);
+			$('#buttonMostrarMasDetalles').css('display', 'none')
+			// $("#divInfo").remove("#buttonMostrarMasDetalles");
+			// $('#buttonMostrarMasDetalles').remove();
+			createSectionCaesFaltantes(response.companiesWithCaesFaltantes);
+			// showMessage(response.result, response.message);
+			// $('#buttonMostrarMasDetalles').css('display', 'none')
+		}else if ( response.result == 0 ){
+			$('#loading-bar-spinner').css('display', 'none')
+			$('#buttonMostrarMasDetalles').css('display', 'none')
+			showMessage(response.result, response.message);
+		}
+		$('#loading-bar-spinner').css('display', 'none')
+	})
+});
+
+function createSectionCaesFaltantes(companies){
+	console.log("funcion crear cosas")
+	let button = null;
+
+    // let hr = $('<hr>')
+
+    let span = $('<span></span> ')
+        .css('font-weight', '500')
+        .text('Empresas con CAEs faltantes: ' + companies.length + ' ');
+
+	if(companies.length > 0){
+		button = $('<button></button>')
+        .attr('id', 'btnShowHideEmpresasConCAEsFaltantes')
+        .attr('onclick', 'verMasEmpresasConCAEsFaltantes()')
+        .css({
+            'border': 'none',
+            'background-color': 'transparent',
+            'padding': '0',
+            'color': '#50adff'
+        })
+        .text('Ver más...');
+	}
+
+	$("#divInfo").append(span, button);
+
+    let outerDiv = $('<div></div>')
+        .attr('id', 'sectionEmpresasConCAEsFaltantes')
+        .addClass('hide');
+
+    let innerDiv = $('<div></div>')
+        .addClass('col-12 pl-0');
+
+    let table = $('<table></table>')
+        .addClass('')
+        .css('width', '100%');
+
+    let thead = $('<thead></thead>');
+
+	let tbody = $('<tbody></tbody>');
+
+	companies.forEach(comp => {
+		tbody.append(createTr(comp));
+	});
+
+    let headerRow = $('<tr></tr>')
+        .css('background-color', '#e7e7e7');
+
+    let th1 = $('<th></th>')
+        .addClass('col-2 pl-0')
+        .text('RUT');
+    let th2 = $('<th></th>')
+        .addClass('col-4')
+        .text('Razón Social');
+    let th3 = $('<th></th>')
+        .addClass('col-3')
+        .text('CAEs habilitados');
+    let th4 = $('<th></th>')
+        .addClass('col-3')
+        .text('CAEs disponibles');
+
+    headerRow.append(th1, th2, th3, th4);
+
+    thead.append(headerRow);
+
+    table.append(thead, tbody);
+
+	innerDiv.append(table);
+
+	outerDiv.append(innerDiv);
+
+	$("#divInfo").append(outerDiv);
+	
+}
+
+function createTr(comp){
+	// Creating elements
+    let tr = $('<tr></tr>');
+    let td1 = $('<td></td>').addClass('pl-0');
+    let td2 = $('<td></td>').addClass('pl-3 pr-3');
+    let td3 = $('<td></td>').addClass('pl-3 pr-3');
+    let td4 = $('<td></td>').addClass('pl-3 pr-3');
+
+    // Adding content and attributes
+    td1.html(`${comp.rut} <a href="${getSiteURL()}email/${comp.rut}" target="_blank" title="Obtener mail pre-formateado para pedido de CAEs"><i class="fas fa-pen-nib"></i></a>`);
+    td2.html(`<a href="${getSiteURL()}/empresas/${comp.rut}">${comp.razonSocial}</a>`);
+	
+	let caesHab = "";
+    comp.caesHabilitados.forEach((cae, index) => {
+        if (index === 0) {
+            caesHab = cae;
+        } else {
+            caesHab += ", " + cae;
+        }
+    });
+	// $('<td></td>').addClass('pl-3 pr-3').text(caesHab);
+    td3.text(caesHab);
+
+	let caesDisp= "";
+    comp.caesDisponibles.forEach((cae, index) => {
+        if (index === 0) {
+            caesDisp = cae.tipoCFE;
+        } else {
+            caesDisp += ", " + cae.tipoCFE;
+        }
+    });
+
+    td4.text(caesDisp);
+
+    // Appending td elements to tr
+    tr.append(td1);
+    tr.append(td2);
+    tr.append(td3);
+    tr.append(td4);
+	
+    return tr;
+}
 
 async function getReportsByCompanie(){
 }

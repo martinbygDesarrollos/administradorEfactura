@@ -230,7 +230,92 @@ return function (App $app){
         }else return json_encode($responseCurrentSession);
     });
 
+    $app->post('/caesFaltantes', function ($request, $response, $args) use ($container, $companiesController, $usersController){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+            $response = new \stdClass();
+            $companies = array();
+            // $caesHabilitados = null;
+            $companiesList = $responseCurrentSession->currentSession->companies;
+            foreach ( $companiesList as $comp) {
+                if ( $comp->estado == 6 ){
+                    $gruposCaes = null;
+                    $companieDetails = $companiesController->getCompaniesData($comp->rut)->objectResult;
+                    $caesHabilitados = caesHabilitados($companieDetails);
+                    if(count($caesHabilitados) > 0){
+                        if (in_array("dgiResolutionEFac", $caesHabilitados)) {
+                            $gruposCaes[] = 101;
+                            $gruposCaes[] = 102;
+                            $gruposCaes[] = 103;
+                            $gruposCaes[] = 111;
+                            $gruposCaes[] = 112;
+                            $gruposCaes[] = 113;
+                        }
+                        if (in_array("dgiResolutionERes", $caesHabilitados)) {
+                            $gruposCaes[] = 182;
+                        }
+                        if (in_array("dgiResolutionERem", $caesHabilitados)) {
+                            $gruposCaes[] = 181;
+                        }
+                        if (in_array("dgiResolutionEFacExp", $caesHabilitados)) {
+                            $gruposCaes[] = 121;
+                            $gruposCaes[] = 122;
+                            $gruposCaes[] = 123;
+                            $gruposCaes[] = 124;
+                        }
+                        if (in_array("dgiResolutionCtaAjena", $caesHabilitados)) {
+                            $gruposCaes[] = 131;
+                            $gruposCaes[] = 132;
+                            $gruposCaes[] = 133;
+                            $gruposCaes[] = 141;
+                            $gruposCaes[] = 142;
+                            $gruposCaes[] = 143;
+                        }
+                        if (in_array("dgiResolutionEBolEntrada", $caesHabilitados)) {
+                            $gruposCaes[] = 151;
+                            $gruposCaes[] = 152;
+                            $gruposCaes[] = 153;
+                        }
+                    }
+                    if(count($gruposCaes) != count($comp->caes)){
+                        $auxComp = [
+                            "rut" => $comp->rut,
+                            "razonSocial" => $comp->razonSocial,
+                            "caesHabilitados" => $gruposCaes,
+                            "caesDisponibles" => $comp->caes
+                        ];
+                        $companies[] = $auxComp;
+                    }
+                }
+            }
+            $response->companiesWithCaesFaltantes = $companies;
+            $response->result = 2;
+            return json_encode($response);
+        }else return json_encode($responseCurrentSession);
+    });
 
+    function caesHabilitados($companieDetails){ // calcula por grupo si faltan miembros (Ej grupo basico = 101,102,103,111,112,113) // Mover esta funcion a un controlador 
+        $grupos = [];
+        if(isset($companieDetails->dgiResolutionEFac) && $companieDetails->dgiResolutionEFac != ""){
+            $grupos[] = "dgiResolutionEFac";
+        }
+        if(isset($companieDetails->dgiResolutionERes) && $companieDetails->dgiResolutionERes != ""){
+            $grupos[] = "dgiResolutionERes";
+        }
+        if(isset($companieDetails->dgiResolutionERem) && $companieDetails->dgiResolutionERem != ""){
+            $grupos[] = "dgiResolutionERem";
+        }
+        if(isset($companieDetails->dgiResolutionEFacExp) && $companieDetails->dgiResolutionEFacExp != ""){
+            $grupos[] = "dgiResolutionEFacExp";
+        }
+        if(isset($companieDetails->dgiResolutionCtaAjena) && $companieDetails->dgiResolutionCtaAjena != ""){
+            $grupos[] = "dgiResolutionCtaAjena";
+        }
+        if(isset($companieDetails->dgiResolutionEBolEntrada) && $companieDetails->dgiResolutionEBolEntrada != ""){
+            $grupos[] = "dgiResolutionEBolEntrada";
+        }
+        return $grupos;
+    }
 
     $app->post('/loadCompanies', function ($request, $response, $args) use ($container, $companiesController, $usersController){
         $responseCurrentSession = $usersController->validateSession();

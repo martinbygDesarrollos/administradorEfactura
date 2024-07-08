@@ -323,3 +323,26 @@ a[aria-selected="true"]{
     opacity: 0.5;
     font-size: small;
 }
+
+#loading-bar-spinner.spinner {
+    margin-left: 10px;
+    display: none;
+    height: 20px;
+    width: 20px;
+    z-index: 19 !important;
+    animation: loading-bar-spinner 600ms linear infinite;
+}
+
+#loading-bar-spinner.spinner .spinner-icon {
+    width: 20px;
+    height: 20px;
+    border:  solid 4px transparent;
+    border-top-color:  #37a398 !important;
+    border-left-color: #37a398 !important;
+    border-radius: 50%;
+}
+
+@keyframes loading-bar-spinner {
+  0%   { transform: rotate(0deg);   transform: rotate(0deg); }
+  100% { transform: rotate(360deg); transform: rotate(360deg); }
+}
