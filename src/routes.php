@@ -345,8 +345,9 @@ return function (App $app) {
                         $expireDateCertificadosSoon = false;
                         $expireCAEsSoon = array();
                         $pocosCaes = null;
-                        // $gruposCaes = null; // TEST PARA SABER QUE CAES FALTAN ========================
-                        // $caesHabilitados = null; // TEST PARA SABER QUE CAES FALTAN ========================
+                        $hasCaesFaltantes = false;
+                        $gruposCaes = null; // TEST PARA SABER QUE CAES FALTAN ========================
+                        $caesHabilitados = null; // TEST PARA SABER QUE CAES FALTAN ========================
                         
                         foreach ($comp->caes as $cae) {
                             $dateTime = new DateTime($cae->vencimiento);
@@ -382,53 +383,102 @@ return function (App $app) {
                                 }
                             }
                         }
-                        // // TEST PARA SABER QUE CAES FALTAN ========================
-                        // $companieDetails = $companiesController->getCompaniesData($comp->rut)->objectResult;
-                        // $caesHabilitados = caesHabilitados($companieDetails);
-                        // if(count($caesHabilitados) > 0){ // verifico que si falta algun cae de los grupos
-                        //     if (in_array("dgiResolutionEFac", $caesHabilitados)) {
-                        //         // $pedirResolutionEFac = true;
-                        //         $gruposCaes[] = 101;
-                        //         $gruposCaes[] = 102;
-                        //         $gruposCaes[] = 103;
-                        //         $gruposCaes[] = 111;
-                        //         $gruposCaes[] = 112;
-                        //         $gruposCaes[] = 113;
-                        //     }
-                        //     if (in_array("dgiResolutionERes", $caesHabilitados)) {
-                        //         // $pedirResolutionERes = true;
-                        //         $gruposCaes[] = 182;
-                        //     }
-                        //     if (in_array("dgiResolutionERem", $caesHabilitados)) {
-                        //         // $pedirResolutionERem = true;
-                        //         $gruposCaes[] = 181;
-                        //     }
-                        //     if (in_array("dgiResolutionEFacExp", $caesHabilitados)) {
-                        //         // $pedirResolutionEFacExp = true;
-                        //         $gruposCaes[] = 121;
-                        //         $gruposCaes[] = 122;
-                        //         $gruposCaes[] = 123;
-                        //         $gruposCaes[] = 124;
-                        //     }
-                        //     if (in_array("dgiResolutionCtaAjena", $caesHabilitados)) {
-                        //         // $pedirResolutionCtaAjena = true;
-                        //         $gruposCaes[] = 131;
-                        //         $gruposCaes[] = 132;
-                        //         $gruposCaes[] = 133;
-                        //         $gruposCaes[] = 141;
-                        //         $gruposCaes[] = 142;
-                        //         $gruposCaes[] = 143;
-                        //     }
-                        //     if (in_array("dgiResolutionEBolEntrada", $caesHabilitados)) {
-                        //         // $pedirResolutionEBolEntrada = true;
-                        //         $gruposCaes[] = 151;
-                        //         $gruposCaes[] = 152;
-                        //         $gruposCaes[] = 153;
-                        //     }
-                        // }
-                        // $hasCaesFaltantes = false;
-                        // if(count($gruposCaes) != count($comp->caes))
-                        //     $hasCaesFaltantes = true;
+                        // // TEST PARA SABER QUE CAES FALTAN PERO CON EL FILE ========================
+
+                        $archivo = fopen(URL_FILES .'empresas_con_caes_faltantes.txt', "r");
+                        // Check if the file opened successfully
+                        if ($archivo) {
+                            $lineNumber = 0; // Initialize the line number counter
+                            // $caesHabilitados = []; // Initialize the array to store the strings from "RESOLUCIONES:"
+                            $matchFound = false; // Flag to indicate if a matching EMPRESA line is found
+
+                            // Loop through each line of the file
+                            while (($line = fgets($archivo)) !== false) {
+                                $lineNumber++; // Increment the line number counter
+
+                                // Check if the line starts with "EMPRESA: "
+                                if (strpos($line, 'EMPRESA: ') === 0) {
+                                    // Split the line by spaces
+                                    $parts = explode(' ', $line);
+                                    // Get the second token (the number)
+                                    if (isset($parts[1])) {
+                                        $number = $parts[1];
+                                        // Compare the extracted number with $comp->rut
+                                        if ($number == $comp->rut) {
+                                            // Set the flag to true if the numbers match
+                                            $matchFound = true;
+                                        } else {
+                                            // Reset the flag if the numbers don't match
+                                            $matchFound = false;
+                                        }
+                                    }
+                                }
+
+                                // Check if the line starts with "RESOLUCIONES:" and a match was found
+                                if ($matchFound && strpos($line, 'RESOLUCIONES: ') === 0) {
+                                    // Remove "RESOLUCIONES: " from the beginning and trim the line
+                                    $resolucionesLine = trim(str_replace('RESOLUCIONES: ', '', $line));
+                                    // Split the line by commas and trim each part
+                                    $caesHabilitados = array_map('trim', explode(',', $resolucionesLine));
+                                    // Break the loop since we found the relevant "RESOLUCIONES:" line
+                                    // $gruposCaes = [];
+                                    if(count($caesHabilitados) > 0){ // verifico que si falta algun cae de los grupos
+                                        if (in_array("dgiResolutionEFac", $caesHabilitados)) {
+                                            // $pedirResolutionEFac = true;
+                                            $gruposCaes[] = 101;
+                                            $gruposCaes[] = 102;
+                                            $gruposCaes[] = 103;
+                                            $gruposCaes[] = 111;
+                                            $gruposCaes[] = 112;
+                                            $gruposCaes[] = 113;
+                                        }
+                                        if (in_array("dgiResolutionERes", $caesHabilitados)) {
+                                            // $pedirResolutionERes = true;
+                                            $gruposCaes[] = 182;
+                                        }
+                                        if (in_array("dgiResolutionERem", $caesHabilitados)) {
+                                            // $pedirResolutionERem = true;
+                                            $gruposCaes[] = 181;
+                                        }
+                                        if (in_array("dgiResolutionEFacExp", $caesHabilitados)) {
+                                            // $pedirResolutionEFacExp = true;
+                                            $gruposCaes[] = 121;
+                                            $gruposCaes[] = 122;
+                                            $gruposCaes[] = 123;
+                                            $gruposCaes[] = 124;
+                                        }
+                                        if (in_array("dgiResolutionCtaAjena", $caesHabilitados)) {
+                                            // $pedirResolutionCtaAjena = true;
+                                            $gruposCaes[] = 131;
+                                            $gruposCaes[] = 132;
+                                            $gruposCaes[] = 133;
+                                            $gruposCaes[] = 141;
+                                            $gruposCaes[] = 142;
+                                            $gruposCaes[] = 143;
+                                        }
+                                        if (in_array("dgiResolutionEBolEntrada", $caesHabilitados)) {
+                                            // $pedirResolutionEBolEntrada = true;
+                                            $gruposCaes[] = 151;
+                                            $gruposCaes[] = 152;
+                                            $gruposCaes[] = 153;
+                                        }
+                                    }
+                                    // $hasCaesFaltantes = false;
+                                    if(count($gruposCaes) != count($comp->caes))
+                                        $hasCaesFaltantes = true;
+                                    break;
+                                }
+                            }
+                            // Close the file
+                            fclose($archivo);
+
+                            // Print the array of "RESOLUCIONES"
+                            // print_r($caesHabilitados);
+                        } else {
+                            $gruposCaes = [];
+                            // Handle error opening the file
+                            // echo "Error opening the file.";
+                        }
                         // // TEST PARA SABER QUE CAES FALTAN ========================
 
                         if (isset($comp->certificateExpireDate) && $comp->certificateExpireDate !== "") {
@@ -450,10 +500,10 @@ return function (App $app) {
                             "expireDateCertificados" => $expireDateCertificados,
                             "pocosCaes" => $pocosCaes,
                             "expireCAEsSoon" => $expireCAEsSoon,
-                            "expireDateCertificadosSoon" => $expireDateCertificadosSoon
-                            // "caesHabilitados" => $gruposCaes, // TEST PARA SABER QUE CAES FALTAN ========================
-                            // "caesDisponibles" => $comp->caes, // TEST PARA SABER QUE CAES FALTAN ========================
-                            // "hasCaesFaltantes" => $hasCaesFaltantes // TEST PARA SABER QUE CAES FALTAN ========================
+                            "expireDateCertificadosSoon" => $expireDateCertificadosSoon,
+                            "caesHabilitados" => $gruposCaes, // TEST PARA SABER QUE CAES FALTAN ========================
+                            "caesDisponibles" => $comp->caes, // TEST PARA SABER QUE CAES FALTAN ========================
+                            "hasCaesFaltantes" => $hasCaesFaltantes // TEST PARA SABER QUE CAES FALTAN ========================
                         ];
                         $companiesHabilitadas[] = $auxComp;
                     }

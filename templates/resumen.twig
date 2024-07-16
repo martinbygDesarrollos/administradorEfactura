@@ -51,7 +51,7 @@
                     {% endfor %}
                     <hr style="margin-top: 2rem;">
                     {% set EmpresasConPocosCAEs = 0 %}
-                    {# {% set EmpresasConCAEsFaltantes = 0 %} #}
+                    {% set EmpresasConCAEsFaltantes = 0 %}
                     {% set EmpresasConCAEsPorVencer = 0 %}
                     {% set EmpresasConCertificadosPorVencer = 0 %}
                     {% for comp in companiesHabilitadas %}
@@ -64,9 +64,9 @@
                         {% if comp.expireDateCertificadosSoon == true %}
                             {% set EmpresasConCertificadosPorVencer = EmpresasConCertificadosPorVencer + 1 %}
                         {% endif %}
-                        {# {% if comp.hasCaesFaltantes == true %} #}
-                            {# {% set EmpresasConCAEsFaltantes = EmpresasConCAEsFaltantes + 1 %} #}
-                        {# {% endif %} #}
+                        {% if comp.hasCaesFaltantes == true %}
+                            {% set EmpresasConCAEsFaltantes = EmpresasConCAEsFaltantes + 1 %}
+                        {% endif %}
                     {% endfor %}
                     <span style="font-weight: 500;"> Total empresas con pocos CAEs: {{ EmpresasConPocosCAEs }}</span>
                     {% if EmpresasConPocosCAEs > 0 %}
@@ -173,8 +173,64 @@
                         </div>
                     </div>
                     <hr>
-                    <button class="mt-2" id="buttonMostrarMasDetalles" style="border:none; background-color: transparent; padding: 0; color: #50adff; display: inline-block;" >Mas información</button>
-                    <div id="loading-bar-spinner" class="spinner"><div class="spinner-icon"></div></div>
+                    <span style="font-weight: 500;"> Empresas con CAEs faltantes: {{ EmpresasConCAEsFaltantes }}</span>
+                    {% if EmpresasConCAEsFaltantes > 0 %}
+                        <button id="btnShowHideEmpresasConCAEsFaltantes" onclick="verMasEmpresasConCAEsFaltantes()" style="border:none; background-color: transparent; padding: 0; color: #50adff;" >Ver más...</button>
+                    {% endif %}
+                    <div id="sectionEmpresasConCAEsFaltantes" class="hide">
+                        <div class="col-12 pl-0">
+                            {% set hasCaesFaltantes = false %}
+                            {% for comp in companiesHabilitadas %}
+                                {% if comp.hasCaesFaltantes %}
+                                    {% if hasCaesFaltantes == false %}
+                                    {# {% if loop.first %} #}
+                                        {% set hasCaesFaltantes = true %}
+                                        <table class="" style="width: 100%;">
+                                            <thead>
+                                                <tr style="background-color: #e7e7e7">
+                                                    <th class="col-2 pl-0">RUT</th>
+                                                    <th class="col-4">Razón Social</th>
+                                                    <th class="col-3">CAEs habilitados</th>
+                                                    <th class="col-3">CAEs disponibles</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                    {% endif %}
+                                    <tr class="companyTD">
+                                        <td class="pl-0">{{ comp.rut }} <a href="{{ path_for('Start')}}email/{{ comp.rut }}" target="_blank" title="Obtener mail pre-formateado para pedido de CAEs"> <i class="fas fa-pen-nib"></i> </a></td>
+                                        <td class="pl-3 pr-3"> <a href="{{ path_for('Start')}}empresas/{{ comp.rut }}">{{ comp.razonSocial }}</a></td>
+                                        {% set caesHab = "" %}
+                                        {% for cae in comp.caesHabilitados %}
+                                            {% if loop.first %}
+                                                {% set caesHab = cae %}
+                                            {% else %}
+                                                {% set caesHab = caesHab ~ ", " ~ cae %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        <td class="pl-3 pr-3"> {{ caesHab }} </td>
+                                        
+                                        {% set caesAux = "" %}
+                                        {% for cae in comp.caesDisponibles %}
+                                            {% if loop.first %}
+                                                {% set caesAux = cae.tipoCFE %}
+                                            {% else %}
+                                                {% set caesAux = caesAux ~ ", " ~ cae.tipoCFE %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        <td class="pl-3 pr-3"> {{ caesAux }} </td>
+                                        {# <td class="pl-3 pr-3"> <a href="{{ path_for('Start')}}empresas/{{ comp.rut }}">{{ comp.razonSocial }}</a></td> #}
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            {% if hasCaesFaltantes %}
+                                </tbody>
+                            </table>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# <button class="mt-2" id="buttonMostrarMasDetalles" style="border:none; background-color: transparent; padding: 0; color: #50adff; display: inline-block;" >Mas información</button>
+                    <div id="loading-bar-spinner" class="spinner"><div class="spinner-icon"></div></div> #}
                 </div>
             </div>
         </div>
