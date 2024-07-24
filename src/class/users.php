@@ -90,30 +90,6 @@ class users{
 				$objectSession->email = $responseQuery->objectResult->correo;
 				$objectSession->tokenLocal = $responseQuery->objectResult->tokenLocal;
 				$objectSession->permisos = $responseQuery->objectResult->permisos;
-				// foreach ($companiesList as $key => $row) {
-				// 	// var_dump($row);
-				// 	$caes = array();
-				// 	foreach($row->caes as $key => $cae){
-				// 		// var_dump($cae->vencimiento);
-				// 		// var_dump($cae->tipoCFE);
-				// 		// var_dump($cae->total);
-				// 		// var_dump($cae->disponibles);
-				// 		// echo "-------------";
-				// 		$caes[] = $cae;
-				// 	}
-				// 	$certificateExpireDate = "";
-				// 	if(isset($row->certificateExpireDate))
-				// 		$certificateExpireDate = $row->certificateExpireDate;
-				// 	$companies[] = [
-				// 		'certificateExpireDate' => $certificateExpireDate,
-				// 		'estadoDescripcion' => $row->estadoDescripcion, 
-				// 		'rut' => $row->rut, 
-				// 		'razonSocial' => $row->razonSocial, 
-				// 		'estado' => $row->estado,
-				// 		'caes' => $caes
-				// 	];
-				// }
-				// $objectSession->companies = $companies;
 				
 				$objectSession->companies = $companiesList;
 				$objFirstCompanie = array_pop(array_reverse($objectSession->companies));
