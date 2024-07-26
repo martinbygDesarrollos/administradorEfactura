@@ -449,10 +449,13 @@ class ctr_companies{
 				$mesesTranscurridos = 24 - $monthsLeft;
 				$usadosPorMes = $usados / $mesesTranscurridos;
 				$cantCaesPedir = $usadosPorMes * 1.1 * 24;
-				if($cantCaesPedir <= 100 )
+				if ($cantCaesPedir <= 100) {
 					$cantCaesPedir = 100;
-				else
+				} elseif ($cantCaesPedir <= 1000) {
 					$cantCaesPedir = (int)ceil($cantCaesPedir / 100) * 100;
+				} else {
+					$cantCaesPedir = (int)ceil($cantCaesPedir / 1000) * 1000;
+				}
 				$caes[] = (object) ['tipoCFE' => $cae->tipoCFE, 'pedir' => $cantCaesPedir, 'usados' => $usados, 'usadosPorMes' => $usadosPorMes, 'razon' => $cae->razon, 'vencimiento' => $cae->vencimiento, 'tipoCFEText' => $this->cfeTypeText($cae->tipoCFE) ];
 			}
 			$response->caes = $caes;
