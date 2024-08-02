@@ -50,7 +50,7 @@ return function (App $app){
             $response = new \stdClass();
             $data = $request->getParams();
             // $rut = $_SESSION['rutUserLogued'];
-            $rut = $responseCurrentSession->currentSession->mailUserLogued;
+            $rut = $responseCurrentSession->currentSession->rutUserLogued;
             $response = $emitedController->resendXml($rut, $data);
             return json_encode($response);
         }else return json_encode($responseCurrentSession);
