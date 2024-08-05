@@ -256,3 +256,17 @@ function backInit(){
   	document.documentElement.scrollTop = 0;
 
 }
+
+function setQuotes(){
+	sendAsyncPost("getQuotes", null)
+	.then((response)=>{
+		if ( response.result == 2 ){
+			console.log(response)
+			$('#textEURO').text(response.EUR)
+			$('#textUSD').text(response.USD)
+			$('#textUI').text(response.UI)
+		} else if ( response.result == 0 ){
+			console.log("Imposible obtener las cotizaciones de monedas.")
+		}
+	})
+}

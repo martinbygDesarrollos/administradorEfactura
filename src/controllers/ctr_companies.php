@@ -830,6 +830,37 @@ class ctr_companies{
 		return $responseCFE;
 	}
 
+	//obtiene la cotizacion de varias monedas
+	public function getQuotes(){
+		$restController = new ctr_rest();
+		$response = new \stdClass();
+
+		$currentDate = date('Y-m-d');
+		$error = false;
+		$responseRestUSD = $restController->obtenerCotizacion($currentDate, $currentDate, "USD");
+		if($responseRestUSD->result == 2){
+			$response->USD =  bcdiv($responseRestUSD->currentQuote, '1', 4);
+		} else
+			$error = true;
+		
+		$responseRestUI = $restController->obtenerCotizacion($currentDate, $currentDate, "UI");
+		if($responseRestUI->result == 2){
+			$response->UI =  bcdiv($responseRestUI->currentQuote, '1', 4);
+		} else
+			$error = true;
+
+		$responseRestEUR = $restController->obtenerCotizacion($currentDate, $currentDate, "EUR");
+		if($responseRestEUR->result == 2){
+			$response->EUR = bcdiv($responseRestEUR->currentQuote, '1', 4);
+		} else
+			$error = true;
+		if(!$error)
+			$response->result = 2;
+		else
+			$response->result = 0;
+		return $response;
+	}
+
 }
 
 

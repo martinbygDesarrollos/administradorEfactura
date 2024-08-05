@@ -952,6 +952,33 @@ class ctr_rest{
 		return $response;
 	}
 
+	public function obtenerCotizacion($dateFrom, $dateTo, $typeCoin){
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+		$responseCurrentSession = $usersController->validateSession();
+		if($responseCurrentSession->result == 2){
+			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
+			if ( $token->result == 2 ){
+				$tokenRest = $token->objectResult->tokenRest;
+				$responseRest = json_decode($petitionClass->obtenerCotizacion($dateFrom, $dateTo, $typeCoin, $tokenRest));
+				if(isset($responseRest->resultado)){
+					if($responseRest->resultado->codigo == 200){
+						$response->result = 2;
+						$response->currentQuote = $responseRest->currencies[0]->tcv;
+					}else{
+						$response->result = 0;
+						$response->message = "Ocurrió un error, REST no retorno una cotización valida.";
+					}
+				}else{
+					$response->result = 0;
+					$response->message = "Ocurrió un error y REST no retorno un resultado.";
+				}
+			} else return $token;
+		}
+		return $response;
+	}
+
 }
 
 

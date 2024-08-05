@@ -931,6 +931,13 @@ return function (App $app){
         } else return json_encode($responseCurrentSession);
     });
 
+    $app->post('/getQuotes', function($request, $response, $args) use ($companiesController, $usersController){
+        $response = new \stdClass();
+        $responseCurrentSession = $usersController->validateSession();
+		if($responseCurrentSession->result == 2){
+            return json_encode($companiesController->getQuotes());
+		}else return json_encode($responseCurrentSession);
+	});
 }
 
 ?>

@@ -231,6 +231,60 @@
 
                     {# <button class="mt-2" id="buttonMostrarMasDetalles" style="border:none; background-color: transparent; padding: 0; color: #50adff; display: inline-block;" >Mas información</button>
                     <div id="loading-bar-spinner" class="spinner"><div class="spinner-icon"></div></div> #}
+                    <div class="card" style="min-width: 230px; position: absolute; bottom: 0; left: -14.75rem; z-index: 999">
+                        <div class="card-body background-template-color2 text-template-background">
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="card-title text-center">Cotización</h5>
+                                    <div class="row">
+                                        <div class="col ml-2">
+                                            <div class="row">
+                                                <p class="font-weight-bold text-center ml-2">Moneda</p>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-1 mr-2">
+                                                    <img width="20px" height="12px" src="{{ path_for('Start') }}img/quote/usa.png">
+                                                </div>
+                                                <p>Dólar</p>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-1 mr-2">
+                                                    <img width="20px" height="14px" src="{{ path_for('Start') }}img/quote/euro.png">
+                                                </div>
+                                                <p>Euro</p>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-1 mr-2">
+                                                    <img width="20px" height="12px" src="{{ path_for('Start') }}img/quote/ui.png">
+                                                </div>
+                                                <p>UI</p>
+                                            </div>
+                                        </div>
+                                        <div class="col ml-2">
+                                            <div class="flex-row-reverse">
+                                                <p class="font-weight-bold text-right">Venta</p>
+                                            </div>
+                                            <div class="flex-row-reverse">
+                                                {# <p class="text-right">{{ quote.USD}}</p> #}
+                                                <p id="textUSD" class="text-right">???</p>
+                                            </div>
+                                            <div class="flex-row-reverse">
+                                                {# <p class="text-right">{{ quote.EUR }}</p> #}
+                                                <p id="textEURO" class="text-right">???</p>
+                                            </div>
+                                            <div class="flex-row-reverse">
+                                                {# <p class="text-right">{{ quote.UI }}</p> #}
+                                                <p id="textUI" class="text-right">???</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <a class="btn btn-link btn-sm" href="https://www.bacacaysf.com/cotizaciones.php" target="_blank">Ver otras cotizaciones</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -244,6 +298,7 @@
 
 	$(document).ready(()=>{
 		//loadCompanies();
+        setQuotes();
 	})
 
 </script>
