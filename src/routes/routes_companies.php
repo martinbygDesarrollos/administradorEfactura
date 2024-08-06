@@ -140,6 +140,108 @@ return function (App $app){
         }
         return $this->view->render($response, "companies.twig", $args);
     })->setName("Empresas");
+
+    $app->get('/informacionEmpresas', function ($request, $response, $args) use ($container, $companiesController, $usersController){
+        $args['version'] = FECHA_ULTIMO_PUSH;
+        $responseCurrentSession = $usersController->validateSession();
+        if ( $responseCurrentSession->result == 2 ){
+            $args['sistemSession'] = $responseCurrentSession->currentSession;
+            $resultCompanies = [];
+            $archivo = fopen(URL_FILES .'empresas_con_caes_faltantes.txt', "r"); // NUEVO
+            if ($archivo) {
+                $matchEmpresa = false; 
+                $matchResoluciones = false; 
+                $matchCaesPedir = false; 
+                $matchCaesDisponibles = false; 
+                $CaesPedir = 0;
+                $CaesDisponibles = 0;
+                $CaesPedirArray = [];
+                $CaesDisponiblesArray = [];
+                $resolucionesArray = [];
+                $rut = "";
+                $razonSocial = "";
+                while (($line = fgets($archivo)) !== false) {
+                    if (!$matchEmpresa) { // Si NO hay una empresa encontrada
+                        if (strpos($line, 'EMPRESA: ') === 0) {
+                            $matchEmpresa = true;
+                            $parts = explode(' ', $line);
+                            if (isset($parts[1])) {
+                                $rut = $parts[1];
+                                $razonSocialParts = array_slice($parts, 2); // Extract parts from index 2 to the end
+                                $razonSocial = implode(' ', $razonSocialParts); // Join them into a single string
+                            }
+                        }
+                    } else { // Encontramos la empresa, ahora buscamos las resoluciones
+                        if (!$matchResoluciones) { // Si NO hay una resolucion encontrada
+                            if (strpos($line, 'RESOLUCIONES: ') === 0) {
+                                $matchResoluciones = true;
+                                $resolucionesLine = trim(str_replace('RESOLUCIONES: ', '', $line));
+                                $resolucionesArray = array_map('trim', explode(',', $resolucionesLine));
+                            }
+                        } else { // Resolucion encontrada, vamos por CAES DISPONIBLES
+                            if (!$matchCaesDisponibles) { // Si NO hay Cantidad de caes disponibles encontrados
+                                if (strpos($line, 'CANTIDAD DE LINEAS (CAES DISPONIBLES)') === 0) {
+                                    $matchCaesDisponibles = true;
+                                    $CaesDisponiblesLine = trim(str_replace('CANTIDAD DE LINEAS (CAES DISPONIBLES)', '', $line));
+                                    $CaesDisponibles = intval($CaesDisponiblesLine);
+                                }
+                            } else {
+                                if($CaesDisponibles > 0){ // Todavia estamos buscando Caes Disponibles
+                                    $CaesDisponiblesArray[] = $line;
+                                    $CaesDisponibles -= 1;
+                                } else { // buscamos Cantidad de caes para pedir
+                                    if (!$matchCaesPedir) { // Si NO hay Cantidad de caes para pedir encontrados
+                                        if (strpos($line, 'CANTIDAD DE LINEAS (CAES PARA PEDIR)') === 0) {
+                                            $matchCaesPedir = true;
+                                            $CaesPedirLine = trim(str_replace('CANTIDAD DE LINEAS (CAES PARA PEDIR)', '', $line));
+                                            $CaesPedir = intval($CaesPedirLine);
+                                        }
+                                    } else {
+                                        if($CaesPedir > 0){
+                                            $CaesPedirArray[] = $line;
+                                            $CaesPedir -= 1;
+                                            if($CaesPedir == 0){// Ya encontró el ultimo Cae para pedir
+                                                $resultCompanies[] =  (object) ['rut' => $rut, 'razonSocial' => $razonSocial, 'resoluciones' => $resolucionesArray, 'CaesDisponibles' => $CaesDisponiblesArray, 'CaesPedir' => $CaesPedirArray];
+                                                $matchEmpresa = false; 
+                                                $matchResoluciones = false; 
+                                                $matchCaesPedir = false; 
+                                                $matchCaesDisponibles = false;
+                                                $rut = "";
+                                                $razonSocial = "";
+                                                $CaesPedirArray = [];
+                                                $CaesDisponiblesArray = [];
+                                                $resolucionesArray = [];
+                                            }
+                                        } else {
+                                            $resultCompanies[] =  (object) ['rut' => $rut, 'razonSocial' => $razonSocial, 'resoluciones' => $resolucionesArray, 'CaesDisponibles' => $CaesDisponiblesArray, 'CaesPedir' => $CaesPedirArray];
+                                            $matchEmpresa = false; 
+                                            $matchResoluciones = false; 
+                                            $matchCaesPedir = false; 
+                                            $matchCaesDisponibles = false;
+                                            $rut = "";
+                                            $razonSocial = "";
+                                            $CaesPedirArray = [];
+                                            $CaesDisponiblesArray = [];
+                                            $resolucionesArray = [];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                fclose($archivo);
+            } else {
+
+            }
+            $args['resultCompanies'] = $resultCompanies;
+            // $company = $companiesController->getCompaniesData($responseCurrentSession->currentSession->rutUserLogued)->objectResult;
+            // $args["company"] = $company;
+        } else {
+            return $response->withRedirect($request->getUri()->getBaseUrl());
+        }
+        return $this->view->render($response, "informacionEmpresas.twig", $args);
+    })->setName("InfoEmpresas");
     /*
 
     //ver el perfil/info detallada de la empresa

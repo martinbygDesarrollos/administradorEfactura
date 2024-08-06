@@ -1,0 +1,66 @@
+{% extends "base.twig" %}
+{% block head %}
+{% endblock %}
+{% block content %}
+    {% if sistemSession %}
+        <input class="form-control" id='filtro' type='text' style='height:2rem; width: 100%; margin-top: .5rem; margin-bottom: .5rem;' placeholder='filtrar...' />
+        <table id='tableEmpresas' style='border: solid 1px #37A398; width: -webkit-fill-available; border-collapse: collapse;'> <thead class="background-template-color text-template-color " style='top: 0; position: sticky; z-index: 11;'> <th class="w-35"> EMPRESA </th> <th class="w-15"> Resoluciones </th> <th class="w-25"> CAEs disponibles </th> <th class="w-25"> Pedir </th> </thead> <tbody>
+        {% for comp in resultCompanies %}
+            <tr class='show' style='background-color: white;'> <td style='border: solid 1px #37A398;'> {{ comp.rut }}  {{ comp.razonSocial }} <a href="{{ path_for('Start')}}email/{{ comp.rut }}" target="_blank" title="Obtener mail pre-formateado para pedido de CAEs"> @ </a></td> <td style='border: solid 1px #37A398;'>
+                {% for res in comp.resoluciones %}
+                    {{res}}
+                    {% if not loop.last %}
+                        <br>
+                    {% endif %}
+                {% endfor %}
+                {# {{ comp.resoluciones|join(' <br> ') }}  #}
+            </td>
+            <td style='border: solid 1px #37A398;'>
+            {% for cae in comp.CaesDisponibles %}
+                {{cae}}
+                {% if not loop.last %}
+                    <br>
+                {% endif %}
+            {% endfor %}
+            </td>
+            <td style='border: solid 1px #37A398;'>
+            {% if comp.CaesPedir|length > 0 %}
+                <p style="color: black; margin: 0;">
+                {% for cae in comp.CaesPedir %}
+                    {{cae}}
+                    {% if not loop.last %}
+                        <br>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            </td>
+            </tr>
+        {% endfor %}
+        </tbody></table>
+    {% else %}
+        <h3 class="text-template-background font-italic text-center">ADMINISTRADOR de EFACTURA</h3>
+    {% endif %}
+    {% block script %}
+    <script type="text/javascript" src="{{ path_for('Start') }}scripts/companies.js{{ version }}"></script>
+    <script type="text/javascript" src="{{ path_for('Start') }}scripts/utils.js{{ version }}"></script>
+    <script type="text/javascript" >
+        $(document).ready(()=>{
+            $('.loaderback').css('display', 'none')
+            $('.loader').css('display', 'none')
+            $('#filtro').on('keyup', function() {
+            console.log('AAAAA')
+            var searchText = $(this).val().toLowerCase()
+            $('#tableEmpresas tbody tr').each(function() {
+                var rowText = $(this).text().toLowerCase()
+                console.log(rowText)
+                if (rowText.includes(searchText)) {
+                    $(this).removeClass('hidden').addClass('show')
+                } else {
+                    $(this).removeClass('show').addClass('hidden')
+                }
+            })
+            })
+        })
+    </script>
+    {% endblock %}
+{% endblock %}
