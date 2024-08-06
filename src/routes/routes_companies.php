@@ -146,6 +146,8 @@ return function (App $app){
         $responseCurrentSession = $usersController->validateSession();
         if ( $responseCurrentSession->result == 2 ){
             $args['sistemSession'] = $responseCurrentSession->currentSession;
+            $company = $companiesController->getCompaniesData($responseCurrentSession->currentSession->rutUserLogued)->objectResult;
+            $args["company"] = $company;
             $resultCompanies = [];
             $archivo = fopen(URL_FILES .'empresas_con_caes_faltantes.txt', "r"); // NUEVO
             if ($archivo) {
