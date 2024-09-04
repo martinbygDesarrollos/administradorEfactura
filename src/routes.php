@@ -485,7 +485,7 @@ return function (App $app) {
                             $dateTime = new DateTime($comp->certificateExpireDate);
                             $certExpireDate = $dateTime->format('Ymd');
                             
-                            $nextMonth = date('Ymd',  strtotime("+ 1 month" , strtotime(date("Ymd"))));
+                            $nextMonth = date('Ymd',  strtotime("+46 days" , strtotime(date("Ymd"))));
                             if($certExpireDate <= $nextMonth){
                                 $expireDateCertificados = substr($certExpireDate, 6, 2) . "/" . substr($certExpireDate, 4, 2) . "/" . substr($certExpireDate, 0, 4) ;
                                 $expireDateCertificadosSoon = true;
