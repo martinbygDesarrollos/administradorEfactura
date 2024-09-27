@@ -385,7 +385,7 @@ return function (App $app) {
                         }
                         // // TEST PARA SABER QUE CAES FALTAN PERO CON EL FILE ========================
 
-                        $archivo = fopen(URL_FILES .'empresas_con_caes_faltantes.txt', "r");
+                        $archivo = fopen(URL_FILES . $responseCurrentSession->currentSession->email . '.txt', "r");
                         // Check if the file opened successfully
                         if ($archivo) {
                             $lineNumber = 0; // Initialize the line number counter

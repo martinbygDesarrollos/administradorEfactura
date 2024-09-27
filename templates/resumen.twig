@@ -10,7 +10,10 @@
                 </div>
                 <div id="divInfo" style="margin-left:15px;">
                     {# <br> #}
-                    <span style="font-weight: 500;"> Total de empresas: {{companiesCount}}</span> <a href="{{ path_for('Start')}}informacionEmpresas" title="Informacion detallada sobre el estado de los CAEs" style="color:grey;"> <i class="fas fa-info-circle"></i></a>
+                    <span style="font-weight: 500;"> Total de empresas: {{companiesCount}}</span> 
+                    {% if sistemSession.email == "guillermo@gargano.com.uy" or sistemSession.email == "administracion@gargano.com.uy" or sistemSession.email == "desarrollo@byg.uy" %}
+                    <a href="{{ path_for('Start')}}informacionEmpresas" title="Informacion detallada sobre el estado de los CAEs" style="color:grey;"> <i class="fas fa-info-circle"></i></a>
+                    {% endif %}
                     <hr>
                     {# <span class="ml-2"> Total de empresas: {{companiesCount}}</span> #}
 
