@@ -149,7 +149,7 @@ return function (App $app){
             $company = $companiesController->getCompaniesData($responseCurrentSession->currentSession->rutUserLogued)->objectResult;
             $args["company"] = $company;
             $resultCompanies = [];
-            $archivo = fopen(URL_FILES .'empresas_con_caes_faltantes.txt', "r"); // NUEVO
+            $archivo = fopen(URL_FILES .$responseCurrentSession->currentSession->email . '.txt', "r"); // NUEVO
             if ($archivo) {
                 $matchEmpresa = false; 
                 $matchResoluciones = false; 
