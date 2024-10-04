@@ -165,7 +165,8 @@ return function (App $app){
             $data = $request->getParams();
             $rut = $data['rut'];
             $email = $data['email'];
-            $usersResponse = $usersController->updateUserPassword($rut, $email);
+            $pwd = $data['pwd'];
+            $usersResponse = $usersController->updateUserPassword($rut, $email, $pwd);
 			return json_encode($usersResponse);
         }else return json_encode(["result"=>0]);
     });

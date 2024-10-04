@@ -851,7 +851,7 @@ class ctr_rest{
 		return $response;
 	}
 	
-	public function updateUserPassword($rut, $email){
+	public function updateUserPassword($rut, $email, $pwd){
 
 		$petitionClass = new sendPetition();
 		$usersController = new ctr_users();
@@ -861,7 +861,7 @@ class ctr_rest{
 		$response->objectResult = new \stdClass();
 
 		$data = new \stdClass();
-		$data->newPassword = $email;
+		$data->newPassword = $pwd;
 		$data->requireChange = false;
 		$responseCurrentSession = $usersController->validateSession();
 		if($responseCurrentSession->result == 2){

@@ -519,7 +519,8 @@ function validatePassword() {
 $('#buttonModalChangePwd').click(function(){
 	let rutSelected = $("#textRutCompanieSelected").text();
 	let email = $('#modalNewPwdTitle').data('email');
-	sendAsyncPost("updatePassword", {email: email, rut: rutSelected})
+	let pwd = $('#newPwd').val();
+	sendAsyncPost("updatePassword", {email: email, rut: rutSelected, pwd:pwd})
 	.then((response)=>{
 		if (response.result == 2){
 			$("#modalNewPwd").modal("hide");

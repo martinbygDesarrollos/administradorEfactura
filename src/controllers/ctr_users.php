@@ -208,10 +208,10 @@ class ctr_users{
 		return $responseUser;
 	}
 	// updateUserPassword($rut, $email)
-	public function updateUserPassword($rut, $email){
+	public function updateUserPassword($rut, $email, $pwd){
 		$restController = new ctr_rest();
 		
-		$responseUser = $restController->updateUserPassword($rut, $email);
+		$responseUser = $restController->updateUserPassword($rut, $email, $pwd);
 		return $responseUser;
 	}
 }
