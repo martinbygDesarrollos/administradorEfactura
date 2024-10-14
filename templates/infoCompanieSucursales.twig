@@ -21,7 +21,17 @@
 						<div>
 							<a id="newSucursal" type="button" onclick="createNewSucursalModal()" style="height: 2.5rem;" class="btn background-template-color text-template-color" title="Crear nueva sucursal"><i class="fas fa-plus"></i></a>
 						</div>
-						<div class="col"></div>
+						<div id="literalE" class="col" style="display: flex; align-items: center; justify-content: flex-end;">
+							<label class="m-0 mr-2 font-weight-bold" title="Cambiar tipo empresa a Literal E (Aplicable desde Sucursar principal)"> LITERAL E </label>
+							<label class="switch mb-0" onclick="changeLiteralE()" disabled>
+								{% if company.isLiteralE == true %}
+									<input type="checkbox" id="literalECheckbox" checked disabled>
+								{% else %}
+									<input type="checkbox" id="literalECheckbox" disabled>
+								{% endif %}
+								<span class="slider" disabled></span>
+							</label>
+						</div>
 						{% if company.suspendida == 0 %}
 	    					<button type="button" class="btn btn-warning align-self-right" style="height: 2.5rem;overflow: hidden; max-width:180px;" onclick="suspenderActivarEmpresa(1)"  title="La empresa está activada, presiona para suspender">Suspender empresa</button>
 	    				{% endif %}

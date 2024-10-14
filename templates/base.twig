@@ -34,7 +34,10 @@
 			</div>
 			{% if sistemSession %}
 			<div class="d-flex">
-				<h6 class="text-template-background font-italic mt-3 notShowMobile">{{sistemSession.email}}</h6>
+				<div class="d-flex" style="max-height: 54px; flex-direction: column; justify-content: center;">
+					<h6 class="text-template-background font-italic m-0 notShowMobile">{{sistemSession.email}}</h6>
+					<h6 class="text-template-background font-italic m-0 notShowMobile" style="text-align: end;">{{sistemSession.entornoType}}</h6>
+				</div>
 				<a href="{{path_for('SignOut')}}" class="btn btn-danger text-white shadow-sm m-2" data-toggle="tooltip" data-placement="top" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></a>
 			</div>
 			{% else %}
@@ -87,6 +90,25 @@
 			</div>
 		</div>
 	</div>
+	<div id="modalConfirm" class="modal" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header alert-warning" id="modalColourConfirm"> Confirmar
+					<button type="button" class="close" data-dismiss="modal" accesskey="x" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p id="modalMessageConfirm" class="text-center"></p>
+				</div>
+				<div class="modal-footer">
+					<button id="modalButtonConfirmCancel" type="button" class="btn btn-light" data-dismiss="modal"> Cancelar </button>
+					<button id="modalButtonConfirmOk" type="button" class="btn btn-success" data-dismiss="modal"> Confirmar </button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<script type="text/javascript" src="{{ path_for('Start') }}scripts/base.js{{ version }}"></script>
 	<script type="text/javascript" src="{{ path_for('Start') }}scripts/sendPost.js{{ version }}"></script>
 	<script type="text/javascript" src="{{ path_for('Start') }}scripts/utils.js{{ version }}"></script>

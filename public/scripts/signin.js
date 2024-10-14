@@ -7,12 +7,14 @@ function signIn(){
 	document.getElementById("buttonConfirm").disabled = true;
 	let correo = $("#inputUser").val();
 	let contra = $("#inputPassword").val();
+	let entorno = $("#entornoSelect").val();
 	// console.log(correo)
 	// console.log(contra)
-	sendAsyncPost("login", {correo:correo, contra:contra, force:false})
+	sendAsyncPost("login", {correo:correo, contra:contra, force:false, entorno: entorno})
 	.then(( response )=>{
 		// console.log(response.result);
-		// return;
+			console.log(response)
+			// return;
 		if(response.result == 2){
 			document.getElementById("buttonConfirm").disabled = false;
 			window.location.href = getSiteURL();

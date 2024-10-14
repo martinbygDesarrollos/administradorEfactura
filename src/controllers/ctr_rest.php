@@ -5,10 +5,10 @@ require_once 'ctr_users.php';
 
 class ctr_rest{
 
-	public function login($user, $password){
+	public function login($user, $password, $entorno){
 		$petitionClass = new sendPetition();
 
-		$petitionResponse = $petitionClass->login($user, $password);
+		$petitionResponse = $petitionClass->login($user, $password, $entorno);
 		$petitionResponse = json_decode($petitionResponse);
 
 		if ( $petitionResponse->resultado->codigo == 200 ){
@@ -24,7 +24,7 @@ class ctr_rest{
 
 
 
-	public function getCompanies($email){
+	public function getCompanies($email, $entorno){
 		$petitionClass = new sendPetition();
 		$usersController = new ctr_users();
 		$response = new \stdClass();
@@ -35,7 +35,8 @@ class ctr_rest{
 		$token = $usersController->getTokenUserLogued($email);
 		if ( $token->result == 2 ){
 			$tokenRest = $token->objectResult->tokenRest;
-			$petitionResponse = $petitionClass->getCompanies($tokenRest);
+			// error_log($entorno);
+			$petitionResponse = $petitionClass->getCompanies($tokenRest, $entorno);
 			$petitionResponse = json_decode($petitionResponse);
 			$response->result = 2;
 			$response->listResult = $petitionResponse;
@@ -60,7 +61,10 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->getCompanyData($tokenRest, $rut);
+				// var_dump($tokenRest);
+				// error_log($_SESSION['sistemSession']->entorno);
+				$petitionResponse = $petitionClass->getCompanyData($tokenRest, $rut, $_SESSION['sistemSession']->entorno);
+				// var_dump($petitionResponse);
 				$petitionResponse = json_decode($petitionResponse);
 				$response->result = 2;
 				$response->objectResult = $petitionResponse;
@@ -85,7 +89,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->getCountEmitidos($tokenRest, $rut, $FROM, $TO, $CFE);
+				$petitionResponse = $petitionClass->getCountEmitidos($tokenRest, $rut, $FROM, $TO, $CFE, $_SESSION['sistemSession']->entorno);
 				$petitionResponse = json_decode($petitionResponse);
 				$response->result = 2;
 				$response->objectResult = $petitionResponse;
@@ -149,7 +153,7 @@ class ctr_rest{
 				}*/
 
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->changeCompanieData($data['rut'], $data['codDgi'], $data, $tokenRest);
+				$petitionResponse = $petitionClass->changeCompanieData($data['rut'], $data['codDgi'], $data, $tokenRest, $_SESSION['sistemSession']->entorno);
 				$petitionResponse = json_decode($petitionResponse);
 				$response->result = 2;
 				$response->objectResult = $petitionResponse;
@@ -184,7 +188,7 @@ class ctr_rest{
 
 
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->changeCompanieData($data['rut'], $data['codDgi'], $newData, $tokenRest);
+				$petitionResponse = $petitionClass->changeCompanieData($data['rut'], $data['codDgi'], $newData, $tokenRest, $_SESSION['sistemSession']->entorno);
 				$petitionResponse = json_decode($petitionResponse);
 				$response->result = 2;
 				$response->objectResult = $petitionResponse;
@@ -208,7 +212,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->sendsobre($rut, $data, $tokenRest);
+				$petitionResponse = $petitionClass->sendsobre($rut, $data, $tokenRest, $_SESSION['sistemSession']->entorno);
 				$petitionResponse = json_decode($petitionResponse);
 
 				if ( $petitionResponse->resultado->codigo == 200 ){
@@ -240,7 +244,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->aprobarPostulacion($rut, $tokenRest);
+				$petitionResponse = $petitionClass->aprobarPostulacion($rut, $tokenRest, $_SESSION['sistemSession']->entorno);
 				$petitionResponse = json_decode($petitionResponse);
 
 				if ( $petitionResponse->resultado->codigo == 200 ){
@@ -271,7 +275,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->aprobarCertificacion($rut, $tokenRest);
+				$petitionResponse = $petitionClass->aprobarCertificacion($rut, $tokenRest, $_SESSION['sistemSession']->entorno);
 				$petitionResponse = json_decode($petitionResponse);
 
 				if ( $petitionResponse->resultado->codigo == 200 ){
@@ -304,7 +308,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->cargarResolucion($rut, $tokenRest, $data);
+				$petitionResponse = $petitionClass->cargarResolucion($rut, $tokenRest, $data, $_SESSION['sistemSession']->entorno);
 				$petitionResponse = json_decode($petitionResponse);
 
 				if ( $petitionResponse->resultado->codigo == 200 ){
@@ -333,7 +337,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->cargarLogo($rut, $tokenRest, $data);
+				$petitionResponse = $petitionClass->cargarLogo($rut, $tokenRest, $data, $_SESSION['sistemSession']->entorno);
 				$petitionResponse = json_decode($petitionResponse);
 
 				if ( $petitionResponse->resultado->codigo == 200 ){
@@ -362,7 +366,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->importCfeEmitedXml($responseCurrentSession->currentSession->rutUserLogued, $tokenRest, $data);
+				$petitionResponse = $petitionClass->importCfeEmitedXml($responseCurrentSession->currentSession->rutUserLogued, $tokenRest, $data, $_SESSION['sistemSession']->entorno);
 				if ( isset($petitionResponse) && $petitionResponse != "" ){
 					$petitionResponse = json_decode($petitionResponse);
 					if ( $petitionResponse->resultado->codigo == 200 ){
@@ -409,7 +413,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->importCfeReceiptXml($responseCurrentSession->currentSession->rutUserLogued, $tokenRest, $data);
+				$petitionResponse = $petitionClass->importCfeReceiptXml($responseCurrentSession->currentSession->rutUserLogued, $tokenRest, $data, $_SESSION['sistemSession']->entorno);
 				if ( isset($petitionResponse) && $petitionResponse != "" ){
 					$petitionResponse = json_decode($petitionResponse);
 					if ( $petitionResponse->resultado->codigo == 200 ){
@@ -453,7 +457,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->getRepresentacionImpresa($rut, $tokenRest);
+				$petitionResponse = $petitionClass->getRepresentacionImpresa($rut, $tokenRest, $_SESSION['sistemSession']->entorno);
 				$result = json_decode($petitionResponse);
 				if ($result->resultado->codigo === 200 ){
 					$response->result = 2;
@@ -484,7 +488,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->updateRepresentacionImpresa($rut, $tokenRest, $data);
+				$petitionResponse = $petitionClass->updateRepresentacionImpresa($rut, $tokenRest, $data, $_SESSION['sistemSession']->entorno);
 				$result = json_decode($petitionResponse);
 				if ($result->resultado->codigo === 200 ){
 					$response->result = 2;
@@ -520,7 +524,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->enabledDisabledCompanie($responseCurrentSession->currentSession->rutUserLogued, $data, $tokenRest);
+				$petitionResponse = $petitionClass->enabledDisabledCompanie($responseCurrentSession->currentSession->rutUserLogued, $data, $tokenRest, $_SESSION['sistemSession']->entorno);
 				$result = json_decode($petitionResponse);
 				if ($result->resultado->codigo === 200 ){
 					$response->result = 2;
@@ -552,7 +556,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->deleteCompanieBranch($rut, $branch, $tokenRest);
+				$petitionResponse = $petitionClass->deleteCompanieBranch($rut, $branch, $tokenRest, $_SESSION['sistemSession']->entorno);
 				$result = json_decode($petitionResponse);
 				if ($result->resultado->codigo === 200 ){
 					$response->result = 2;
@@ -584,7 +588,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->setPrincipalCompanieBranch($rut, $data, $tokenRest);
+				$petitionResponse = $petitionClass->setPrincipalCompanieBranch($rut, $data, $tokenRest, $_SESSION['sistemSession']->entorno);
 				// $petitionResponse = $petitionClass->enabledDisabledCompanie($_SESSION['rutUserLogued'], $data, $tokenRest);
 				$result = json_decode($petitionResponse);
 				if ($result->resultado->codigo === 200 ){
@@ -615,7 +619,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->getListUser( $tokenRest, $rut);
+				$petitionResponse = $petitionClass->getListUser( $tokenRest, $rut, $_SESSION['sistemSession']->entorno);
 				$petitionResponse = json_decode($petitionResponse);
 				$response->result = 2;
 				$response->objectResult = $petitionResponse;
@@ -637,7 +641,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->getListCustomers( $tokenRest, $rut);
+				$petitionResponse = $petitionClass->getListCustomers( $tokenRest, $rut, $_SESSION['sistemSession']->entorno);
 				$petitionResponse = json_decode($petitionResponse);
 				$response->result = 2;
 				$response->objectResult = $petitionResponse;
@@ -659,7 +663,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->getCustomer( $tokenRest, $rut, $document );
+				$petitionResponse = $petitionClass->getCustomer( $tokenRest, $rut, $document , $_SESSION['sistemSession']->entorno);
 				$petitionResponse = json_decode($petitionResponse);
 				$response->result = 2;
 				$response->objectResult = $petitionResponse;
@@ -681,7 +685,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->saveCustomer( $tokenRest, $rut, $customer, $document );
+				$petitionResponse = $petitionClass->saveCustomer( $tokenRest, $rut, $customer, $document , $_SESSION['sistemSession']->entorno);
 				$petitionResponse = json_decode($petitionResponse);
 				$response->result = 2;
 				$response->objectResult = $petitionResponse;
@@ -704,7 +708,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->newCustomer( $tokenRest, $rut, $customer );
+				$petitionResponse = $petitionClass->newCustomer( $tokenRest, $rut, $customer , $_SESSION['sistemSession']->entorno);
 				$petitionResponse = json_decode($petitionResponse);
 				// var_dump($petitionResponse);
 				// exit;
@@ -734,7 +738,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->getEmitidos( $tokenRest, $rut, $lastId);
+				$petitionResponse = $petitionClass->getEmitidos( $tokenRest, $rut, $lastId, $_SESSION['sistemSession']->entorno);
 				$petitionResponse = json_decode($petitionResponse);
 				$response->result = 2;
 				$response->objectResult->emitidos = $petitionResponse;
@@ -756,7 +760,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->getRecibidos( $tokenRest, $rut, $lastId);
+				$petitionResponse = $petitionClass->getRecibidos( $tokenRest, $rut, $lastId, $_SESSION['sistemSession']->entorno);
 				$petitionResponse = json_decode($petitionResponse);
 				$response->result = 2;
 				$response->objectResult->recibidos = $petitionResponse;
@@ -778,7 +782,7 @@ class ctr_rest{
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
 				// $petitionResponse = $petitionClass->getCFE($tokenRest, $rut, $tipoCFE, $serieCFE, $numeroCFE);
-				$petitionResponse = $petitionClass->consultarCFE($tokenRest, $rut, $tipoCFE, $serieCFE, $RUTEmisor, $numeroCFE, 1, "text/html;template=A5Vertical");
+				$petitionResponse = $petitionClass->consultarCFE($tokenRest, $rut, $tipoCFE, $serieCFE, $RUTEmisor, $numeroCFE, 1, "text/html;template=A5Vertical", $_SESSION['sistemSession']->entorno);
 				$petitionResponse = json_decode($petitionResponse);
 				$response->result = 2;
 				$response->objectResult = $petitionResponse;
@@ -800,7 +804,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->getUser( $tokenRest, $rut, $email);
+				$petitionResponse = $petitionClass->getUser( $tokenRest, $rut, $email, $_SESSION['sistemSession']->entorno);
 				$petitionResponse = json_decode($petitionResponse);
 				$response->result = 2;
 				$response->objectResult = $petitionResponse;
@@ -832,7 +836,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->updateUser($tokenRest, $rut, $data);
+				$petitionResponse = $petitionClass->updateUser($tokenRest, $rut, $data, $_SESSION['sistemSession']->entorno);
 				// $petitionResponse = $petitionClass->updateUser($tokenRest, $rut, $email, $name, $active, $cellphone, $scopes);
 				// $petitionResponse = $petitionClass->getUser( $tokenRest, $rut, $email);
 				$petitionResponse = json_decode($petitionResponse);
@@ -868,7 +872,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->updateUserPassword($tokenRest, $rut, $data, $email);
+				$petitionResponse = $petitionClass->updateUserPassword($tokenRest, $rut, $data, $email, $_SESSION['sistemSession']->entorno);
 				$petitionResponse = json_decode($petitionResponse);
 				if($petitionResponse->resultado->error != "OK") {// Hubo algun error
 					$response->result = 0;
@@ -903,7 +907,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->newUser($tokenRest, $rut, $data);
+				$petitionResponse = $petitionClass->newUser($tokenRest, $rut, $data, $_SESSION['sistemSession']->entorno);
 				$petitionResponse = json_decode($petitionResponse);
 				// var_dump($petitionResponse);
 				// exit;
@@ -937,7 +941,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$petitionResponse = $petitionClass->saveInfoAdicional($tokenRest, $rut, $data);
+				$petitionResponse = $petitionClass->saveInfoAdicional($tokenRest, $rut, $data, $_SESSION['sistemSession']->entorno);
 				$petitionResponse = json_decode($petitionResponse);
 				if($petitionResponse->resultado->error != 'OK') {// Hubo algun error
 					$response->result = 0;
@@ -961,7 +965,7 @@ class ctr_rest{
 			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
 			if ( $token->result == 2 ){
 				$tokenRest = $token->objectResult->tokenRest;
-				$responseRest = json_decode($petitionClass->obtenerCotizacion($dateFrom, $dateTo, $typeCoin, $tokenRest));
+				$responseRest = json_decode($petitionClass->obtenerCotizacion($dateFrom, $dateTo, $typeCoin, $tokenRest, $_SESSION['sistemSession']->entorno));
 				if(isset($responseRest->resultado)){
 					if($responseRest->resultado->codigo == 200){
 						$response->result = 2;

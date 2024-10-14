@@ -52,12 +52,14 @@ return function (App $app){
             $data = $request->getParams();
             $correo = $data['correo'];
             $contra = $data['contra'];
+            $entorno = $data['entorno'];
+            // $entorno = null;
             $force = (strtolower($data['force']) === "false") ? false : true;
             // $responseCall = $companiesController->getCompanies($correo);
-            // var_dump($responseCall);
+            // var_dump($entorno);
             // exit;
             // if($responseCall->result == 2){
-            $result = $usersController->login($correo, $contra, $force);
+            $result = $usersController->login($correo, $contra, $entorno, $force);
             // exit;
             return json_encode($result);
             // }

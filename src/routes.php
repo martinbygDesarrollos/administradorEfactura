@@ -352,7 +352,7 @@ return function (App $app) {
                         foreach ($comp->caes as $cae) {
                             $dateTime = new DateTime($cae->vencimiento);
                             $date = $dateTime->format('Ymd');
-                            if(!$expireDateCAEs)
+                            if(!isset($expireDateCAEs) || !$expireDateCAEs)
                                 $expireDateCAEs = $date;
                             if (isset($date) && $date != ""){
                                 $caeAux = [
@@ -384,10 +384,12 @@ return function (App $app) {
                             }
                         }
                         // // TEST PARA SABER QUE CAES FALTAN PERO CON EL FILE ========================
-
-                        $archivo = fopen(URL_FILES . $responseCurrentSession->currentSession->email . '.txt', "r");
+                        $filePath = URL_FILES . $responseCurrentSession->currentSession->email . '.txt';
+                        // $archivo = fopen(URL_FILES . $responseCurrentSession->currentSession->email . '.txt', "r");
                         // Check if the file opened successfully
-                        if ($archivo) {
+                        if (file_exists($filePath)) {
+                            $archivo = fopen($filePath, "r");
+                        // if ($archivo) {
                             $lineNumber = 0; // Initialize the line number counter
                             // $caesHabilitados = []; // Initialize the array to store the strings from "RESOLUCIONES:"
                             $matchFound = false; // Flag to indicate if a matching EMPRESA line is found

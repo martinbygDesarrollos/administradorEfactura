@@ -79,7 +79,7 @@ class users{
 		return $response;
 	}
 
-	public function setNewTokenAndSession($email, $companiesList){
+	public function setNewTokenAndSession($email, $companiesList, $entorno = null){
 		$dbClass = new DataBase();
 		$newTokenLocal = bin2hex(random_bytes((100 - (100 % 2)) / 2));
 		$responseQuery = $this->updateTokenLocal($email, $newTokenLocal);
@@ -90,9 +90,18 @@ class users{
 				$objectSession->email = $responseQuery->objectResult->correo;
 				$objectSession->tokenLocal = $responseQuery->objectResult->tokenLocal;
 				$objectSession->permisos = $responseQuery->objectResult->permisos;
-				
+
+				// $baseUrl = ($entorno === 'test') ? URL_REST_TEST : URL_REST_PROD;
+				// $objectSession->entorno2 = $baseUrl;
+				$objectSession->entorno = $entorno;
+				$objectSession->entornoType = ($entorno === 'test') ? "TESTING" : "PRODUCCIÓN";
+
 				$objectSession->companies = $companiesList;
-				$objFirstCompanie = array_pop(array_reverse($objectSession->companies));
+
+				// $objFirstCompanie = array_pop(array_reverse($objectSession->companies));
+				$reversedArray = array_reverse($objectSession->companies);
+				$objFirstCompanie = array_pop($reversedArray);
+
 				$objectSession->rutUserLogued = $objFirstCompanie->rut;
 				$objectSession->companieUserLogued = $objFirstCompanie->razonSocial;
 

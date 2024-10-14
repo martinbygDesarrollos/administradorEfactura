@@ -46,7 +46,7 @@ function dateTypeHtml( date ){ // entrada 2023-02-04T23:24:21.142-03:00 salida 0
 
 
 function showMessage(result, message){
-	// console.log("funcion de los mensajes");
+	// console.log("funcion de los mensajes SIN ACCIOn");
 	// Get the snackbar DIV
 	var x = document.getElementById("snackbar");
 	// console.log(x)
@@ -82,7 +82,7 @@ function showMessage(result, message){
 }
 
 function showMessageWithAction(result, message, correo, contra){
-	// console.log("funcion de los mensajes");
+	// console.log("funcion de los mensajes PERO CON ACCIOn");
 	// Get the snackbar DIV
 	var x = document.getElementById("snackbarWithAction");
 	// console.log(x)
@@ -113,7 +113,8 @@ function showMessageWithAction(result, message, correo, contra){
 	}
 
 	$('#snackbarWithActionButton').click(function(){
-		sendAsyncPost("login", {correo: correo, contra: contra, force: true})
+		let entorno = $("#entornoSelect").val();
+		sendAsyncPost("login", {correo: correo, contra: contra, force: true, entorno: entorno})
 		.then(( response )=>{
 			if(response.result == 2){
 				// document.getElementById("buttonConfirm").disabled = false;
@@ -124,7 +125,10 @@ function showMessageWithAction(result, message, correo, contra){
 			}else{
 				// document.getElementById("buttonConfirm").disabled = false;
 				// showMessage(response.result, response.message);
-				showMessageWithAction(response.result, response.message, correo, contra);
+				if(response.activa)
+					showMessageWithAction(response.result, response.message, correo, contra);
+				else
+					showMessage(response.result, response.message, correo, contra);
 			}
 		})
 		// console.log(x);

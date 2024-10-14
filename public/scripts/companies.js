@@ -609,6 +609,7 @@ $('#modalNewUser').on('hidden.bs.modal', function() {
 
 
 function createRowsToBranchTableInfo(branch){
+	console.log(branch)
 	if ( branch.isPrincipal ) {
 		$("#tdBranchDataPrincipal").prop('checked', true);
 		$("#buttonDeleteBranchCompanieDetails").attr("disabled", "disabled");
@@ -640,6 +641,7 @@ function createRowsToBranchTableInfo(branch){
 	$("#tdBranchDataTel").val(branch.telephone1);
 	$("#tdBranchDataTel2").val(branch.telephone2);
 	$("#tdBranchDataCorreo").val(branch.email);
+	$("#tdBranchDataWeb").val(branch.website);
 	$("#tdBranchDataWeb").val(branch.website);
 
 	$("#tdBranchDataColor").val(branch.colorPrimary);
@@ -988,4 +990,39 @@ function createTr(comp){
 }
 
 async function getReportsByCompanie(){
+}
+
+function changeLiteralE(){
+	selectedText = $('#selectBranchCompanieDetails option:selected').text()
+	console.log(selectedText)
+	let isPrincipal = selectedText.includes('PRINCIPAL')
+	if(!isPrincipal){
+		return;
+	}
+	console.log("cambiar estado de la empresa")
+	const checkbox = document.getElementById('literalECheckbox');
+	if(checkbox.checked){
+		$('#modalMessageConfirm').html("¿Dejar de ser Literal E?");
+	} else {
+		$('#modalMessageConfirm').html("Cambiar a Literal E?");
+	}
+	$( "#modalButtonConfirmOk" ).off( "click");
+		$('#modalButtonConfirmOk').click(function(){
+			checkbox.checked = !checkbox.checked;
+
+			var formData = new FormData(document.getElementById("formCompanieDetails"));
+			let rutSelected = $("#textRutCompanieSelected").text();
+			formData.append("rut", rutSelected);
+			formData.append("isLiteralE", checkbox.checked);
+			formData.append("codDgi", $("#selectBranchCompanieDetails").val());
+			sendAsyncPostForm("changeCompanieData", formData)
+			.then(( response )=>{
+				if (response.result == 2){
+					window.location.reload();
+				}else if ( response.result == 0 ){
+					window.location.href = getSiteURL() + "cerrar-session";
+				}
+			})
+		});
+	$("#modalConfirm").modal();
 }

@@ -44,7 +44,7 @@ class ctr_users{
 	// 	return $response;
 	// }
 
-	public function login( $mail, $password, $force = false){
+	public function login( $mail, $password, $entorno, $force = false){
 		$restController = new ctr_rest();
 		$companieController = new ctr_companies();
 		$usersClass = new users();
@@ -52,8 +52,8 @@ class ctr_users{
 		$response->result = 1;
 		$responseCompanies = null;
 		
-
-		$responseLogin = $restController->login($mail, $password); //hago el login contra 
+		// var_dump($mail, $password, $entorno, $force);
+		$responseLogin = $restController->login($mail, $password, $entorno); //hago el login contra 
 		if ( $responseLogin->result == 2 ){ //si los tres datos que recibo son correctos entonces los guardo local
 			// echo "A";
 			// $responseCompanies = $restController->getCompanies($mail);
@@ -65,13 +65,13 @@ class ctr_users{
 				// echo "B";
 				$responseUpdateToken = $usersClass->updateToken($mail, $token); // actualizo el token de ormen
 				if ( $responseUpdateToken->result == 2 ){
-					$responseCompanies = $companieController->getCompanies($mail);
+					$responseCompanies = $companieController->getCompanies($mail, $entorno);
 					// echo "C";
 					if(isset($responseGetUser->objectResult->tokenLocal)){ // Usuario ya esta logeado en otra parte
 						// echo "D";
 						if($force) { // No se forza la sesion
 							// echo "E";
-							return $usersClass->setNewTokenAndSession($mail, $responseCompanies->listResult);
+							return $usersClass->setNewTokenAndSession($mail, $responseCompanies->listResult, $entorno);
 							// $responseUpdatedToken = $usersClass->updateTokenLocal($mail, $newTokenLocal);
 							// $response = $usersClass->updateLastActivity($mail); // CAMBIAR ESTO 
 						} else { // forzar iniciar sesion nueva
@@ -93,7 +93,7 @@ class ctr_users{
 							return $response;
 						}
 					} else {
-						return $usersClass->setNewTokenAndSession($mail, $responseCompanies->listResult);
+						return $usersClass->setNewTokenAndSession($mail, $responseCompanies->listResult, $entorno);
 						// $response = $usersClass->updateTokenLocal($mail, $newTokenLocal);
 						// if($response->result == 2)
 						// 	$response = $usersClass->updateLastActivity($mail); // CAMBIAR ESTO 

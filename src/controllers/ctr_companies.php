@@ -7,11 +7,11 @@ require_once 'ctr_rest.php';
 
 class ctr_companies{
 
-	public function getCompanies($email){
+	public function getCompanies($email, $entorno){
 		$companieController = new ctr_companies();
 		$restController = new ctr_rest();
 		$utilClass = new utils();
-		$responseCompanies = $restController->getCompanies($email);
+		$responseCompanies = $restController->getCompanies($email, $entorno);
 
 
 		foreach ($responseCompanies->listResult as $key => $value) { //recorriendo empresas

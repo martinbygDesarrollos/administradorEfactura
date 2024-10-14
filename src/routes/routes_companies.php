@@ -761,6 +761,10 @@ return function (App $app){
             $response = new \stdClass();
 
             $data = $request->getParams();
+            if(!isset($data['isLiteralE']))
+                $data['isLiteralE'] = false;
+            $data['isLiteralE'] = $data['isLiteralE'] == "true" ? true : false;
+            // var_dump($data); exit;
             $response = $companiesController->changeCompanieData($data);
             return json_encode($response);
 
