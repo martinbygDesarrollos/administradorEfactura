@@ -1026,3 +1026,11 @@ function changeLiteralE(){
 		});
 	$("#modalConfirm").modal();
 }
+
+
+function copyValue(value, field){
+	// console.log(value.substr(8,2) + "/" + value.substr(5, 2) + "/" + value.substr(0, 4))
+	if($('#'+ field).val().trim() == ""){
+		$('#'+ field).val(value.substr(8,2) + "/" + value.substr(5, 2) + "/" + value.substr(0, 4))
+	}
+}
