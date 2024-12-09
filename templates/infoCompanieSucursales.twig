@@ -47,7 +47,7 @@
 							<label class="font-weight-bold">Estado</label>
 	    				</td>
 	    				<td>
-		        			<select class="form__field" onchange="changestatusCompanie(this.value, {{company.estado}})">
+		        			<select id="statusCompanieSelect" class="form__field" onchange="changestatusCompanie(this.value, {{company.estado}})">
 								{% if company.estado == 1 %}<option value="1" selected>Pendiente usuario</option>
 								{% else %}<option value="1">Pendiente usuario</option>{% endif %}
 								{% if company.estado == 2 %}<option value="2" selected>Pendiente postulación</option>
