@@ -14,6 +14,7 @@ return function (App $app){
     // $companiesController = new ctr_companies();
 
 	$app->get('/iniciar-sesion', function ($request, $response, $args) use ($container){
+        $args['version'] = FECHA_ULTIMO_PUSH;
 		return $this->view->render($response, "signIn.twig", $args);
 	})->setName("SignIn");
 
