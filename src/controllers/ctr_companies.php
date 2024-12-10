@@ -80,7 +80,7 @@ class ctr_companies{
 			$responseCompanies->listResult[$key]->proxVencDescr = $expireDate;
 
 			$auxExpireDate = "";
-			if ( strlen($expireDate) >0 )
+			if ( strlen($expireDate ?? "") >0 )
 				$auxExpireDate = substr($expireDate,6,2)."/".substr($expireDate,4,2)."/".substr($expireDate,0,4);
 
 			$responseCompanies->listResult[$key]->proxVencimiento = $auxExpireDate;
