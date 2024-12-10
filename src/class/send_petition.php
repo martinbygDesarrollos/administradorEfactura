@@ -66,14 +66,16 @@ class sendPetition{
 		return $thisClass->prepareAndSendCurl("POST", "customers/" . $rut , $token, $customer, $entorno);
 	}
 
-	public function getEmitidos( $token, $rut, $lastId = null, $entorno){
+	public function getEmitidos( $token, $rut, $lastId, $entorno){
+		if(!isset($lastId)) $lastId = null;
 		$thisClass = new sendPetition();
 		$lastId = $lastId ? "?LastId=$lastId" . "&" : "?";
 		
 		return $thisClass->prepareAndSendCurl("GET", "company/".$rut."/cfe/emitidos" . $lastId . "PageSize=30", $token, null, $entorno);
 	}
 
-	public function getRecibidos( $token, $rut, $lastId = null, $entorno){
+	public function getRecibidos( $token, $rut, $lastId, $entorno){
+		if(!isset($lastId)) $lastId = null;
 		$thisClass = new sendPetition();
 		$lastId = $lastId ? "?LastId=$lastId" . "&" : "?";
 		
