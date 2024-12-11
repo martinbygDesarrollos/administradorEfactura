@@ -210,6 +210,16 @@ class sendPetition{
 		return $thisClass->prepareAndSendCurl("POST", "company/".$rut."/suspend", $token, $data, $entorno);
 	}
 
+	public function enableCompanie($rut, $data, $token, $entorno){
+		$thisClass = new sendPetition();
+		return $thisClass->prepareAndSendCurl("POST", "company/".$rut."/enable", $token, $data, $entorno);
+	}
+
+	public function disableCompanie($rut, $data, $token, $entorno){
+		$thisClass = new sendPetition();
+		return $thisClass->prepareAndSendCurl("POST", "company/".$rut."/disable", $token, $data, $entorno);
+	}
+
 
 	public function deleteCompanieBranch($rut, $branch, $token, $entorno){
 		$thisClass = new sendPetition();

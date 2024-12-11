@@ -263,6 +263,17 @@ class ctr_companies{
 		return $data;
 	}
 
+	public function enableDisableCompany($rut, $status){ // Esta funcion es para pasar a habilitado o deshabiltado a la empresa
+		$restController = new ctr_rest();
+		$data = null;
+		if($status == 1){
+			$data = $restController->enableCompany($rut);
+		} else {
+			$data = $restController->disableCompany($rut);
+		}
+		return $data;
+	}
+
 	public function deleteCompanieBranch($rut, $branch){
 		$restController = new ctr_rest();
 		$data = $restController->deleteCompanieBranch($rut, $branch);

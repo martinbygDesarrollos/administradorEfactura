@@ -805,6 +805,18 @@ return function (App $app){
         }else return json_encode($responseCurrentSession);
     });
 
+    //habilitar o deshabilitar la empresa
+    $app->post('/enableDisableCompany', function ($request, $response, $args) use ($container, $companiesController, $usersController){
+        $responseCurrentSession = $usersController->validateSession();
+        if($responseCurrentSession->result == 2){
+            $response = new \stdClass();
+            $data = $request->getParams();
+            $rut = $data['rut'];
+            $status = $data['status']; // Si es 1 es habilitar, si es 0 es dehabilitar
+            $response = $companiesController->enableDisableCompany($rut, $status);
+            return json_encode($response);
+        }else return json_encode($responseCurrentSession);
+    });
 
 
 

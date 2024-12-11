@@ -1,7 +1,9 @@
 function changestatusCompanie( newStatus, currentStatus ){
-
 	newStatus = parseInt(newStatus);
 	currentStatus = parseInt(currentStatus);
+	
+	if(newStatus == 1 || newStatus == 2 || newStatus == 6 || newStatus == 7 || newStatus == 8)
+		return;
 
 	let currentStatusLabel = statusDescription(currentStatus);
 	let newStatusLabel = statusDescription(newStatus);
@@ -36,4 +38,24 @@ function suspenderActivarEmpresa(value){
 
 	})
 
+}
+
+function habilitarEmpresa(rut){
+	sendAsyncPost("enableDisableCompany",{rut:rut,status:1})
+		.then((response)=>{
+			showMessage(response.result, response.message);
+			if (response.result == 2){
+				window.location.reload();
+			}
+		})
+}
+
+function deshabilitarEmpresa(rut){
+	sendAsyncPost("enableDisableCompany",{rut:rut,status:0})
+	.then((response)=>{
+		showMessage(response.result, response.message);
+		if (response.result == 2){
+			window.location.reload();
+		}
+	})
 }

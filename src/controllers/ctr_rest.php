@@ -542,6 +542,72 @@ class ctr_rest{
 
 	}
 
+	public function enableCompany($rut){
+
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+		$response->message = "No se pudo obtener respuesta.";
+
+		$data = new \stdClass();
+		$data->enable = 1;
+		$responseCurrentSession = $usersController->validateSession();
+		if($responseCurrentSession->result == 2){
+			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
+			if ( $token->result == 2 ){
+				$tokenRest = $token->objectResult->tokenRest;
+				$petitionResponse = $petitionClass->enableCompanie($rut, $data, $tokenRest, $_SESSION['sistemSession']->entorno);
+				$result = json_decode($petitionResponse);
+				if ($result->resultado->codigo === 200 ){
+					$response->result = 2;
+					$response->message = "ok";
+					return $response;
+				}else{
+					error_log("Error al habilitar la empresa, función enableCompany " . $responseCurrentSession->currentSession->rutUserLogued . ", error: " .$result->resultado->error);
+					$response->result = 1;
+					$response->message = $result->resultado->error;
+					return $response;
+				}
+			}
+		}
+		return $response;
+	}
+
+	public function disableCompany($rut){
+
+		$petitionClass = new sendPetition();
+		$usersController = new ctr_users();
+		$response = new \stdClass();
+
+		$response->result = 1;
+		$response->message = "No se pudo obtener respuesta.";
+
+		$data = new \stdClass();
+		$data->disable = 1;
+		$responseCurrentSession = $usersController->validateSession();
+		if($responseCurrentSession->result == 2){
+			$token = $usersController->getTokenUserLogued($responseCurrentSession->currentSession->email);
+			if ( $token->result == 2 ){
+				$tokenRest = $token->objectResult->tokenRest;
+				$petitionResponse = $petitionClass->disableCompanie($rut, $data, $tokenRest, $_SESSION['sistemSession']->entorno);
+				$result = json_decode($petitionResponse);
+				if ($result->resultado->codigo === 200 ){
+					$response->result = 2;
+					$response->message = "ok";
+					return $response;
+				}else{
+					error_log("Error al deshabilitar la empresa, función disableCompany " . $responseCurrentSession->currentSession->rutUserLogued . ", error: " .$result->resultado->error);
+					$response->result = 1;
+					$response->message = $result->resultado->error;
+					return $response;
+				}
+			}
+		}
+		return $response;
+	}
+
 
 	public function deleteCompanieBranch($rut, $branch){
 
