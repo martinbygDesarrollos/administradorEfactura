@@ -607,7 +607,9 @@ class ctr_companies{
 		$pedirResolutionEBolEntrada = false;
 		
 		$modifiedCaes = [];
-	
+		if(!isset($companieDetails->caes)){
+			return $pedirCAEs;
+		}
 		if(count($companieDetails->caes) <= 0){
 			$pedirResolutionEFac = true;
 			$pedirResolutionERes = true;
