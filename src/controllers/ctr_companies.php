@@ -472,7 +472,7 @@ class ctr_companies{
 			$response->caes = $caes;
 		}
 		$response->rut = $rut;
-		$response->razonSocial = $companieDetails->razonSocial;
+		$response->razonSocial = isset($companieDetails->razonSocial) ? $companieDetails->razonSocial : "";
 		return $response;
 	}
 
