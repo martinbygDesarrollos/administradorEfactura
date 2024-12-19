@@ -1030,10 +1030,11 @@ function changeLiteralE(){
 
 function copyValue(value, field, field2){
 	// console.log(value.substr(8,2) + "/" + value.substr(5, 2) + "/" + value.substr(0, 4))
-	if($('#'+ field).val().trim() == ""){
+	if($('#'+ field).val().trim() == "" && $('#'+ field2).val().trim() == ""){
 		$('#'+ field).val(value.substr(8,2) + "/" + value.substr(5, 2) + "/" + value.substr(0, 4))
-	}
-	if($('#'+ field2).val().trim() == ""){
 		$('#'+ field2).val(value.substr(8,2) + "/" + value.substr(5, 2) + "/" + value.substr(0, 4))
 	}
+	// if($('#'+ field2).val().trim() == ""){
+	// 	$('#'+ field2).val(value.substr(8,2) + "/" + value.substr(5, 2) + "/" + value.substr(0, 4))
+	// }
 }
