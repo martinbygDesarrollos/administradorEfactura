@@ -6,7 +6,7 @@
 					{% if company.sucursales %}
 					<div class="d-flex flex-row mb-2">
 					{# <div class="row"> #}
-						<label for="selectBranchCompanieDetails" id="selectBranchCompanieDetailLabel" class="col-3 col-form-label" style="min-width:222px; max-width:222px;"> Trabajando con la sucursal: </label>
+						<label for="selectBranchCompanieDetails" id="selectBranchCompanieDetailLabel" class="col-form-label mr-2" style="min-width:100px; max-width:100px;"> Sucursal: </label>
 						<div class="mr-2">
                             <select  id="selectBranchCompanieDetails" class="form-control" style="height: 2.5rem;" onchange="loadBranchCompanieData(this.value, {{company.rut}})">
                                 {% for suc in company.sucursales %}

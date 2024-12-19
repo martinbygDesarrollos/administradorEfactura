@@ -11,7 +11,7 @@
 				<tbody id="tbodyCompaniesResolucionesData" >
 					<tr>
 						<td><label class="">Fecha de emisión</label></td>
-						<td><input type="date" name="emitterDate" onchange="changeDataFormResolutions(); copyValue(this.value, 'dgiResolutionEFact')" class="form__field" placeholder="" /></td>
+						<td><input type="date" name="emitterDate" onchange="changeDataFormResolutions(); copyValue(this.value, 'dgiResolutionEFact', 'dgiResolutionERes')" class="form__field" placeholder="" /></td>
 					</tr>
 					<tr>
 						<td><label>Resolución EFactura</label></td>
@@ -19,7 +19,7 @@
 					</tr>
 					<tr>
 						<td><label>Resolución EResguardo</label></td>
-						<td><input type="text" name="dgiResolutionERes" onchange="changeDataFormResolutions()" class="form__field" value="{{company.dgiResolutionERes}}"  placeholder="" /></td>
+						<td><input type="text" id="dgiResolutionERes" name="dgiResolutionERes" onchange="changeDataFormResolutions()" class="form__field" value="{{company.dgiResolutionERes}}"  placeholder="" /></td>
 					</tr>
 					<tr>
 						<td><label>Resolución ERemito</label></td>

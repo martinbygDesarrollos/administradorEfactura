@@ -59,11 +59,13 @@ return function (App $app){
                 $mensaje = "";
             else {
                 $mensaje = "Buenos días Solicitamos CAEs para la empresa " . $data->razonSocial . "  -  " . $data->rut . "<br><br><br>";
-                foreach ($data->caes as $cae) {
-                    $formattedPedir = number_format($cae->pedir, 0, '.', '.'); // Format number with thousands separator
-                    $numberLength = strlen($formattedPedir);
-                    $spaces = str_repeat(' ', 10 - $numberLength); // Adjust '10' based on desired total width
-                    $mensaje .= "<p style=\" font-family: monospace; font-size: large;\">" . $formattedPedir . "<span style='white-space: pre;'>" . $spaces . " - </span>" . $cae->tipoCFEText . "</p>";
+                if(isset($data->caes)){
+                    foreach ($data->caes as $cae) {
+                        $formattedPedir = number_format($cae->pedir, 0, '.', '.'); // Format number with thousands separator
+                        $numberLength = strlen($formattedPedir);
+                        $spaces = str_repeat(' ', 10 - $numberLength); // Adjust '10' based on desired total width
+                        $mensaje .= "<p style=\" font-family: monospace; font-size: large;\">" . $formattedPedir . "<span style='white-space: pre;'>" . $spaces . " - </span>" . $cae->tipoCFEText . "</p>";
+                    }
                 }
                 $mensaje .= "<br><br><br>Desde ya muchas gracias <br>Saludos";
             }
@@ -149,8 +151,16 @@ return function (App $app){
             $company = $companiesController->getCompaniesData($responseCurrentSession->currentSession->rutUserLogued)->objectResult;
             $args["company"] = $company;
             $resultCompanies = [];
-            $archivo = fopen(URL_FILES .$responseCurrentSession->currentSession->email . '.txt', "r"); // NUEVO
-            if ($archivo) {
+            // $archivo = fopen(URL_FILES .$responseCurrentSession->currentSession->email . '.txt', "r"); // NUEVO
+            // if ($archivo) {
+            $filePath = URL_FILES . $responseCurrentSession->currentSession->email . '.txt';
+            if (file_exists($filePath)) {
+                $archivo = fopen($filePath, "r");
+                // Process file
+                // } else {
+                //     // File doesn't exist - silent handling
+                //     return; // or whatever logic you need
+                // }
                 $matchEmpresa = false; 
                 $matchResoluciones = false; 
                 $matchCaesPedir = false; 
